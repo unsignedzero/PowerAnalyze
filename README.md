@@ -11,6 +11,7 @@ Created by David Tran (unsignedzero)
 
 # Version/Changelog #
 
+* Function now cuts of first and last 20 points.
 * References left in file.
 * Initial tutorial files created.
 * Repo initially created with README and gitignore.

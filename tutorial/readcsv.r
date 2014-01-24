@@ -16,7 +16,17 @@ readcsv = function ( fin ) {
 
   # http://www.r-tutor.com/r-introduction/data-frame/data-import
   inputcsv = read.csv(fin)
-  print( inputcsv )
+  outputcsv = data.frame(aname=NA, bname=NA)[numeric(0), ]
+
+  # Remove first twenty and also last twenty elements
+  limit = as.integer(20)
+  print( limit )
+  print( length(inputcsv[[1]]) - limit )
+  temp1 = inputcsv[[1]][limit:(length(inputcsv[[1]])-limit)]
+  temp2 = inputcsv[[2]][limit:(length(inputcsv[[2]])-limit)]
+  outputcsv = data.frame(cbind(temp1, temp2))
+
+  print( outputcsv )
 
 }
 
