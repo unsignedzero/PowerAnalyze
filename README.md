@@ -11,4 +11,10 @@ Created by David Tran (unsignedzero)
 
 # Version/Changelog #
 
+# 0.1.0.0 [01-24-2014] #
+* Small support functions created for project.
+* Created small reference page.
+* Function now cuts of first and last 20 points.
+* References left in file.
+* Initial tutorial files created.
 * Repo initially created with README and gitignore.
