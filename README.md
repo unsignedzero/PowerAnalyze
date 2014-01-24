@@ -11,4 +11,6 @@ Created by David Tran (unsignedzero)
 
 # Version/Changelog #
 
+* References left in file.
+* Initial tutorial files created.
 * Repo initially created with README and gitignore.
