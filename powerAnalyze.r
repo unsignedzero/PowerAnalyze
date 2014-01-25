@@ -3,8 +3,32 @@
 # using SVM
 #
 # Created by David Tran
-# Version 0.1.0.0
-# Last Modified 01-24-2014
+# Version 0.1.1.0
+# Last Modified 01-25-2014
+
+# Add more files with this
+# source
+
+printf = function (...) print(sprintf(...))
+
+summary = function (x) {
+  funs <- c(mean, median, sd, mad, IQR)
+  return (lapply(funs, function(f) f(x, na.rm = TRUE)))
+}
+
+success = function ( n = 0, startMsg = "This is the ",
+    endMsg = "th successful call" ){
+
+  increment = function () {
+    n = n + 1
+    printf("%s%d%s", startMsg, n, endMsg)
+  }
+
+  return (increment)
+}
+
+# We create an instance of the above for our record
+callCount = success()
 
 body = function ( data, n = 20 ){
 
@@ -13,24 +37,63 @@ body = function ( data, n = 20 ){
 
   isVectorFlag = FALSE
 
-  # We want to iterate over lists, not elements in a isvector
-  if (class(data) == "integer" | class(data) == "numeric" ){
-  	data = list(data)
-  	isVectorFlag = TRUE
-	}
+  # We want to iterate over lists, not elements in a vector
+  if (class(data) == "integer" | class(data) == "numeric" |
+      class(data) == "character" ){
+    data = list(data)
+    isVectorFlag = TRUE
+  }
 
-  len = length(data)
-  output = lapply(data, (function(x) x[n:len-n]))
+  if (class(data) == "data.frame"){
+		len = nrow(data)
+    if ( n > len - n ){
+      printf("Impossible range %d to %d", n, len-n)
+      return (NULL)
+    }
 
-  if (isVectorFlag) unlist(output) else output
+		return (data[n:(len-n),])
+
+  } else if (class(data) == "list"){
+		len = length(data)
+    if ( n > len - n ){
+      printf("Impossible range %d to %d", n, len-n)
+      return (NULL)
+    }
+
+		output = lapply(data, (function(x) x[n:(len-n)]))
+
+		return (if (isVectorFlag) unlist(output) else output)
+
+	} else{
+    printf("Unknown data type %s", class(data))
+    return (NA)
+  }
 
 }
 
 loadcsv = function ( fin ) {
 
-  if ((is.null(fin))| (!file.exists(fin)))
-   stop("No file passed")
+  if ((is.null(fin))| is.na(fin) | (!file.exists(fin))){
+    printf("File passed %s does not exist.", fin )
+    return (NA)
+  }
 
-  body(read.csv(fin))
+  callCount()
 
+  return (body(read.csv(fin)))
 }
+
+main = function () {
+
+  printf( "Code read successfully. Executing..." )
+  args=(commandArgs(TRUE))
+
+  if(length(args)==0){
+    stop("No arguments supplied.")
+  }
+
+  fileargs=Filter(file.exists,args)
+  return (sapply(fileargs, loadcsv))
+}
+
+printf("%s",str(main()))

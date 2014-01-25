@@ -11,6 +11,9 @@ Created by David Tran (unsignedzero)
 
 # Version/Changelog #
 
+* Tested initial r script.
+* Created make script to automate running r.
+
 # 0.1.0.0 [01-24-2014] #
 * Small support functions created for project.
 * Created small reference page.
