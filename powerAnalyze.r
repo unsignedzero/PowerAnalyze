@@ -12,8 +12,13 @@
 printf = function (...) print(sprintf(...))
 
 summary = function (x) {
-  funs <- c(mean, median, sd, mad, IQR)
-  return (lapply(funs, function(f) f(x, na.rm = TRUE)))
+  # Applies the statistics functions to the input
+  funs = c(mean, median, sd, mad, IQR)
+  output = lapply(funs, function(f) f(x, na.rm = TRUE))
+
+  names(output) = c("mean", "median", "sd", "mad", "IQR")
+
+  return (output)
 }
 
 success = function ( n = 0, startMsg = "This is the ",
@@ -45,26 +50,26 @@ body = function ( data, n = 20 ){
   }
 
   if (class(data) == "data.frame"){
-		len = nrow(data)
+    len = nrow(data)
     if ( n > len - n ){
       printf("Impossible range %d to %d", n, len-n)
       return (NULL)
     }
 
-		return (data[n:(len-n),])
+    return (data[n:(len-n),])
 
   } else if (class(data) == "list"){
-		len = length(data)
+    len = length(data)
     if ( n > len - n ){
       printf("Impossible range %d to %d", n, len-n)
       return (NULL)
     }
 
-		output = lapply(data, (function(x) x[n:(len-n)]))
+    output = lapply(data, (function(x) x[n:(len-n)]))
 
-		return (if (isVectorFlag) unlist(output) else output)
+    return (if (isVectorFlag) unlist(output) else output)
 
-	} else{
+  } else{
     printf("Unknown data type %s", class(data))
     return (NA)
   }
@@ -80,7 +85,11 @@ loadcsv = function ( fin ) {
 
   callCount()
 
-  return (body(read.csv(fin)))
+  # Grab what we need from the data
+  trimmedData = ((body(read.csv(fin))))
+
+  # Get statistical work
+  return (lapply(trimmedData,summary))
 }
 
 main = function () {
