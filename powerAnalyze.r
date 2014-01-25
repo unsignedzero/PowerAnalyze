@@ -2,12 +2,14 @@
 # This r file will read power traces and attempt to classify them
 # using SVM
 #
+# This is the main package managing the data flow.
+#
 # Created by David Tran
 # Version 0.1.1.0
 # Last Modified 01-25-2014
 
 # Add more files with this
-# source
+source('svm.r')
 
 printf = function (...) print(sprintf(...))
 
