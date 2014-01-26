@@ -11,6 +11,7 @@ Created by David Tran (unsignedzero)
 
 # Version/Changelog #
 
+* Organized folder hierarchy.
 * Added outline of SVM function.
 * Summary function implemented in chain.
 * Tested initial r script.
