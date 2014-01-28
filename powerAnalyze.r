@@ -5,7 +5,7 @@
 # This is the main package managing the data flow.
 #
 # Created by David Tran
-# Version 0.2.0.0
+# Version 0.2.1.0
 # Last Modified 01-28-2014
 
 # Add more files with this
@@ -31,10 +31,15 @@ successCount = function ( n = 0, startMsg = "This is the ",
 # We create an instance of the above for our record
 successfulCallCount = successCount()
 
-process_list = function (x) {
+labelTrace = function(dataFameColumn) {
+}
+
+processTrace = function (dataFrameColumn) {
   # Applies the statistics functions to the input
   funs = c(mean, median, sd, mad, IQR)
-  output = lapply(funs, function(f) f(x, na.rm = TRUE))
+  output = lapply(funs, function(f) f(dataFrameColumn, na.rm = TRUE))
+
+  # Add 'label' to first entry in vector.
 
   names(output) = c("mean", "median", "sd", "mad", "IQR")
 
@@ -82,28 +87,31 @@ body = function ( data, n = 20 ){
 
 }
 
-loadcsv = function ( fin ) {
+loadCsvTrace = function ( fileName ) {
 
-  if ((is.null(fin))| is.na(fin) | (!file.exists(fin))){
-    printf("File passed %s does not exist.", fin)
+  if ((is.null(fileName))| is.na(fileName) | (!file.exists(fileName))){
+    printf("File passed %s does not exist.", fileName)
     return (NA)
   }
   else {
-    printf("Loading %s", fin)
+    printf("Loading %s", fileName)
   }
 
   successfulCallCount()
 
   # Grab what we need from the data
-  trimmedData = ((body(read.csv(fin))))
+  trimmedData = ((body(read.csv(fileName))))
 
   usefulColumns = c('Good')
   trimmedData=trimmedData[usefulColumns]
 
-  #names(trimmedData) = c(fin)
+  # Removing 'Good' as the name of the vector
+  names(trimmedData) = c()
+
+  #names(trimmedData) = c(fileName)
 
   # Get statistical work
-  return ((lapply(trimmedData,process_list)))
+  return ((lapply(trimmedData,processTrace)))
 }
 
 main = function () {
@@ -127,13 +135,10 @@ main = function () {
     stop("Halting execution.")
   }
 
-  meanValue = (sapply(fileargs, loadcsv))
+  outputDataFrame = (sapply(fileargs, loadCsvTrace))
 
-  #names(meanValue) = c(args)
-
-  return (t(do.call(cbind,meanValue)))
+  return (t(do.call(cbind,outputDataFrame)))
 
 }
 
 print(main())
-print(mtcars)

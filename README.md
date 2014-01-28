@@ -15,6 +15,10 @@ Created by David Tran (unsignedzero)
 
 # Version/Changelog #
 
+* Cleaned up function names.
+* BUgfix: Extra information in trace name.
+* Bugfix: Removing extra print for extra table.
+
 # 0.2.0.0 [01-28-2014] #
 * List is now an acceptable data format for the SVM.
 * Reading multiple data and returning a labeled list.
