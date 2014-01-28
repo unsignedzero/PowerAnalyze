@@ -11,6 +11,7 @@ Created by David Tran (unsignedzero)
 
 # Version/Changelog #
 
+* Reading multiple data and returning a labeled list.
 * Organized folder hierarchy.
 * Added outline of SVM function.
 * Summary function implemented in chain.

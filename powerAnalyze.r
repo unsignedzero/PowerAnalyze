@@ -5,15 +5,33 @@
 # This is the main package managing the data flow.
 #
 # Created by David Tran
-# Version 0.1.1.0
-# Last Modified 01-25-2014
+# Version 0.1.2.0
+# Last Modified 01-28-2014
 
 # Add more files with this
 source('svm.r')
 
+# Aliases...
+DEBUG = TRUE
 printf = function (...) print(sprintf(...))
+debugprintf = function (...) if (DEBUG) printf(...)
 
-summary = function (x) {
+# Background Functions
+successCount = function ( n = 0, startMsg = "This is the ",
+    endMsg = "th successful call" ){
+
+  increment = function () {
+    n <<- n + 1
+    printf("%s%d%s", startMsg, n, endMsg)
+  }
+
+  return (increment)
+}
+
+# We create an instance of the above for our record
+successfulCallCount = successCount()
+
+process_list = function (x) {
   # Applies the statistics functions to the input
   funs = c(mean, median, sd, mad, IQR)
   output = lapply(funs, function(f) f(x, na.rm = TRUE))
@@ -22,20 +40,6 @@ summary = function (x) {
 
   return (output)
 }
-
-success = function ( n = 0, startMsg = "This is the ",
-    endMsg = "th successful call" ){
-
-  increment = function () {
-    n = n + 1
-    printf("%s%d%s", startMsg, n, endMsg)
-  }
-
-  return (increment)
-}
-
-# We create an instance of the above for our record
-callCount = success()
 
 body = function ( data, n = 20 ){
 
@@ -81,30 +85,53 @@ body = function ( data, n = 20 ){
 loadcsv = function ( fin ) {
 
   if ((is.null(fin))| is.na(fin) | (!file.exists(fin))){
-    printf("File passed %s does not exist.", fin )
+    printf("File passed %s does not exist.", fin)
     return (NA)
   }
+  else {
+    printf("Loading %s", fin)
+  }
 
-  callCount()
+  successfulCallCount()
 
   # Grab what we need from the data
   trimmedData = ((body(read.csv(fin))))
 
+  usefulColumns = c('Good')
+  trimmedData=trimmedData[usefulColumns]
+
+  names(trimmedData) = c(fin)
+
   # Get statistical work
-  return (lapply(trimmedData,summary))
+  return (lapply(trimmedData,process_list))
 }
 
 main = function () {
 
-  printf( "Code read successfully. Executing..." )
+  printf("Code read successfully. Executing...")
   args=(commandArgs(TRUE))
 
   if(length(args)==0){
-    stop("No arguments supplied.")
+    printf("No arguments supplied. Grabbing all files in the current directory")
+    args=list.files()
+  }
+  else{
+    setwd(file.path(getwd(),args[1]))
+    args=list.files(getwd())
   }
 
-  fileargs=Filter(file.exists,args)
-  return (sapply(fileargs, loadcsv))
+  fileargs=Filter(file.exists, args)
+
+  if (length(fileargs)==0){
+    printf("No files were successfully located at %s", getwd())
+    stop("Halting execution.")
+  }
+
+  meanValue = (lapply(fileargs, loadcsv))
+  #names(meanValue) = c(args)
+
+  return (data.frame(meanValue))
+
 }
 
 printf("%s",str(main()))
