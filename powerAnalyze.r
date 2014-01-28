@@ -5,7 +5,7 @@
 # This is the main package managing the data flow.
 #
 # Created by David Tran
-# Version 0.1.2.0
+# Version 0.2.0.0
 # Last Modified 01-28-2014
 
 # Add more files with this
@@ -71,7 +71,7 @@ body = function ( data, n = 20 ){
       return (NULL)
     }
 
-    output = lapply(data, (function(x) x[n:(len-n)]))
+    output = apply(data, (function(x) x[n:(len-n)]))
 
     return (if (isVectorFlag) unlist(output) else output)
 
@@ -100,10 +100,10 @@ loadcsv = function ( fin ) {
   usefulColumns = c('Good')
   trimmedData=trimmedData[usefulColumns]
 
-  names(trimmedData) = c(fin)
+  #names(trimmedData) = c(fin)
 
   # Get statistical work
-  return (lapply(trimmedData,process_list))
+  return ((lapply(trimmedData,process_list)))
 }
 
 main = function () {
@@ -127,11 +127,13 @@ main = function () {
     stop("Halting execution.")
   }
 
-  meanValue = (lapply(fileargs, loadcsv))
+  meanValue = (sapply(fileargs, loadcsv))
+
   #names(meanValue) = c(args)
 
-  return (data.frame(meanValue))
+  return (t(do.call(cbind,meanValue)))
 
 }
 
-printf("%s",str(main()))
+print(main())
+print(mtcars)

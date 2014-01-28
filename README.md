@@ -9,8 +9,14 @@ Created by David Tran (unsignedzero)
 
 # Notes #
 
+# Questions #
+
+* sapply seems to name your vectors for you?
+
 # Version/Changelog #
 
+# 0.2.0.0 [01-28-2014] #
+* List is now an acceptable data format for the SVM.
 * Reading multiple data and returning a labeled list.
 * Organized folder hierarchy.
 * Added outline of SVM function.
