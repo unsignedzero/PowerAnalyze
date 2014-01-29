@@ -5,15 +5,18 @@
 # This is the main package managing the data flow.
 #
 # Created by David Tran
-# Version 0.2.1.1
+# Version 0.2.2.0
 # Last Modified 01-28-2014
 
 # Add more files with this
 source('svm.r')
 
+# Debugger state
+DEBUG = FALSE
+
 # Aliases...
-DEBUG = TRUE
 printf = function (...) print(sprintf(...))
+debugprint = function (...) if (DEBUG) print(...)
 debugprintf = function (...) if (DEBUG) printf(...)
 
 # Background Functions
@@ -22,24 +25,23 @@ successCount = function ( n = 0, startMsg = "This is the ",
 
   increment = function () {
     n <<- n + 1
-    printf("%s%d%s", startMsg, n, endMsg)
+    debugprintf("%s%d%s", startMsg, n, endMsg)
+    return (n)
   }
 
   return (increment)
 }
 
-# We create an instance of the above for our record
-successfulCallCount = successCount()
 
 labelTrace = function(dataLabel) {
 
   if (is.null(dataLabel)){
     return (-1)
   }
-  else if (grep('^another', dataLabel)){
+  else if (grepl('another', dataLabel)){
     return (1)
   }
-  else if (grep('^sample', dataLabel)){
+  else if (grepl('sample', dataLabel)){
     return (2)
   }
   else{
@@ -47,17 +49,20 @@ labelTrace = function(dataLabel) {
   }
 }
 
-processTrace = function (dataFrameColumn) {
+processTrace = function (traceVector, label=NULL){
 
   # Applies the statistics functions to the input
 
   funs = c(mean, median, sd, mad, IQR)
-  output = lapply(funs, function(f) f(dataFrameColumn, na.rm = TRUE))
+  output = lapply(funs, function(f) f(traceVector, na.rm = TRUE))
 
   # Add 'label' to first entry in vector.
-  traceLabel = labelTrace(names(dataFrameColumn))
+  traceLabel = labelTrace(label)
+  output = c(traceLabel,output)
 
-  names(output) = c("mean", "median", "sd", "mad", "IQR")
+  names(output) = c("label",
+    c("mean", "median", "sd", "mad", "IQR")
+  )
 
   return (output)
 }
@@ -103,14 +108,15 @@ body = function ( data, n = 20 ){
 
 }
 
-loadCsvTrace = function ( fileName ) {
+loadCsvTrace = function ( fileName, successfulCallCount = function() NULL,
+  columnName = 'Good' ) {
 
   if ((is.null(fileName))| is.na(fileName) | (!file.exists(fileName))){
     printf("File passed %s does not exist.", fileName)
     return (NA)
   }
   else {
-    printf("Loading %s", fileName)
+    debugprintf("Loading %s", fileName)
   }
 
   successfulCallCount()
@@ -118,31 +124,27 @@ loadCsvTrace = function ( fileName ) {
   # Grab what we need from the data
   trimmedData = ((body(read.csv(fileName))))
 
-  usefulColumns = c('Good')
+  usefulColumns = c(columnName)
   trimmedData=trimmedData[usefulColumns]
 
-  # Removing 'Good' as the name of the vector
   names(trimmedData) = c()
 
-  #names(trimmedData) = c(fileName)
-
   # Get statistical work
-  return ((lapply(trimmedData,processTrace)))
+  return (lapply(trimmedData,function(x) processTrace(x, fileName)))
 }
 
 main = function () {
 
-  printf("Code read successfully. Executing...")
+  debugprintf("Code read successfully. Executing...")
   args=(commandArgs(TRUE))
 
   if(length(args)==0){
     printf("No arguments supplied. Grabbing all files in the current directory")
-    args=list.files()
   }
   else{
     setwd(file.path(getwd(),args[1]))
-    args=list.files(getwd())
   }
+  args=list.files()
 
   fileargs=Filter(file.exists, args)
 
@@ -151,7 +153,10 @@ main = function () {
     stop("Halting execution.")
   }
 
-  outputDataFrame = (sapply(fileargs, loadCsvTrace))
+  # We create an instance of the above for our record
+  callCounter = successCount()
+
+  outputDataFrame = sapply(fileargs, function(x) loadCsvTrace(x, callCounter))
 
   return (t(do.call(cbind,outputDataFrame)))
 
