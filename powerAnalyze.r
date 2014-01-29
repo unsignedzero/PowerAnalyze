@@ -5,7 +5,7 @@
 # This is the main package managing the data flow.
 #
 # Created by David Tran
-# Version 0.2.1.0
+# Version 0.2.1.1
 # Last Modified 01-28-2014
 
 # Add more files with this
@@ -31,15 +31,31 @@ successCount = function ( n = 0, startMsg = "This is the ",
 # We create an instance of the above for our record
 successfulCallCount = successCount()
 
-labelTrace = function(dataFameColumn) {
+labelTrace = function(dataLabel) {
+
+  if (is.null(dataLabel)){
+    return (-1)
+  }
+  else if (grep('^another', dataLabel)){
+    return (1)
+  }
+  else if (grep('^sample', dataLabel)){
+    return (2)
+  }
+  else{
+    return (0)
+  }
 }
 
 processTrace = function (dataFrameColumn) {
+
   # Applies the statistics functions to the input
+
   funs = c(mean, median, sd, mad, IQR)
   output = lapply(funs, function(f) f(dataFrameColumn, na.rm = TRUE))
 
   # Add 'label' to first entry in vector.
+  traceLabel = labelTrace(names(dataFrameColumn))
 
   names(output) = c("mean", "median", "sd", "mad", "IQR")
 

@@ -7,6 +7,8 @@ Created by David Tran (unsignedzero)
 
 # TO DO #
 
+* Figure out how to add to the start of a list.
+
 # Notes #
 
 # Questions #
