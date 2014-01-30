@@ -88,11 +88,17 @@ labelTrace = function(dataLabel) {
   if (is.null(dataLabel)){
     retLabel = -1
   }
-  else if (grepl('another', dataLabel)){
+  else if (grepl('baseline_new_fan', dataLabel)){
     retLabel = 1
   }
-  else if (grepl('sample', dataLabel)){
+  else if (grepl('Graph', dataLabel)){
     retLabel = 2
+  }
+  else if (grepl('nsort', dataLabel)){
+    retLabel = 3
+  }
+  else if (grepl('baseline_ondemand', dataLabel)){
+    retLabel = 4
   }
   else{
     retLabel = 0
@@ -168,7 +174,7 @@ main = function () {
 
   outputDataFrame = sapply(fileargs, function(x) loadCsvTrace(x, callCounter))
 
-  return (svmMain(do.call(rbind.data.frame,outputDataFrame)))
+  return (svmMain(do.call(rbind.data.frame,outputDataFrame)[1:2]))
 
 }
 

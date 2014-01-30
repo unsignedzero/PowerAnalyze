@@ -32,11 +32,17 @@ svmMain = function( dataset ){
     newdataset=data.frame(dataset)
   }
 
-  print(dataset)
+  #print(dataset)
 
-  model = svm(label~., data=dataset)
-  print(model)
-  #summary(model)
+  logicArray = c(1:nrow(dataset) %% 3 != 0)
+  trainset = dataset[logicArray,]
+  logicArray = c(1:nrow(dataset) %% 3 == 0)
+  testset = dataset[logicArray,]
+
+  model = svm(label~., data=trainset)
+  prediction = predict(model, testset[2])
+  print(table(pred=prediction, true=testset[,1]))
+  return (dataset)
 }
 
 #print(svmMain(read.csv('data/outputData')))
