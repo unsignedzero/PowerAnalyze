@@ -17,6 +17,7 @@ Created by David Tran (unsignedzero)
 
 # Version/Changelog #
 
+* Bugfix: Main now creates a data.frame and not matrix.
 * SVM module working.
 * Simplified matrix creation call.
 * Added label to process vector.

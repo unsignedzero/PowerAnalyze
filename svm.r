@@ -5,7 +5,7 @@
 # This is a sub package interfacing with our SVM module.
 #
 # Created by David Tran
-# Version 0.1.2.0
+# Version 0.2.0.0
 # Last Modified 01-30-2014
 
 #install.packages('e1071',dependencies=TRUE)
@@ -39,4 +39,4 @@ svmMain = function( dataset ){
   #summary(model)
 }
 
-print(svmMain(read.csv('data/outputData')))
+#print(svmMain(read.csv('data/outputData')))
