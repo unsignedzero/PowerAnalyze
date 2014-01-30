@@ -5,11 +5,11 @@
 # This is the main package managing the data flow.
 #
 # Created by David Tran
-# Version 0.2.2.1
-# Last Modified 01-29-2014
+# Version 0.2.3.0
+# Last Modified 01-30-2014
 
 # Add more files with this
-source('svm.r')
+#source('svm.r')
 
 # Debugger state
 DEBUG = FALSE
@@ -30,41 +30,6 @@ successCount = function ( n = 0, startMsg = "This is the ",
   }
 
   return (increment)
-}
-
-
-labelTrace = function(dataLabel) {
-
-  if (is.null(dataLabel)){
-    return (-1)
-  }
-  else if (grepl('another', dataLabel)){
-    return (1)
-  }
-  else if (grepl('sample', dataLabel)){
-    return (2)
-  }
-  else{
-    return (0)
-  }
-}
-
-processTrace = function (traceVector, label=NULL){
-
-  # Applies the statistics functions to the input
-
-  funs = c(mean, median, sd, mad, IQR)
-  output = lapply(funs, function(f) f(traceVector, na.rm = TRUE))
-
-  # Add 'label' to first entry in vector.
-  traceLabel = labelTrace(label)
-  output = c(traceLabel,output)
-
-  names(output) = c("label",
-    c("mean", "median", "sd", "mad", "IQR")
-  )
-
-  return (output)
 }
 
 body = function ( data, n = 20 ){
@@ -108,8 +73,53 @@ body = function ( data, n = 20 ){
 
 }
 
+tee = function(csvData, file='outputData'){
+  write.csv(csvData, file=file)
+  #csvData = read.csv(file=file)
+  return (csvData)
+}
+
+# Main trace functions
+
+labelTrace = function(dataLabel) {
+
+  retLabel = NA
+
+  if (is.null(dataLabel)){
+    retLabel = -1
+  }
+  else if (grepl('another', dataLabel)){
+    retLabel = 1
+  }
+  else if (grepl('sample', dataLabel)){
+    retLabel = 2
+  }
+  else{
+    retLabel = 0
+  }
+
+  return (as.character(retLabel))
+}
+
+processTrace = function (traceVector, label=NULL){
+
+  # Applies the statistics functions to the input
+
+  funs = c(mean, median, sd, mad, IQR)
+  output = lapply(funs, function(f) f(traceVector, na.rm = TRUE))
+
+  # Add 'label' to first entry in vector.
+  traceLabel = labelTrace(label)
+  output = c(traceLabel,output)
+
+  names(output) = c("label",
+    c("mean", "median", "sd", "mad", "IQR")
+  )
+
+  return (output)
+}
 loadCsvTrace = function ( fileName, successfulCallCount = function() NULL,
-  columnName = 'Good' ) {
+  columnName = 'watts' ) {
 
   if ((is.null(fileName))| is.na(fileName) | (!file.exists(fileName))){
     printf("File passed %s does not exist.", fileName)
@@ -144,7 +154,7 @@ main = function () {
   else{
     setwd(file.path(getwd(),args[1]))
   }
-  args=list.files()
+  args=list.files(pattern='\\.csv$')
 
   fileargs=Filter(file.exists, args)
 
@@ -160,8 +170,6 @@ main = function () {
 
   return (do.call(rbind,outputDataFrame))
 
-
-
 }
 
-print(main())
+print(tee(main()))

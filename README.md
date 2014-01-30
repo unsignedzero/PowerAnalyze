@@ -17,6 +17,7 @@ Created by David Tran (unsignedzero)
 
 # Version/Changelog #
 
+* SVM module working.
 * Simplified matrix creation call.
 * Added label to process vector.
 * Used closure to remove global counter.
