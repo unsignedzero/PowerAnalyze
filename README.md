@@ -7,6 +7,8 @@ Created by David Tran (unsignedzero)
 
 # TO DO #
 
+* Figure out how to add to the start of a list.
+
 # Notes #
 
 # Questions #
@@ -14,6 +16,18 @@ Created by David Tran (unsignedzero)
 * sapply seems to name your vectors for you?
 
 # Version/Changelog #
+
+# 0.3.0.0 [01-30-2014] #
+* Base data added.
+* SVM working and printing confusion matrix.
+* Bugfix: Main now creates a data.frame and not matrix.
+* SVM module working.
+* Simplified matrix creation call.
+* Added label to process vector.
+* Used closure to remove global counter.
+* Cleaned up function names.
+* BUgfix: Extra information in trace name.
+* Bugfix: Removing extra print for extra table.
 
 # 0.2.0.0 [01-28-2014] #
 * List is now an acceptable data format for the SVM.

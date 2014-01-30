@@ -5,15 +5,18 @@
 # This is the main package managing the data flow.
 #
 # Created by David Tran
-# Version 0.2.0.0
-# Last Modified 01-28-2014
+# Version 0.2.3.1
+# Last Modified 01-30-2014
 
 # Add more files with this
 source('svm.r')
 
+# Debugger state
+DEBUG = FALSE
+
 # Aliases...
-DEBUG = TRUE
 printf = function (...) print(sprintf(...))
+debugprint = function (...) if (DEBUG) print(...)
 debugprintf = function (...) if (DEBUG) printf(...)
 
 # Background Functions
@@ -22,23 +25,11 @@ successCount = function ( n = 0, startMsg = "This is the ",
 
   increment = function () {
     n <<- n + 1
-    printf("%s%d%s", startMsg, n, endMsg)
+    debugprintf("%s%d%s", startMsg, n, endMsg)
+    return (n)
   }
 
   return (increment)
-}
-
-# We create an instance of the above for our record
-successfulCallCount = successCount()
-
-process_list = function (x) {
-  # Applies the statistics functions to the input
-  funs = c(mean, median, sd, mad, IQR)
-  output = lapply(funs, function(f) f(x, na.rm = TRUE))
-
-  names(output) = c("mean", "median", "sd", "mad", "IQR")
-
-  return (output)
 }
 
 body = function ( data, n = 20 ){
@@ -82,43 +73,94 @@ body = function ( data, n = 20 ){
 
 }
 
-loadcsv = function ( fin ) {
+tee = function(csvData, file='outputData'){
+  write.csv(csvData, file=file)
+  #csvData = read.csv(file=file)
+  return (csvData)
+}
 
-  if ((is.null(fin))| is.na(fin) | (!file.exists(fin))){
-    printf("File passed %s does not exist.", fin)
+# Main trace functions
+
+labelTrace = function(dataLabel) {
+
+  retLabel = NA
+
+  if (is.null(dataLabel)){
+    retLabel = -1
+  }
+  else if (grepl('baseline_new_fan', dataLabel)){
+    retLabel = 1
+  }
+  else if (grepl('Graph', dataLabel)){
+    retLabel = 2
+  }
+  else if (grepl('nsort', dataLabel)){
+    retLabel = 3
+  }
+  else if (grepl('baseline_ondemand', dataLabel)){
+    retLabel = 4
+  }
+  else{
+    retLabel = 0
+  }
+
+  return (as.character(retLabel))
+}
+
+processTrace = function (traceVector, label=NULL){
+
+  # Applies the statistics functions to the input
+
+  funs = c(mean, median, sd, mad, IQR)
+  output = lapply(funs, function(f) f(traceVector, na.rm = TRUE))
+
+  # Add 'label' to first entry in vector.
+  traceLabel = labelTrace(label)
+  output = c(traceLabel,output)
+
+  names(output) = c("label",
+    c("mean", "median", "sd", "mad", "IQR")
+  )
+
+  return (output)
+}
+loadCsvTrace = function ( fileName, successfulCallCount = function() NULL,
+  columnName = 'watts' ) {
+
+  if ((is.null(fileName))| is.na(fileName) | (!file.exists(fileName))){
+    printf("File passed %s does not exist.", fileName)
     return (NA)
   }
   else {
-    printf("Loading %s", fin)
+    debugprintf("Loading %s", fileName)
   }
 
   successfulCallCount()
 
   # Grab what we need from the data
-  trimmedData = ((body(read.csv(fin))))
+  trimmedData = ((body(read.csv(fileName))))
 
-  usefulColumns = c('Good')
+  usefulColumns = c(columnName)
   trimmedData=trimmedData[usefulColumns]
 
-  #names(trimmedData) = c(fin)
+  names(trimmedData) = c()
 
   # Get statistical work
-  return ((lapply(trimmedData,process_list)))
+  return (lapply(trimmedData,function(x) processTrace(x, fileName)))
 }
 
 main = function () {
 
-  printf("Code read successfully. Executing...")
+  debugprintf("Code read successfully. Executing...")
   args=(commandArgs(TRUE))
 
   if(length(args)==0){
     printf("No arguments supplied. Grabbing all files in the current directory")
-    args=list.files()
   }
   else{
     setwd(file.path(getwd(),args[1]))
-    args=list.files(getwd())
   }
+  args=list.files(pattern='\\.csv$')
 
   fileargs=Filter(file.exists, args)
 
@@ -127,13 +169,13 @@ main = function () {
     stop("Halting execution.")
   }
 
-  meanValue = (sapply(fileargs, loadcsv))
+  # We create an instance of the above for our record
+  callCounter = successCount()
 
-  #names(meanValue) = c(args)
+  outputDataFrame = sapply(fileargs, function(x) loadCsvTrace(x, callCounter))
 
-  return (t(do.call(cbind,meanValue)))
+  return (svmMain(do.call(rbind.data.frame,outputDataFrame)[1:2]))
 
 }
 
-print(main())
-print(mtcars)
+print(tee(main()))
