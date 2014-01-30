@@ -7,7 +7,8 @@ Created by David Tran (unsignedzero)
 
 # TO DO #
 
-* Figure out how to add to the start of a list.
+* Tinker with values of SVN, like gamma.
+* Need more data to get svm to show possible states and possibly graph?
 
 # Notes #
 
@@ -16,6 +17,8 @@ Created by David Tran (unsignedzero)
 * sapply seems to name your vectors for you?
 
 # Version/Changelog #
+
+* Checking off TO DO list and adding new content.
 
 # 0.3.0.0 [01-30-2014] #
 * Base data added.
