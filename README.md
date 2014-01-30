@@ -17,6 +17,9 @@ Created by David Tran (unsignedzero)
 
 # Version/Changelog #
 
+* Simplified matrix creation call.
+* Added label to process vector.
+* Used closure to remove global counter.
 * Cleaned up function names.
 * BUgfix: Extra information in trace name.
 * Bugfix: Removing extra print for extra table.

@@ -5,8 +5,8 @@
 # This is the main package managing the data flow.
 #
 # Created by David Tran
-# Version 0.2.2.0
-# Last Modified 01-28-2014
+# Version 0.2.2.1
+# Last Modified 01-29-2014
 
 # Add more files with this
 source('svm.r')
@@ -158,7 +158,9 @@ main = function () {
 
   outputDataFrame = sapply(fileargs, function(x) loadCsvTrace(x, callCounter))
 
-  return (t(do.call(cbind,outputDataFrame)))
+  return (do.call(rbind,outputDataFrame))
+
+
 
 }
 
