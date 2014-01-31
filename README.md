@@ -18,7 +18,9 @@ Created by David Tran (unsignedzero)
 
 # Version/Changelog #
 
-* Checking off TO DO list and adding new content.
+* For the working directory, we move back to the default once we process
+  the data.
+* For the model, the data is split by a percentage now.
 
 # 0.3.0.0 [01-30-2014] #
 * Base data added.

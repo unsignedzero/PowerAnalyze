@@ -5,7 +5,7 @@
 # This is the main package managing the data flow.
 #
 # Created by David Tran
-# Version 0.2.3.1
+# Version 0.2.4.0
 # Last Modified 01-30-2014
 
 # Add more files with this
@@ -153,6 +153,7 @@ main = function () {
 
   debugprintf("Code read successfully. Executing...")
   args=(commandArgs(TRUE))
+  currentDir=getwd()
 
   if(length(args)==0){
     printf("No arguments supplied. Grabbing all files in the current directory")
@@ -174,8 +175,9 @@ main = function () {
 
   outputDataFrame = sapply(fileargs, function(x) loadCsvTrace(x, callCounter))
 
-  return (svmMain(do.call(rbind.data.frame,outputDataFrame)[1:2]))
+  setwd(currentDir)
 
+  return (svmMain(do.call(rbind.data.frame,outputDataFrame)[1:2]))
 }
 
 print(tee(main()))
