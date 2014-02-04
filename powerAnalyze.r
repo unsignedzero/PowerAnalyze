@@ -5,7 +5,7 @@
 # This is the main package managing the data flow.
 #
 # Created by David Tran
-# Version 0.4.1.0
+# Version 0.4.2.0
 # Last Modified 02-04-2014
 
 # Add more files with this
@@ -24,7 +24,8 @@ debugprintf = function (...) if (DEBUG) printf(...)
 
 labelTrace = function(dataLabel) {
 
-  # Regexes the string and maps it to a number
+  # Regexes the string and maps it to a number so that the confusion
+  # matrix is easier to read
 
   retLabel = NA
 
@@ -74,7 +75,7 @@ labelTrace = function(dataLabel) {
 processTrace = function (traceVector, label=NULL){
 
   # Applies the statistics functions to the input vector and returns it
-  # labeled
+  # labeled. Train on the 'label' column
 
   funs = c(mean, median, sd, mad, IQR)
   output = lapply(funs, function(f) f(traceVector, na.rm = TRUE))
@@ -119,6 +120,7 @@ loadCsvTrace = function ( fileName, successfulCallCount = function() NULL,
     stop("Exiting...")
   }
 
+  # Removes header info
   names(trimmedData) = c()
 
   # Get statistical work
@@ -135,7 +137,8 @@ main = function () {
 
   if(length(args)==0){
     printf(
-      "No arguments supplied. Grabbing all files in the current directory")
+      "No arguments supplied. Grabbing all files in the current directory %s",
+      getwd())
   }
   else{
     setwd(file.path(getwd(),args[1]))
@@ -151,7 +154,7 @@ main = function () {
     stop("Halting execution.")
   }
 
-  # We create an instance of the above for our record
+  # We create an instance of a call counter for debugging purposes
   callCounter = successCount()
 
   outputDataFrame = sapply(fileargs,

@@ -5,7 +5,7 @@
 # This is a sub package interfacing with our SVM module.
 #
 # Created by David Tran
-# Version 0.4.1.0
+# Version 0.4.2.0
 # Last Modified 02-04-2014
 
 #install.packages('e1071',dependencies=TRUE)
@@ -51,7 +51,6 @@ svmFormatData = function( dataset, percentage=0.2, uniqueColumn ='label' ){
   testList = dataset[!boolVector,]
 
   return (list(testList, trainList))
-
 }
 
 svmMain = function( dataset, guessColumn='label' ){
@@ -72,14 +71,12 @@ svmMain = function( dataset, guessColumn='label' ){
   testList = output[[1]]
   trainList = output[[2]]
 
-  model = svm(label~., data=trainList, degree=3, gamma=0.1, cost=100)
+  model = svm(removeColumn(dataset, guessColumn), dataset[[guessColumn]],
+    data=trainList, degree=3, gamma=0.1, cost=100)
   prediction = predict(model, removeColumn(testList, guessColumn))
 
   print(summary(model))
   print(table(pred=prediction, true=testList[,guessColumn]))
-
-  #tuned <- tune.svm(label~., data=trainList, gamma = 10^(-6:-1), cost = 10^(-1:2))
-  #print(summary(tuned))
 
   printf("Numbers of training data %d", nrow(trainList))
   printf("Numbers of test data %d", nrow(testList))
@@ -87,3 +84,25 @@ svmMain = function( dataset, guessColumn='label' ){
   return (dataset)
 }
 
+svmStats = function( confusionMatrix ){
+
+  # Summarized the confusion Matrix with these parameters
+  # Precision, tp/(tp+fp)
+  #   (True/ROW)
+  # Recall, tp/(tp+fn)
+  #   (True/COL)
+
+  return (confusionMatrix)
+}
+
+svmTune = function ( trainList, testColumn='label' ){
+
+  # Tunes an SVM and prints results and guess for best parameters
+
+  tuned <- tune.svm(removeColumn(trainList,testColumn), dataset[[testColumn]],
+    data=trainList, gamma = 10^(-6:-1), cost = 10^(-1:2))
+
+  print(summary(tuned))
+
+  return (trainList)
+}

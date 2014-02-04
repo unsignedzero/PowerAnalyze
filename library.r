@@ -1,7 +1,7 @@
 # Library support functions for PowerAnalyze repo
 #
 # Created by David Tran
-# Version 0.4.1.0
+# Version 0.4.2.0
 # Last Modified 02-04-2014
 
 # Background Functions
@@ -53,10 +53,15 @@ halt = function ( ... ){
   print(...)
   stop("Halting execution...")
 
-  return(...)
+  # This should NOT happen
+  return (...)
 }
 
 removeColumn = function( frame , colName ){
+
+  # Removes one column from the data.frame
+  # https://stackoverflow.com/questions/11940605/printing-a-subset-of-columns-in-a-data-table-r
+  # didn't help due to with ERROR
 
   logicVector = unlist(lapply(colnames(frame),
     function(x) (!grepl(colName, x))))
@@ -92,7 +97,7 @@ tee = function(csvData, file='outputData'){
 
 to.data.frame = function ( mat ){
 
-  # Converts a matrix to a data.frame
-  return (do.call(rbind.data.frame, mat))
+  # Converts a list of lists to a data.frame
 
+  return (do.call(rbind.data.frame, mat))
 }

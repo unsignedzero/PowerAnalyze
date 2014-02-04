@@ -18,6 +18,11 @@ Created by David Tran (unsignedzero)
 
 # Version/Changelog #
 
+* Pulled SVM tuner coder into a function.
+* Fixed some bad comments.
+* Bugfix: SVM now uses the column passed in as, rather than a default
+  label string, which breaks if the column we are interested in is NOT
+  label.
 * Updated the data names to match new regex mask.
 * Created a few more library functions and moved out functions
   as needed.
