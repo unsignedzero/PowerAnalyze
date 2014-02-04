@@ -5,100 +5,40 @@
 # This is the main package managing the data flow.
 #
 # Created by David Tran
-# Version 0.2.3.1
-# Last Modified 01-30-2014
+# Version 0.4.0.0
+# Last Modified 02-01-2014
 
 # Add more files with this
+source('library.r')
 source('svm.r')
 
 # Debugger state
 DEBUG = FALSE
 
-# Aliases...
+# Aliases for easier printing
 printf = function (...) print(sprintf(...))
 debugprint = function (...) if (DEBUG) print(...)
 debugprintf = function (...) if (DEBUG) printf(...)
 
-# Background Functions
-successCount = function ( n = 0, startMsg = "This is the ",
-    endMsg = "th successful call" ){
-
-  increment = function () {
-    n <<- n + 1
-    debugprintf("%s%d%s", startMsg, n, endMsg)
-    return (n)
-  }
-
-  return (increment)
-}
-
-body = function ( data, n = 20 ){
-
-  # As oppose to head and tail we grab all but the first nth
-  # and last nth elements of the data, if it is possible
-
-  isVectorFlag = FALSE
-
-  # We want to iterate over lists, not elements in a vector
-  if (class(data) == "integer" | class(data) == "numeric" |
-      class(data) == "character" ){
-    data = list(data)
-    isVectorFlag = TRUE
-  }
-
-  if (class(data) == "data.frame"){
-    len = nrow(data)
-    if ( n > len - n ){
-      printf("Impossible range %d to %d", n, len-n)
-      return (NULL)
-    }
-
-    return (data[n:(len-n),])
-
-  } else if (class(data) == "list"){
-    len = length(data)
-    if ( n > len - n ){
-      printf("Impossible range %d to %d", n, len-n)
-      return (NULL)
-    }
-
-    output = apply(data, (function(x) x[n:(len-n)]))
-
-    return (if (isVectorFlag) unlist(output) else output)
-
-  } else{
-    printf("Unknown data type %s", class(data))
-    return (NA)
-  }
-
-}
-
-tee = function(csvData, file='outputData'){
-  write.csv(csvData, file=file)
-  #csvData = read.csv(file=file)
-  return (csvData)
-}
-
 # Main trace functions
 
 labelTrace = function(dataLabel) {
+
+  # Regexes the string and maps it to a number
 
   retLabel = NA
 
   if (is.null(dataLabel)){
     retLabel = -1
   }
-  else if (grepl('baseline_new_fan', dataLabel)){
+  else if (grepl('baseline', dataLabel)){
     retLabel = 1
   }
-  else if (grepl('Graph', dataLabel)){
+  else if (grepl('Graph500', dataLabel)){
     retLabel = 2
   }
   else if (grepl('nsort', dataLabel)){
     retLabel = 3
-  }
-  else if (grepl('baseline_ondemand', dataLabel)){
-    retLabel = 4
   }
   else{
     retLabel = 0
@@ -109,7 +49,8 @@ labelTrace = function(dataLabel) {
 
 processTrace = function (traceVector, label=NULL){
 
-  # Applies the statistics functions to the input
+  # Applies the statistics functions to the input vector and returns it
+  # labeled
 
   funs = c(mean, median, sd, mad, IQR)
   output = lapply(funs, function(f) f(traceVector, na.rm = TRUE))
@@ -124,8 +65,11 @@ processTrace = function (traceVector, label=NULL){
 
   return (output)
 }
+
 loadCsvTrace = function ( fileName, successfulCallCount = function() NULL,
   columnName = 'watts' ) {
+
+  # Attempts to open and read the csv and says if it works
 
   if ((is.null(fileName))| is.na(fileName) | (!file.exists(fileName))){
     printf("File passed %s does not exist.", fileName)
@@ -141,7 +85,15 @@ loadCsvTrace = function ( fileName, successfulCallCount = function() NULL,
   trimmedData = ((body(read.csv(fileName))))
 
   usefulColumns = c(columnName)
-  trimmedData=trimmedData[usefulColumns]
+
+  if (usefulColumns %in% colnames(trimmedData)){
+    trimmedData=trimmedData[usefulColumns]
+  }
+  else {
+    printf("File %s does not contain column %s Exiting.",
+      fileName, usefulColumns)
+    stop("Exiting...")
+  }
 
   names(trimmedData) = c()
 
@@ -151,15 +103,21 @@ loadCsvTrace = function ( fileName, successfulCallCount = function() NULL,
 
 main = function () {
 
+  # Reads in input and setups the call chain for all other functions.
+
   debugprintf("Code read successfully. Executing...")
   args=(commandArgs(TRUE))
+  currentDir=getwd()
 
   if(length(args)==0){
-    printf("No arguments supplied. Grabbing all files in the current directory")
+    printf(
+      "No arguments supplied. Grabbing all files in the current directory")
   }
   else{
     setwd(file.path(getwd(),args[1]))
   }
+
+  # Loads only files with CSV extension
   args=list.files(pattern='\\.csv$')
 
   fileargs=Filter(file.exists, args)
@@ -172,10 +130,12 @@ main = function () {
   # We create an instance of the above for our record
   callCounter = successCount()
 
-  outputDataFrame = sapply(fileargs, function(x) loadCsvTrace(x, callCounter))
+  outputDataFrame = sapply(fileargs,
+    function(x) loadCsvTrace(x, callCounter))
+
+  setwd(currentDir)
 
   return (svmMain(do.call(rbind.data.frame,outputDataFrame)[1:2]))
-
 }
 
 print(tee(main()))

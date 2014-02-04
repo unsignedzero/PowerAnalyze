@@ -7,7 +7,8 @@ Created by David Tran (unsignedzero)
 
 # TO DO #
 
-* Figure out how to add to the start of a list.
+* Tinker with values of SVN, like gamma.
+* Need more data to get svm to show possible states and possibly graph?
 
 # Notes #
 
@@ -16,6 +17,16 @@ Created by David Tran (unsignedzero)
 * sapply seems to name your vectors for you?
 
 # Version/Changelog #
+
+## 0.4.0.0 [02-03-2013] #
+* Failed to update version numbers correctly on files.
+* Added extra check to see if the column we select from the file
+  doesn't exist.
+* Added extra comments and broke powerAnalyze.r into two files for
+  easier reading.
+* For the working directory, we move back to the default once we process
+  the data.
+* For the model, the data is split by a percentage now.
 
 # 0.3.0.0 [01-30-2014] #
 * Base data added.

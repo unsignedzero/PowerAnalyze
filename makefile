@@ -6,5 +6,5 @@ default:
 clean:
 	rm -rvf *.x *.a *.o *.out *.gcda *.gcov *.gcno
 	rm -rvf output*
-	rm -v data/outputData
+	rm -v outputData
 
