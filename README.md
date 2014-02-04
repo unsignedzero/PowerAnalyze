@@ -7,9 +7,6 @@ Created by David Tran (unsignedzero)
 
 # TO DO #
 
-* Tinker with values of SVN, like gamma.
-* Need more data to get svm to show possible states and possibly graph?
-
 # Notes #
 
 # Questions #
@@ -18,7 +15,25 @@ Created by David Tran (unsignedzero)
 
 # Version/Changelog #
 
-## 0.4.0.0 [02-03-2013] #
+## 0.5.0.0 [02-04-2014] #
+* SVM Module now spits out the parameters of interest from the confusion
+  matrix.
+* Error messages will display the function name as well for debugging purposes.
+* Created simplified SVM constructor function.
+* Renamed for variables for consistency.
+* Using hex for the table.
+* body returns the empty container rather than just NULL.
+* Pulled SVM tuner coder into a function.
+* Fixed some bad comments.
+* Bugfix: SVM now uses the column passed in as, rather than a default
+  label string, which breaks if the column we are interested in is NOT label.
+* Updated the data names to match new regex mask.
+* Created a few more library functions and moved out functions as needed.
+* Bugfix: Confusion matrix didn't print pred or true before.
+* Bugfix: Selecting the right columns for svm, was a position. Now
+  selects from the column given.
+
+## 0.4.0.0 [02-03-2014] #
 * Failed to update version numbers correctly on files.
 * Added extra check to see if the column we select from the file
   doesn't exist.

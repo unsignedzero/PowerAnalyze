@@ -1,12 +1,12 @@
 # PowerAnalyze
 # This r file will read power traces and attempt to classify them
-# using SVM
+# via svm.r
 #
 # This is the main package managing the data flow.
 #
 # Created by David Tran
-# Version 0.4.0.0
-# Last Modified 02-01-2014
+# Version 0.4.3.0
+# Last Modified 02-04-2014
 
 # Add more files with this
 source('library.r')
@@ -24,23 +24,49 @@ debugprintf = function (...) if (DEBUG) printf(...)
 
 labelTrace = function(dataLabel) {
 
-  # Regexes the string and maps it to a number
+  # Regexes the string and maps it to a number so that the confusion
+  # matrix is easier to read
 
   retLabel = NA
 
   if (is.null(dataLabel)){
     retLabel = -1
   }
-  else if (grepl('baseline', dataLabel)){
+  else if (grepl('^.._baseline', dataLabel)){
     retLabel = 1
   }
-  else if (grepl('Graph500', dataLabel)){
+  else if (grepl('^.._Graph500', dataLabel)){
     retLabel = 2
   }
-  else if (grepl('nsort', dataLabel)){
+  else if (grepl('^.._nsort', dataLabel)){
     retLabel = 3
   }
+  else if (grepl('^.._p95', dataLabel)){
+    retLabel = 4
+  }
+  else if (grepl('^.._stream', dataLabel)){
+    retLabel = 5
+  }
+  else if (grepl('^.._systemburn_DGEMM', dataLabel)){
+    retLabel = 6
+  }
+  else if (grepl('^.._systemburn_FFT1D', dataLabel)){
+    retLabel = 7
+  }
+  else if (grepl('^.._systemburn_FFT2D', dataLabel)){
+    retLabel = 8
+  }
+  else if (grepl('^.._systemburn_GUPS', dataLabel)){
+    retLabel = 9
+  }
+  else if (grepl('^.._systemburn_SCUBLAS', dataLabel)){
+    retLabel = 'A'
+  }
+  else if (grepl('^.._systemburn_TILT', dataLabel)){
+    retLabel = 'B'
+  }
   else{
+    printf("labelTrace: Bad label for %s", dataLabel)
     retLabel = 0
   }
 
@@ -50,7 +76,7 @@ labelTrace = function(dataLabel) {
 processTrace = function (traceVector, label=NULL){
 
   # Applies the statistics functions to the input vector and returns it
-  # labeled
+  # labeled. Train on the 'label' column
 
   funs = c(mean, median, sd, mad, IQR)
   output = lapply(funs, function(f) f(traceVector, na.rm = TRUE))
@@ -72,7 +98,7 @@ loadCsvTrace = function ( fileName, successfulCallCount = function() NULL,
   # Attempts to open and read the csv and says if it works
 
   if ((is.null(fileName))| is.na(fileName) | (!file.exists(fileName))){
-    printf("File passed %s does not exist.", fileName)
+    printf("loadCsvTrace: File passed %s does not exist.", fileName)
     return (NA)
   }
   else {
@@ -90,11 +116,12 @@ loadCsvTrace = function ( fileName, successfulCallCount = function() NULL,
     trimmedData=trimmedData[usefulColumns]
   }
   else {
-    printf("File %s does not contain column %s Exiting.",
+    printf("loadCsvTrace: File %s does not contain column %s Exiting.",
       fileName, usefulColumns)
     stop("Exiting...")
   }
 
+  # Removes header info
   names(trimmedData) = c()
 
   # Get statistical work
@@ -111,7 +138,8 @@ main = function () {
 
   if(length(args)==0){
     printf(
-      "No arguments supplied. Grabbing all files in the current directory")
+      "main: No arguments supplied. Grabbing all files in the current directory %s",
+      getwd())
   }
   else{
     setwd(file.path(getwd(),args[1]))
@@ -123,11 +151,11 @@ main = function () {
   fileargs=Filter(file.exists, args)
 
   if (length(fileargs)==0){
-    printf("No files were successfully located at %s", getwd())
+    printf("main: No files were successfully located at %s", getwd())
     stop("Halting execution.")
   }
 
-  # We create an instance of the above for our record
+  # We create an instance of a call counter for debugging purposes
   callCounter = successCount()
 
   outputDataFrame = sapply(fileargs,
@@ -135,7 +163,8 @@ main = function () {
 
   setwd(currentDir)
 
-  return (svmMain(do.call(rbind.data.frame,outputDataFrame)[1:2]))
+  return (svmMain(tee(to.data.frame(outputDataFrame)[1:2])))
 }
 
-print(tee(main()))
+# Use str to minify big outputs
+print(str(main()))
