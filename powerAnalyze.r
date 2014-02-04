@@ -5,7 +5,7 @@
 # This is the main package managing the data flow.
 #
 # Created by David Tran
-# Version 0.4.2.0
+# Version 0.4.2.1
 # Last Modified 02-04-2014
 
 # Add more files with this
@@ -60,12 +60,13 @@ labelTrace = function(dataLabel) {
     retLabel = 9
   }
   else if (grepl('^.._systemburn_SCUBLAS', dataLabel)){
-    retLabel = 10
+    retLabel = 'A'
   }
   else if (grepl('^.._systemburn_TILT', dataLabel)){
-    retLabel = 11
+    retLabel = 'B'
   }
   else{
+    printf("Bad label for %s", dataLabel)
     retLabel = 0
   }
 
@@ -165,4 +166,5 @@ main = function () {
   return (svmMain(tee(to.data.frame(outputDataFrame)[1:2])))
 }
 
+# Use str to minify big outputs
 print(str(main()))

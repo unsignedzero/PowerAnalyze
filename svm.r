@@ -5,19 +5,32 @@
 # This is a sub package interfacing with our SVM module.
 #
 # Created by David Tran
-# Version 0.4.2.0
+# Version 0.4.2.r1
 # Last Modified 02-04-2014
 
 #install.packages('e1071',dependencies=TRUE)
 library(e1071)
 
-svmCountSplit = function ( key, dataset, percentage=0.2, uniqueColumn='label' ){
+svmConstructor = function ( inputFrame, keyColumn, ... ){
+
+  # Simplifies the construction call for svm by cutting the data frame in the right place
+
+  if (class(inputFrame) != "data.frame"){
+    stop("svmConstructor: dataSet must be a data.frame")
+  }
+
+  return (
+    svm(removeColumn(inputFrame, keyColumn), inputFrame[[keyColumn]], ... )
+  )
+}
+
+svmCountSplit = function ( key, dataSet, percentage=0.2, guessColumn='label' ){
 
   # This creates the logical vector that tells the calling function
   # how to split the datasets. key is what we are looking for in the
-  # uniqueColumn.
+  # guessColumn.
 
-  count = nrow(dataset[dataset[[uniqueColumn]]==key,])
+  count = nrow(dataSet[dataSet[[guessColumn]]==key,])
   splitValue = floor(percentage*count)
 
   if (count == 0){
@@ -34,54 +47,54 @@ svmCountSplit = function ( key, dataset, percentage=0.2, uniqueColumn='label' ){
   return (boolRetVector)
 }
 
-svmFormatData = function( dataset, percentage=0.2, uniqueColumn ='label' ){
+svmFormatData = function( dataSet, percentage=0.2, guessColumn ='label' ){
 
-  # Takes the dataset and the uniqueColumn and splits it into the training set
+  # Takes the dataSet and the guessColumn and splits it into the training set
   # and the test set. The test set is min 1 unless only one element is
-  # passed. The 'uniqueColumn' is what we focus on.
+  # passed. The 'guessColumn' is what we focus on.
 
-  keyVector = unique(unlist(dataset[[uniqueColumn]], use.names = FALSE))
+  keyVector = unique(unlist(dataSet[[guessColumn]], use.names = FALSE))
 
   boolVector = unlist(
     sapply(keyVector, svmCountSplit,
-      dataset=dataset, percentage=percentage, uniqueColumn=uniqueColumn)
+      dataSet=dataSet, percentage=percentage, guessColumn=guessColumn)
     )
 
-  trainList = dataset[boolVector,]
-  testList = dataset[!boolVector,]
+  trainSet = dataSet[boolVector,]
+  testSet = dataSet[!boolVector,]
 
-  return (list(testList, trainList))
+  return (list(testSet, trainSet))
 }
 
-svmMain = function( dataset, guessColumn='label' ){
+svmMain = function( dataSet, guessColumn='label' ){
 
-  # Given the dataset and the column of interest, splits the data
-  # into the right pieces and runs the model
+  # Given the dataSet and the column of interest, splits the data
+  # into the right pieces and runs the svmModel
 
-  if (is.null(dataset)){
-    stop("Getting null data on svmMain")
+  if (is.null(dataSet)){
+    stop("svmMain: Getting null data on svmMain")
   }
 
-  if (class(dataset) == "matrix"){
-    stop("dataset must be a data.frame")
+  if (class(dataSet) == "matrix"){
+    stop("svmMain: dataSet must be a data.frame")
   }
 
-  output = svmFormatData(dataset, uniqueColumn=guessColumn)
+  output = svmFormatData(dataSet, guessColumn=guessColumn)
 
-  testList = output[[1]]
-  trainList = output[[2]]
+  testSet = output[[1]]
+  trainSet = output[[2]]
 
-  model = svm(removeColumn(dataset, guessColumn), dataset[[guessColumn]],
-    data=trainList, degree=3, gamma=0.1, cost=100)
-  prediction = predict(model, removeColumn(testList, guessColumn))
+  svmModel = svmConstructor(dataSet, guessColumn,
+    data=trainSet, degree=3, gamma=0.1, cost=100)
+  prediction = predict(svmModel, removeColumn(testSet, guessColumn))
 
-  print(summary(model))
-  print(table(pred=prediction, true=testList[,guessColumn]))
+  print(summary(svmModel))
+  print(table(pred=prediction, true=testSet[,guessColumn]))
 
-  printf("Numbers of training data %d", nrow(trainList))
-  printf("Numbers of test data %d", nrow(testList))
+  printf("Numbers of training data %d", nrow(trainSet))
+  printf("Numbers of test data %d", nrow(testSet))
 
-  return (dataset)
+  return (dataSet)
 }
 
 svmStats = function( confusionMatrix ){
@@ -95,14 +108,14 @@ svmStats = function( confusionMatrix ){
   return (confusionMatrix)
 }
 
-svmTune = function ( trainList, testColumn='label' ){
+svmTune = function ( trainSet, testColumn='label' ){
 
   # Tunes an SVM and prints results and guess for best parameters
 
-  tuned <- tune.svm(removeColumn(trainList,testColumn), dataset[[testColumn]],
-    data=trainList, gamma = 10^(-6:-1), cost = 10^(-1:2))
+  tuned <- tune.svm(removeColumn(trainSet,testColumn), dataSet[[testColumn]],
+    data=trainSet, gamma = 10^(-6:-1), cost = 10^(-1:2))
 
   print(summary(tuned))
 
-  return (trainList)
+  return (trainSet)
 }

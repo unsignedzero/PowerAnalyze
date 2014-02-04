@@ -1,7 +1,7 @@
 # Library support functions for PowerAnalyze repo
 #
 # Created by David Tran
-# Version 0.4.2.0
+# Version 0.4.2.1
 # Last Modified 02-04-2014
 
 # Background Functions
@@ -9,7 +9,7 @@ body = function ( data, n = 20 ){
 
   # As oppose to head and tail, we grab all but the first nth
   # and last nth elements of the data, if it is possible.
-  # We quit otherwise.
+  # We return the empty container if it is not possible.
 
   isVectorFlag = FALSE
 
@@ -24,7 +24,7 @@ body = function ( data, n = 20 ){
     len = nrow(data)
     if ( n > len - n ){
       printf("Impossible range %d to %d", n, len-n)
-      return (NULL)
+      return (data[NULL,])
     }
 
     return (data[n:(len-n),])
@@ -33,7 +33,7 @@ body = function ( data, n = 20 ){
     len = length(data)
     if ( n > len - n ){
       printf("Impossible range %d to %d", n, len-n)
-      return (NULL)
+      return (if (isVectorFlag) NULL else list())
     }
 
     output = apply(data, (function(x) x[n:(len-n)]))
@@ -74,7 +74,7 @@ successCount = function ( n = 0, startMsg = "This is the ",
 
   # This is a factory function that creates an incrementing
   # counter from n onward. Note this returns a function so
-  # invoke the data type with ()
+  # invoke the return type as a function
 
   increment = function () {
     n <<- n + 1
