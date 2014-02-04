@@ -1,11 +1,10 @@
-# PowerAnalyze
-# This r file will read power traces and attempt to classify them
-# using SVM
+# PowerAnalyze SVM Module
+# This r file takes in a data frame and analyzes it using SVM
 #
 # This is a sub package interfacing with our SVM module.
 #
 # Created by David Tran
-# Version 0.4.2.r1
+# Version 0.5.0.0
 # Last Modified 02-04-2014
 
 #install.packages('e1071',dependencies=TRUE)
@@ -88,13 +87,41 @@ svmMain = function( dataSet, guessColumn='label' ){
     data=trainSet, degree=3, gamma=0.1, cost=100)
   prediction = predict(svmModel, removeColumn(testSet, guessColumn))
 
+  confusionMatrix = table(pred=prediction, true=testSet[,guessColumn])
   print(summary(svmModel))
-  print(table(pred=prediction, true=testSet[,guessColumn]))
+  print(confusionMatrix)
+  svmStats(confusionMatrix)
 
   printf("Numbers of training data %d", nrow(trainSet))
   printf("Numbers of test data %d", nrow(testSet))
 
   return (dataSet)
+}
+
+svmStatsCalc = function ( key, confusionMatrix ){
+
+  # Summzarizes one diagonal entry on the confusionMatrix
+  # selected by key
+
+  curEntry = confusionMatrix[key,key]
+
+  # Ensures NaNs for both entries
+  if (curEntry == 0){
+    rowSum = NaN
+    colSum = NaN
+  }
+  else{
+    rowSum = sum(confusionMatrix[key,])
+    colSum = sum(confusionMatrix[,key])
+  }
+
+  printf("Analyzing %s Precision : %0.3f   Recall %0.3f",
+    key,
+    curEntry/rowSum,
+    curEntry/colSum
+  )
+
+  return (confusionMatrix)
 }
 
 svmStats = function( confusionMatrix ){
@@ -104,6 +131,24 @@ svmStats = function( confusionMatrix ){
   #   (True/ROW)
   # Recall, tp/(tp+fn)
   #   (True/COL)
+
+  error = FALSE
+
+  if (nrow(confusionMatrix) != ncol(confusionMatrix)){
+    printf("svmStats: Confusion matrix not square. Dim(%d,%d)",
+      nrow(confusionMatrix), ncol(confusionMatrix)
+    )
+  }
+  else if (nrow(confusionMatrix) == 0){
+    printf("svmStats: Data Frame size must be 1 or larger")
+  }
+
+  if (error){
+    printf("svmStats: Ignoring arg and passing to next function")
+    return (confusionMatrix)
+  }
+
+  lapply(rownames(confusionMatrix), svmStatsCalc, confusionMatrix)
 
   return (confusionMatrix)
 }

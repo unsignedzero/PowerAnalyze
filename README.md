@@ -15,6 +15,10 @@ Created by David Tran (unsignedzero)
 
 # Version/Changelog #
 
+## 0.5.0.0 [02-04-2014] #
+* SVM Module now spits out the parameters of interest from the confusion
+  matrix.
+* Error messages will display the function name as well for debugging purposes.
 * Created simplified SVM constructor function.
 * Renamed for variables for consistency.
 * Using hex for the table.
@@ -29,7 +33,7 @@ Created by David Tran (unsignedzero)
 * Bugfix: Selecting the right columns for svm, was a position. Now
   selects from the column given.
 
-## 0.4.0.0 [02-03-2013] #
+## 0.4.0.0 [02-03-2014] #
 * Failed to update version numbers correctly on files.
 * Added extra check to see if the column we select from the file
   doesn't exist.

@@ -1,7 +1,8 @@
+# PowerAnalyze Library Module
 # Library support functions for PowerAnalyze repo
 #
 # Created by David Tran
-# Version 0.4.2.1
+# Version 0.4.3.0
 # Last Modified 02-04-2014
 
 # Background Functions
@@ -23,7 +24,7 @@ body = function ( data, n = 20 ){
   if (class(data) == "data.frame"){
     len = nrow(data)
     if ( n > len - n ){
-      printf("Impossible range %d to %d", n, len-n)
+      printf("body: Impossible range %d to %d", n, len-n)
       return (data[NULL,])
     }
 
@@ -32,7 +33,7 @@ body = function ( data, n = 20 ){
   } else if (class(data) == "list"){
     len = length(data)
     if ( n > len - n ){
-      printf("Impossible range %d to %d", n, len-n)
+      printf("body: Impossible range %d to %d", n, len-n)
       return (if (isVectorFlag) NULL else list())
     }
 
@@ -41,7 +42,7 @@ body = function ( data, n = 20 ){
     return (if (isVectorFlag) unlist(output) else output)
 
   } else{
-    printf("Unknown data type %s", class(data))
+    printf("body: Unknown data type %s", class(data))
     return (NA)
   }
 }

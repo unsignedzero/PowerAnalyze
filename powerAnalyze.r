@@ -1,11 +1,11 @@
 # PowerAnalyze
 # This r file will read power traces and attempt to classify them
-# using SVM
+# via svm.r
 #
 # This is the main package managing the data flow.
 #
 # Created by David Tran
-# Version 0.4.2.1
+# Version 0.4.3.0
 # Last Modified 02-04-2014
 
 # Add more files with this
@@ -66,7 +66,7 @@ labelTrace = function(dataLabel) {
     retLabel = 'B'
   }
   else{
-    printf("Bad label for %s", dataLabel)
+    printf("labelTrace: Bad label for %s", dataLabel)
     retLabel = 0
   }
 
@@ -98,7 +98,7 @@ loadCsvTrace = function ( fileName, successfulCallCount = function() NULL,
   # Attempts to open and read the csv and says if it works
 
   if ((is.null(fileName))| is.na(fileName) | (!file.exists(fileName))){
-    printf("File passed %s does not exist.", fileName)
+    printf("loadCsvTrace: File passed %s does not exist.", fileName)
     return (NA)
   }
   else {
@@ -116,7 +116,7 @@ loadCsvTrace = function ( fileName, successfulCallCount = function() NULL,
     trimmedData=trimmedData[usefulColumns]
   }
   else {
-    printf("File %s does not contain column %s Exiting.",
+    printf("loadCsvTrace: File %s does not contain column %s Exiting.",
       fileName, usefulColumns)
     stop("Exiting...")
   }
@@ -138,7 +138,7 @@ main = function () {
 
   if(length(args)==0){
     printf(
-      "No arguments supplied. Grabbing all files in the current directory %s",
+      "main: No arguments supplied. Grabbing all files in the current directory %s",
       getwd())
   }
   else{
@@ -151,7 +151,7 @@ main = function () {
   fileargs=Filter(file.exists, args)
 
   if (length(fileargs)==0){
-    printf("No files were successfully located at %s", getwd())
+    printf("main: No files were successfully located at %s", getwd())
     stop("Halting execution.")
   }
 
