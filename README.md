@@ -18,6 +18,12 @@ Created by David Tran (unsignedzero)
 
 # Version/Changelog #
 
+## 0.4.0.0 [02-03-2013] #
+* Failed to update version numbers correctly on files.
+* Added extra check to see if the column we select from the file
+  doesn't exist.
+* Added extra comments and broke powerAnalyze.r into two files for
+  easier reading.
 * For the working directory, we move back to the default once we process
   the data.
 * For the model, the data is split by a percentage now.
