@@ -1,8 +1,8 @@
 # Library support functions for PowerAnalyze repo
 #
 # Created by David Tran
-# Version 0.4.0.0
-# Last Modified 02-01-2014
+# Version 0.4.1.0
+# Last Modified 02-04-2014
 
 # Background Functions
 body = function ( data, n = 20 ){
@@ -46,6 +46,24 @@ body = function ( data, n = 20 ){
   }
 }
 
+halt = function ( ... ){
+
+  # Stops the program and prints what it currently has
+
+  print(...)
+  stop("Halting execution...")
+
+  return(...)
+}
+
+removeColumn = function( frame , colName ){
+
+  logicVector = unlist(lapply(colnames(frame),
+    function(x) (!grepl(colName, x))))
+
+  return (frame[logicVector])
+}
+
 successCount = function ( n = 0, startMsg = "This is the ",
     endMsg = "th successful call" ){
 
@@ -70,4 +88,11 @@ tee = function(csvData, file='outputData'){
   write.csv(csvData, file=file)
 
   return (csvData)
+}
+
+to.data.frame = function ( mat ){
+
+  # Converts a matrix to a data.frame
+  return (do.call(rbind.data.frame, mat))
+
 }

@@ -18,6 +18,11 @@ Created by David Tran (unsignedzero)
 
 # Version/Changelog #
 
+* Created a few more library functions and moved out functions
+  as needed.
+* Bugfix: Confusion matrix didn't print pred or true before.
+* Bugfix: Selecting the right columns for svm, was a position. Now
+  selects from the column given.
 ## 0.4.0.0 [02-03-2013] #
 * Failed to update version numbers correctly on files.
 * Added extra check to see if the column we select from the file

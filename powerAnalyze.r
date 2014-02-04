@@ -5,8 +5,8 @@
 # This is the main package managing the data flow.
 #
 # Created by David Tran
-# Version 0.4.0.0
-# Last Modified 02-01-2014
+# Version 0.4.1.0
+# Last Modified 02-04-2014
 
 # Add more files with this
 source('library.r')
@@ -31,14 +31,38 @@ labelTrace = function(dataLabel) {
   if (is.null(dataLabel)){
     retLabel = -1
   }
-  else if (grepl('baseline', dataLabel)){
+  else if (grepl('^.._baseline', dataLabel)){
     retLabel = 1
   }
-  else if (grepl('Graph500', dataLabel)){
+  else if (grepl('^.._Graph500', dataLabel)){
     retLabel = 2
   }
-  else if (grepl('nsort', dataLabel)){
+  else if (grepl('^.._nsort', dataLabel)){
     retLabel = 3
+  }
+  else if (grepl('^.._p95', dataLabel)){
+    retLabel = 4
+  }
+  else if (grepl('^.._stream', dataLabel)){
+    retLabel = 5
+  }
+  else if (grepl('^.._systemburn_DGEMM', dataLabel)){
+    retLabel = 6
+  }
+  else if (grepl('^.._systemburn_FFT1D', dataLabel)){
+    retLabel = 7
+  }
+  else if (grepl('^.._systemburn_FFT2D', dataLabel)){
+    retLabel = 8
+  }
+  else if (grepl('^.._systemburn_GUPS', dataLabel)){
+    retLabel = 9
+  }
+  else if (grepl('^.._systemburn_SCUBLAS', dataLabel)){
+    retLabel = 10
+  }
+  else if (grepl('^.._systemburn_TILT', dataLabel)){
+    retLabel = 11
   }
   else{
     retLabel = 0
@@ -135,7 +159,7 @@ main = function () {
 
   setwd(currentDir)
 
-  return (svmMain(do.call(rbind.data.frame,outputDataFrame)[1:2]))
+  return (svmMain(tee(to.data.frame(outputDataFrame)[1:2])))
 }
 
-print(tee(main()))
+print(str(main()))

@@ -5,8 +5,8 @@
 # This is a sub package interfacing with our SVM module.
 #
 # Created by David Tran
-# Version 0.4.0.0
-# Last Modified 02-01-2014
+# Version 0.4.1.0
+# Last Modified 02-04-2014
 
 #install.packages('e1071',dependencies=TRUE)
 library(e1071)
@@ -65,7 +65,6 @@ svmMain = function( dataset, guessColumn='label' ){
 
   if (class(dataset) == "matrix"){
     stop("dataset must be a data.frame")
-    #newdataset=data.frame(dataset)
   }
 
   output = svmFormatData(dataset, uniqueColumn=guessColumn)
@@ -73,9 +72,17 @@ svmMain = function( dataset, guessColumn='label' ){
   testList = output[[1]]
   trainList = output[[2]]
 
-  model = svm(label~., data=trainList)
-  prediction = predict(model, testList[2])
-  print(table(pred=prediction, true=testList[,1]))
+  model = svm(label~., data=trainList, degree=3, gamma=0.1, cost=100)
+  prediction = predict(model, removeColumn(testList, guessColumn))
+
+  print(summary(model))
+  print(table(pred=prediction, true=testList[,guessColumn]))
+
+  #tuned <- tune.svm(label~., data=trainList, gamma = 10^(-6:-1), cost = 10^(-1:2))
+  #print(summary(tuned))
+
+  printf("Numbers of training data %d", nrow(trainList))
+  printf("Numbers of test data %d", nrow(testList))
 
   return (dataset)
 }
