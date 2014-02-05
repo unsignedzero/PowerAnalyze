@@ -86,7 +86,7 @@ successCount = function ( n = 0, startMsg = "This is the ",
   return (increment)
 }
 
-tee = function(csvData, file='outputData'){
+tee = function(csvData, file='outputDataFrame'){
 
   # Writes the current data in the stream to file and passes it
   # to the next invoked function

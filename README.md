@@ -15,6 +15,7 @@ Created by David Tran (unsignedzero)
 
 # Version/Changelog #
 
+* Added more debugging and renamed a variable.
 * Bugfix: Input data frame to SVM needs to be sorted.
 * Bugfix: calib is labeled B and not C.
 * No need for pipes with R.

@@ -79,7 +79,11 @@ labelTrace = function(dataLabel) {
     retLabel = 0
   }
 
-  return (as.character(retLabel))
+  retLabel = as.character(retLabel)
+
+  debugprintf("File %s, labeled as %s", dataLabel, retLabel)
+
+  return (retLabel)
 }
 
 processTrace = function (traceVector, label=NULL){
@@ -111,10 +115,8 @@ loadCsvTrace = function ( fileName, successfulCallCount = function() NULL,
     return (NA)
   }
   else {
-    debugprintf("Loading %s", fileName)
+    debugprintf("loadCsvTrace: Loading %s", fileName)
   }
-
-  successfulCallCount()
 
   # Grab what we need from the data
   trimmedData = ((body(read.csv(fileName))))
@@ -132,6 +134,9 @@ loadCsvTrace = function ( fileName, successfulCallCount = function() NULL,
 
   # Removes header info
   names(trimmedData) = c()
+
+  successfulCallCount()
+  debugprintf("loadCsvTrace: File %s processed", fileName)
 
   # Get statistical work
   return (lapply(trimmedData,function(x) processTrace(x, fileName)))
@@ -167,8 +172,8 @@ main = function () {
   # We create an instance of a call counter for debugging purposes
   callCounter = successCount()
 
-  outputDataFrame = sapply(fileargs,
-    function(x) loadCsvTrace(x, callCounter))
+  outputDataFrame = sapply(fileargs, loadCsvTrace, callCounter,
+    columnName='watts')
 
   setwd(currentDir)
 

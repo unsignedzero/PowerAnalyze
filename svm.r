@@ -85,6 +85,8 @@ svmMain = function( dataSet, guessColumn='label' ){
     stop("svmMain: dataSet must be a data.frame")
   }
 
+  debugprintf("Starting svmMain")
+
   # Sort data.frame by guessColumn
   dataSet = dataSet[order(dataSet[guessColumn]),]
 
@@ -93,7 +95,7 @@ svmMain = function( dataSet, guessColumn='label' ){
   testSet = output[[1]]
   trainSet = output[[2]]
 
-  print(testSet)
+  # This is where one can train and test the SVM
 
   svmModel = svmConstructor(dataSet, guessColumn,
     data=trainSet, degree=3, gamma=0.1, cost=100)
@@ -108,32 +110,6 @@ svmMain = function( dataSet, guessColumn='label' ){
   printf("Numbers of test data %d", nrow(testSet))
 
   return (dataSet)
-}
-
-svmStatsCalc = function ( key, confusionMatrix ){
-
-  # Summzarizes one diagonal entry on the confusionMatrix
-  # selected by key
-
-  curEntry = confusionMatrix[key,key]
-
-  # Ensures NaNs for both entries
-  if (curEntry == 0){
-    rowSum = NaN
-    colSum = NaN
-  }
-  else{
-    rowSum = sum(confusionMatrix[key,])
-    colSum = sum(confusionMatrix[,key])
-  }
-
-  printf("Analyzing %s Precision : %0.3f   Recall %0.3f",
-    key,
-    curEntry/rowSum,
-    curEntry/colSum
-  )
-
-  return (confusionMatrix)
 }
 
 svmStats = function( confusionMatrix ){
@@ -161,6 +137,32 @@ svmStats = function( confusionMatrix ){
   }
 
   lapply(rownames(confusionMatrix), svmStatsCalc, confusionMatrix)
+
+  return (confusionMatrix)
+}
+
+svmStatsCalc = function ( key, confusionMatrix ){
+
+  # Summzarizes one diagonal entry on the confusionMatrix
+  # selected by key
+
+  curEntry = confusionMatrix[key,key]
+
+  # Ensures NaNs for both entries
+  if (curEntry == 0){
+    rowSum = NaN
+    colSum = NaN
+  }
+  else{
+    rowSum = sum(confusionMatrix[key,])
+    colSum = sum(confusionMatrix[,key])
+  }
+
+  printf("Analyzing %s Precision : %0.3f   Recall %0.3f",
+    key,
+    curEntry/rowSum,
+    curEntry/colSum
+  )
 
   return (confusionMatrix)
 }
