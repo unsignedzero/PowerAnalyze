@@ -15,6 +15,7 @@ Created by David Tran (unsignedzero)
 
 # Version/Changelog #
 
+* No need for pipes with R.
 * Added more base cases. Accuracy increased.
 
 ## 0.5.0.0 [02-04-2014] #
