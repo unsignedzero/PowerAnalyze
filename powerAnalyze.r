@@ -5,7 +5,7 @@
 # This is the main package managing the data flow.
 #
 # Created by David Tran
-# Version 0.4.3.0
+# Version 0.4.4.0
 # Last Modified 02-04-2014
 
 # Add more files with this
@@ -72,7 +72,7 @@ labelTrace = function(dataLabel) {
     retLabel = 'B'
   }
   else if (grepl('^.._calib', dataLabel)){
-    retLabel = 'B'
+    retLabel = 'C'
   }
   else{
     printf("labelTrace: Bad label for %s", dataLabel)

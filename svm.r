@@ -4,7 +4,7 @@
 # This is a sub package interfacing with our SVM module.
 #
 # Created by David Tran
-# Version 0.5.0.0
+# Version 0.5.1.0
 # Last Modified 02-04-2014
 
 #install.packages('e1071',dependencies=TRUE)
@@ -46,18 +46,25 @@ svmCountSplit = function ( key, dataSet, percentage=0.2, guessColumn='label' ){
   return (boolRetVector)
 }
 
-svmFormatData = function( dataSet, percentage=0.2, guessColumn ='label' ){
+svmFormatData = function( dataSet, percentage=0.2, guessColumn='label' ){
 
   # Takes the dataSet and the guessColumn and splits it into the training set
   # and the test set. The test set is min 1 unless only one element is
   # passed. The 'guessColumn' is what we focus on.
 
   keyVector = unique(unlist(dataSet[[guessColumn]], use.names = FALSE))
+  keyVector = keyVector[order(keyVector)]
 
   boolVector = unlist(
     sapply(keyVector, svmCountSplit,
       dataSet=dataSet, percentage=percentage, guessColumn=guessColumn)
     )
+
+  # Prints out the table combined with the boolVector
+  if (DEBUG){
+    testData = cbind(dataSet,boolVector)
+    print(testData[order(testData[guessColumn]),])
+  }
 
   trainSet = dataSet[boolVector,]
   testSet = dataSet[!boolVector,]
@@ -78,10 +85,15 @@ svmMain = function( dataSet, guessColumn='label' ){
     stop("svmMain: dataSet must be a data.frame")
   }
 
+  # Sort data.frame by guessColumn
+  dataSet = dataSet[order(dataSet[guessColumn]),]
+
   output = svmFormatData(dataSet, guessColumn=guessColumn)
 
   testSet = output[[1]]
   trainSet = output[[2]]
+
+  print(testSet)
 
   svmModel = svmConstructor(dataSet, guessColumn,
     data=trainSet, degree=3, gamma=0.1, cost=100)

@@ -15,6 +15,8 @@ Created by David Tran (unsignedzero)
 
 # Version/Changelog #
 
+* Bugfix: Input data frame to SVM needs to be sorted.
+* Bugfix: calib is labeled B and not C.
 * No need for pipes with R.
 * Added more base cases. Accuracy increased.
 
