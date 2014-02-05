@@ -53,6 +53,9 @@ labelTrace = function(dataLabel) {
   else if (grepl('^.._systemburn_FFT1D', dataLabel)){
     retLabel = 7
   }
+  else if (grepl('^.._sb_fft1d', dataLabel)){
+    retLabel = 7
+  }
   else if (grepl('^.._systemburn_FFT2D', dataLabel)){
     retLabel = 8
   }
@@ -63,6 +66,12 @@ labelTrace = function(dataLabel) {
     retLabel = 'A'
   }
   else if (grepl('^.._systemburn_TILT', dataLabel)){
+    retLabel = 'B'
+  }
+  else if (grepl('^.._sb_tilt', dataLabel)){
+    retLabel = 'B'
+  }
+  else if (grepl('^.._calib', dataLabel)){
     retLabel = 'B'
   }
   else{
