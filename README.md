@@ -15,6 +15,8 @@ Created by David Tran (unsignedzero)
 
 # Version/Changelog #
 
+* Report first draft created.
+
 ## 0.5.0.0 [02-04-2014] #
 * SVM Module now spits out the parameters of interest from the confusion
   matrix.
