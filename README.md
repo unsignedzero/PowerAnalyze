@@ -15,6 +15,7 @@ Created by David Tran (unsignedzero)
 
 # Version/Changelog #
 
+* Report first draft created.
 * Bugfix: Mistaking precision for call and vice-versa.
 * Added more debugging and renamed a variable.
 * Bugfix: Input data frame to SVM needs to be sorted.
