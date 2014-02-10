@@ -4,8 +4,8 @@
 # This is a sub package interfacing with our SVM module.
 #
 # Created by David Tran
-# Version 0.5.1.0
-# Last Modified 02-04-2014
+# Version 0.5.2.0
+# Last Modified 02-10-2014
 
 #install.packages('e1071',dependencies=TRUE)
 library(e1071)
@@ -116,9 +116,9 @@ svmStats = function( confusionMatrix ){
 
   # Summarized the confusion Matrix with these parameters
   # Precision, tp/(tp+fp)
-  #   (True/ROW)
-  # Recall, tp/(tp+fn)
   #   (True/COL)
+  # Recall, tp/(tp+fn)
+  #   (True/ROW)
 
   error = FALSE
 
@@ -160,8 +160,8 @@ svmStatsCalc = function ( key, confusionMatrix ){
 
   printf("Analyzing %s Precision : %0.3f   Recall %0.3f",
     key,
-    curEntry/rowSum,
     curEntry/colSum
+    curEntry/rowSum,
   )
 
   return (confusionMatrix)
