@@ -15,6 +15,7 @@ Created by David Tran (unsignedzero)
 
 # Version/Changelog #
 
+* Bugfix: Precision and recall corrected.
 * Bugfix: Missing comma in printf.
 * Report first draft created.
 * Bugfix: Mistaking precision for call and vice-versa.
