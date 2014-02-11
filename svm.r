@@ -160,8 +160,8 @@ svmStatsCalc = function ( key, confusionMatrix ){
 
   printf("Analyzing %s Precision : %0.3f   Recall %0.3f",
     key,
-    curEntry/colSum
-    curEntry/rowSum,
+    curEntry/colSum,
+    curEntry/rowSum
   )
 
   return (confusionMatrix)
