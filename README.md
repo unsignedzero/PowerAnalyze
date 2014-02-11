@@ -15,6 +15,7 @@ Created by David Tran (unsignedzero)
 
 # Version/Changelog #
 
+* FFT initial base working.
 * Bugfix: Precision and recall corrected.
 * Bugfix: Missing comma in printf.
 * Report first draft created.

@@ -5,8 +5,8 @@
 # This is the main package managing the data flow.
 #
 # Created by David Tran
-# Version 0.4.4.0
-# Last Modified 02-04-2014
+# Version 0.5.0.0
+# Last Modified 02-11-2014
 
 # Add more files with this
 source('library.r')
@@ -106,7 +106,7 @@ processTrace = function (traceVector, label=NULL){
 }
 
 loadCsvTrace = function ( fileName, successfulCallCount = function() NULL,
-  columnName = 'watts' ) {
+  columnName = 'watts', transformFunction = function (x) x ) {
 
   # Attempts to open and read the csv and says if it works
 
@@ -132,6 +132,9 @@ loadCsvTrace = function ( fileName, successfulCallCount = function() NULL,
     stop("Exiting...")
   }
 
+  # Transform Data as needed
+  trimmedData[usefulColumns] = transformFunction(trimmedData[[usefulColumns]])
+
   # Removes header info
   names(trimmedData) = c()
 
@@ -139,10 +142,10 @@ loadCsvTrace = function ( fileName, successfulCallCount = function() NULL,
   debugprintf("loadCsvTrace: File %s processed", fileName)
 
   # Get statistical work
-  return (lapply(trimmedData,function(x) processTrace(x, fileName)))
+  return (lapply(trimmedData, function(x) processTrace(x, fileName)))
 }
 
-main = function () {
+main = function ( transformFunction = function(x) x) {
 
   # Reads in input and setups the call chain for all other functions.
 
@@ -173,7 +176,7 @@ main = function () {
   callCounter = successCount()
 
   outputDataFrame = sapply(fileargs, loadCsvTrace, callCounter,
-    columnName='watts')
+    columnName='watts', transformFunction=transformFunction)
 
   setwd(currentDir)
 
@@ -181,4 +184,4 @@ main = function () {
 }
 
 # Use str to minify big outputs
-print(str(main()))
+print(str(main(function(x) Re(fft(x)))))
