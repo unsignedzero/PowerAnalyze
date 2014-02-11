@@ -15,6 +15,7 @@ Created by David Tran (unsignedzero)
 
 # Version/Changelog #
 
+* Adding space around = if not a keyword assign.
 * Bugfix: Precision and recall corrected.
 * Bugfix: Missing comma in printf.
 * Report first draft created.

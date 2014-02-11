@@ -5,8 +5,8 @@
 # This is the main package managing the data flow.
 #
 # Created by David Tran
-# Version 0.4.4.0
-# Last Modified 02-04-2014
+# Version 0.4.4.1
+# Last Modified 02-11-2014
 
 # Add more files with this
 source('library.r')
@@ -124,7 +124,7 @@ loadCsvTrace = function ( fileName, successfulCallCount = function() NULL,
   usefulColumns = c(columnName)
 
   if (usefulColumns %in% colnames(trimmedData)){
-    trimmedData=trimmedData[usefulColumns]
+    trimmedData = trimmedData[usefulColumns]
   }
   else {
     printf("loadCsvTrace: File %s does not contain column %s Exiting.",
@@ -147,8 +147,8 @@ main = function () {
   # Reads in input and setups the call chain for all other functions.
 
   debugprintf("Code read successfully. Executing...")
-  args=(commandArgs(TRUE))
-  currentDir=getwd()
+  args = (commandArgs(TRUE))
+  currentDir = getwd()
 
   if(length(args)==0){
     printf(
