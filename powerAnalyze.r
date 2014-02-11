@@ -183,5 +183,3 @@ main = function ( transformFunction = function(x) x) {
   return (svmMain(tee(to.data.frame(outputDataFrame)[1:2])))
 }
 
-# Use str to minify big outputs
-print(str(main(function(x) Re(fft(x)))))

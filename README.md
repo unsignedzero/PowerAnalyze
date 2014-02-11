@@ -15,6 +15,7 @@ Created by David Tran (unsignedzero)
 
 # Version/Changelog #
 
+* FFT and not-FFT (normal) versions can be executed separately.
 * FFT initial base working.
 * Bugfix: Precision and recall corrected.
 * Bugfix: Missing comma in printf.
