@@ -15,6 +15,7 @@ Created by David Tran (unsignedzero)
 
 # Version/Changelog #
 
+* Tested Re, Im and mag to see which one has the best results.
 * FFT and not-FFT (normal) versions can be executed separately.
 * FFT initial base working.
 * Bugfix: Precision and recall corrected.

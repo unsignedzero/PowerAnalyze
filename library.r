@@ -2,8 +2,8 @@
 # Library support functions for PowerAnalyze repo
 #
 # Created by David Tran
-# Version 0.4.3.0
-# Last Modified 02-04-2014
+# Version 0.4.4.0
+# Last Modified 02-11-2014
 
 # Background Functions
 body = function ( data, n = 20 ){
@@ -58,6 +58,24 @@ halt = function ( ... ){
   return (...)
 }
 
+mag = function(x) {
+
+  # Computes the magnitude
+
+  if (class(x) == "numeric"){
+    return (x)
+  }
+  else if (class(x) == "complex"){
+    return (sqrt(Re(x)^2 + Im(x)^2))
+  }
+  else if (class(x) == "list"){
+    return (sqrt(sum(sapply(x, function(x) x^2))))
+  }
+  else{
+    stop("Unknown datatype passed")
+  }
+}
+
 removeColumn = function( frame , colName ){
 
   # Removes one column from the data.frame
@@ -69,6 +87,19 @@ removeColumn = function( frame , colName ){
 
   return (frame[logicVector])
 }
+
+square = function (x) {
+
+  # Squares all elements passed
+
+  if (class(x) == "numeric"){
+    return (x^2)
+  }
+  else{
+    return (sapply(x, function(x) x^2))
+  }
+}
+
 
 successCount = function ( n = 0, startMsg = "This is the ",
     endMsg = "th successful call" ){
