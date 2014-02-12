@@ -4,8 +4,8 @@
 # This is a sub package interfacing with our SVM module.
 #
 # Created by David Tran
-# Version 0.5.0.0
-# Last Modified 02-04-2014
+# Version 0.5.3.0
+# Last Modified 02-11-2014
 
 #install.packages('e1071',dependencies=TRUE)
 library(e1071)
@@ -46,18 +46,25 @@ svmCountSplit = function ( key, dataSet, percentage=0.2, guessColumn='label' ){
   return (boolRetVector)
 }
 
-svmFormatData = function( dataSet, percentage=0.2, guessColumn ='label' ){
+svmFormatData = function( dataSet, percentage=0.2, guessColumn='label' ){
 
   # Takes the dataSet and the guessColumn and splits it into the training set
   # and the test set. The test set is min 1 unless only one element is
   # passed. The 'guessColumn' is what we focus on.
 
   keyVector = unique(unlist(dataSet[[guessColumn]], use.names = FALSE))
+  keyVector = keyVector[order(keyVector)]
 
   boolVector = unlist(
     sapply(keyVector, svmCountSplit,
       dataSet=dataSet, percentage=percentage, guessColumn=guessColumn)
     )
+
+  # Prints out the table combined with the boolVector
+  if (DEBUG){
+    testData = cbind(dataSet,boolVector)
+    print(testData[order(testData[guessColumn]),])
+  }
 
   trainSet = dataSet[boolVector,]
   testSet = dataSet[!boolVector,]
@@ -78,10 +85,17 @@ svmMain = function( dataSet, guessColumn='label' ){
     stop("svmMain: dataSet must be a data.frame")
   }
 
+  debugprintf("Starting svmMain")
+
+  # Sort data.frame by guessColumn
+  dataSet = dataSet[order(dataSet[guessColumn]),]
+
   output = svmFormatData(dataSet, guessColumn=guessColumn)
 
   testSet = output[[1]]
   trainSet = output[[2]]
+
+  # This is where one can train and test the SVM
 
   svmModel = svmConstructor(dataSet, guessColumn,
     data=trainSet, degree=3, gamma=0.1, cost=100)
@@ -96,32 +110,6 @@ svmMain = function( dataSet, guessColumn='label' ){
   printf("Numbers of test data %d", nrow(testSet))
 
   return (dataSet)
-}
-
-svmStatsCalc = function ( key, confusionMatrix ){
-
-  # Summzarizes one diagonal entry on the confusionMatrix
-  # selected by key
-
-  curEntry = confusionMatrix[key,key]
-
-  # Ensures NaNs for both entries
-  if (curEntry == 0){
-    rowSum = NaN
-    colSum = NaN
-  }
-  else{
-    rowSum = sum(confusionMatrix[key,])
-    colSum = sum(confusionMatrix[,key])
-  }
-
-  printf("Analyzing %s Precision : %0.3f   Recall %0.3f",
-    key,
-    curEntry/rowSum,
-    curEntry/colSum
-  )
-
-  return (confusionMatrix)
 }
 
 svmStats = function( confusionMatrix ){
@@ -149,6 +137,25 @@ svmStats = function( confusionMatrix ){
   }
 
   lapply(rownames(confusionMatrix), svmStatsCalc, confusionMatrix)
+
+  return (confusionMatrix)
+}
+
+svmStatsCalc = function ( key, confusionMatrix ){
+
+  # Summzarizes one diagonal entry on the confusionMatrix
+  # selected by key
+
+  curEntry = confusionMatrix[key,key]
+
+  rowSum = sum(confusionMatrix[key,])
+  colSum = sum(confusionMatrix[,key])
+
+  printf("Analyzing %s Precision : %-6.4f   Recall : %-6.4f",
+    key,
+    curEntry/rowSum,
+    curEntry/colSum
+  )
 
   return (confusionMatrix)
 }

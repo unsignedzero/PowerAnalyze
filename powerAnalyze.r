@@ -5,8 +5,8 @@
 # This is the main package managing the data flow.
 #
 # Created by David Tran
-# Version 0.4.3.0
-# Last Modified 02-04-2014
+# Version 0.5.0.0
+# Last Modified 02-11-2014
 
 # Add more files with this
 source('library.r')
@@ -53,6 +53,9 @@ labelTrace = function(dataLabel) {
   else if (grepl('^.._systemburn_FFT1D', dataLabel)){
     retLabel = 7
   }
+  else if (grepl('^.._sb_fft1d', dataLabel)){
+    retLabel = 7
+  }
   else if (grepl('^.._systemburn_FFT2D', dataLabel)){
     retLabel = 8
   }
@@ -65,12 +68,22 @@ labelTrace = function(dataLabel) {
   else if (grepl('^.._systemburn_TILT', dataLabel)){
     retLabel = 'B'
   }
+  else if (grepl('^.._sb_tilt', dataLabel)){
+    retLabel = 'B'
+  }
+  else if (grepl('^.._calib', dataLabel)){
+    retLabel = 'C'
+  }
   else{
     printf("labelTrace: Bad label for %s", dataLabel)
     retLabel = 0
   }
 
-  return (as.character(retLabel))
+  retLabel = as.character(retLabel)
+
+  debugprintf("File %s, labeled as %s", dataLabel, retLabel)
+
+  return (retLabel)
 }
 
 processTrace = function (traceVector, label=NULL){
@@ -93,7 +106,7 @@ processTrace = function (traceVector, label=NULL){
 }
 
 loadCsvTrace = function ( fileName, successfulCallCount = function() NULL,
-  columnName = 'watts' ) {
+  columnName = 'watts', transformFunction = function (x) x ) {
 
   # Attempts to open and read the csv and says if it works
 
@@ -102,10 +115,8 @@ loadCsvTrace = function ( fileName, successfulCallCount = function() NULL,
     return (NA)
   }
   else {
-    debugprintf("Loading %s", fileName)
+    debugprintf("loadCsvTrace: Loading %s", fileName)
   }
-
-  successfulCallCount()
 
   # Grab what we need from the data
   trimmedData = ((body(read.csv(fileName))))
@@ -113,7 +124,7 @@ loadCsvTrace = function ( fileName, successfulCallCount = function() NULL,
   usefulColumns = c(columnName)
 
   if (usefulColumns %in% colnames(trimmedData)){
-    trimmedData=trimmedData[usefulColumns]
+    trimmedData = trimmedData[usefulColumns]
   }
   else {
     printf("loadCsvTrace: File %s does not contain column %s Exiting.",
@@ -121,20 +132,26 @@ loadCsvTrace = function ( fileName, successfulCallCount = function() NULL,
     stop("Exiting...")
   }
 
+  # Transform Data as needed
+  trimmedData[usefulColumns] = transformFunction(trimmedData[[usefulColumns]])
+
   # Removes header info
   names(trimmedData) = c()
 
+  successfulCallCount()
+  debugprintf("loadCsvTrace: File %s processed", fileName)
+
   # Get statistical work
-  return (lapply(trimmedData,function(x) processTrace(x, fileName)))
+  return (lapply(trimmedData, function(x) processTrace(x, fileName)))
 }
 
-main = function () {
+main = function ( transformFunction = function(x) x) {
 
   # Reads in input and setups the call chain for all other functions.
 
   debugprintf("Code read successfully. Executing...")
-  args=(commandArgs(TRUE))
-  currentDir=getwd()
+  args = (commandArgs(TRUE))
+  currentDir = getwd()
 
   if(length(args)==0){
     printf(
@@ -158,13 +175,11 @@ main = function () {
   # We create an instance of a call counter for debugging purposes
   callCounter = successCount()
 
-  outputDataFrame = sapply(fileargs,
-    function(x) loadCsvTrace(x, callCounter))
+  outputDataFrame = sapply(fileargs, loadCsvTrace, callCounter,
+    columnName='watts', transformFunction=transformFunction)
 
   setwd(currentDir)
 
   return (svmMain(tee(to.data.frame(outputDataFrame)[1:2])))
 }
 
-# Use str to minify big outputs
-print(str(main()))

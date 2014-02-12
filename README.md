@@ -15,6 +15,22 @@ Created by David Tran (unsignedzero)
 
 # Version/Changelog #
 
+## 0.6.0.0 [02-11-2014] #
+* Merging FFT into Development Branch.
+* Tested Re, Im and mag to see which one has the best results.
+* FFT and not-FFT (normal) versions can be executed separately.
+* FFT initial base working.
+* Adding space around = if not a keyword assign.
+* Bugfix: Precision and recall corrected.
+* Bugfix: Missing comma in printf.
+* Report first draft created.
+* Bugfix: Mistaking precision for call and vice-versa.
+* Added more debugging and renamed a variable.
+* Bugfix: Input data frame to SVM needs to be sorted.
+* Bugfix: calib is labeled B and not C.
+* No need for pipes with R.
+* Added more base cases. Accuracy increased.
+
 ## 0.5.0.0 [02-04-2014] #
 * SVM Module now spits out the parameters of interest from the confusion
   matrix.
