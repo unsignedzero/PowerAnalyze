@@ -15,6 +15,11 @@ Created by David Tran (unsignedzero)
 
 # Version/Changelog #
 
+## 0.6.0.0 [02-11-2014] #
+* Merging FFT into Development Branch.
+* Tested Re, Im and mag to see which one has the best results.
+* FFT and not-FFT (normal) versions can be executed separately.
+* FFT initial base working.
 * Adding space around = if not a keyword assign.
 * Bugfix: Precision and recall corrected.
 * Bugfix: Missing comma in printf.
