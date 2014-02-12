@@ -15,6 +15,8 @@ Created by David Tran (unsignedzero)
 
 # Version/Changelog #
 
+* Code base can now take in a processed and labeled csv and run svm on it.
+
 ## 0.6.0.0 [02-11-2014] #
 * Merging FFT into Development Branch.
 * Tested Re, Im and mag to see which one has the best results.

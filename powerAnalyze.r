@@ -5,7 +5,7 @@
 # This is the main package managing the data flow.
 #
 # Created by David Tran
-# Version 0.5.0.0
+# Version 0.5.1.0
 # Last Modified 02-11-2014
 
 # Add more files with this
@@ -167,7 +167,7 @@ main = function ( transformFunction = function(x) x) {
 
   fileargs=Filter(file.exists, args)
 
-  if (length(fileargs)==0){
+  if (length(fileargs) == 0){
     printf("main: No files were successfully located at %s", getwd())
     stop("Halting execution.")
   }
@@ -181,5 +181,29 @@ main = function ( transformFunction = function(x) x) {
   setwd(currentDir)
 
   return (svmMain(tee(to.data.frame(outputDataFrame)[1:2])))
+}
+
+processedMain = function ( selectedCols = c('label', 'mean') ){
+
+  # Main that takes in a processed Data Frame and passes it to SVM
+
+  debugprintf("Code read successfully. Executing...")
+  args = (commandArgs(TRUE))
+  fileName = NULL
+
+  if(length(args) == 0){
+    stop("main: No processed csv passed. Exiting....")
+  }
+
+  fileName = args[1]
+
+  if (!file.exists(fileName)){
+    printf("File passed %s does not exist.", fileName)
+    stop("Halting...")
+  }
+
+  outputDataFrame = read.csv(fileName)
+
+  return (svmMain(outputDataFrame[selectedCols]))
 }
 
