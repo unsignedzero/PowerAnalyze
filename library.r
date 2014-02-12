@@ -2,8 +2,8 @@
 # Library support functions for PowerAnalyze repo
 #
 # Created by David Tran
-# Version 0.4.4.0
-# Last Modified 02-11-2014
+# Version 0.4.5.0
+# Last Modified 02-12-2014
 
 # Background Functions
 body = function ( data, n = 20 ){
@@ -86,6 +86,37 @@ removeColumn = function( frame , colName ){
     function(x) (!grepl(colName, x))))
 
   return (frame[logicVector])
+}
+
+sort.data.frame = function ( input, col = NULL ){
+
+  if (class(input) == "data.frame"){
+    if (is.null(col)){
+      return (input[order(input[1]),])
+    }
+    else if (col %in% colnames(input)){
+      return (input[order(input[col]),])
+    }
+    else{
+      stop("sort: Col %s passed does not exist in data frame %s",
+        str(col), str(input)
+      )
+      return (-1)
+    }
+  }
+  else if(class(input) == "list"){
+    return (input[order(unlist(input))])
+  }
+  else if(class(input) == "numeric" || class(input) == "character" ||
+          class(input) == "integer" )
+        {
+    #return (input[order(input)])
+    return (sort(input))
+  }
+  else{
+    stop("sort: Unknown data type %s passed.", class(input))
+    return (-1)
+  }
 }
 
 square = function (x) {

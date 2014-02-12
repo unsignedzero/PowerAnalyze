@@ -4,8 +4,8 @@
 # This is a sub package interfacing with our SVM module.
 #
 # Created by David Tran
-# Version 0.5.3.0
-# Last Modified 02-11-2014
+# Version 0.5.3.1
+# Last Modified 02-12-2014
 
 #install.packages('e1071',dependencies=TRUE)
 library(e1071)
@@ -88,7 +88,8 @@ svmMain = function( dataSet, guessColumn='label' ){
   debugprintf("Starting svmMain")
 
   # Sort data.frame by guessColumn
-  dataSet = dataSet[order(dataSet[guessColumn]),]
+  #dataSet = dataSet[order(dataSet[guessColumn]),]
+  dataSet = sort.data.frame(dataSet, col=guessColumn)
 
   output = svmFormatData(dataSet, guessColumn=guessColumn)
 

@@ -15,6 +15,7 @@ Created by David Tran (unsignedzero)
 
 # Version/Changelog #
 
+* Sort function created for data frames in library.
 * Code base can now take in a processed and labeled csv and run svm on it.
 
 ## 0.6.0.0 [02-11-2014] #
