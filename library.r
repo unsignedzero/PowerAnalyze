@@ -108,6 +108,14 @@ mag = function(x) {
   }
 }
 
+object.exists = function(obj) {
+
+  # Check if an object(variable) exists
+
+  return (exists(as.character(substitute(obj))))
+
+}
+
 removeColumn = function( frame , colName ){
 
   # Removes one column from the data.frame

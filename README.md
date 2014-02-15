@@ -9,12 +9,16 @@ Created by David Tran (unsignedzero)
 
 # Notes #
 
+* : has greater precedence than - so [20:40-20] = [(20:40)-20]
+
 # Questions #
 
 * sapply seems to name your vectors for you?
 
 # Version/Changelog #
 
+* Unit test checks if dataset exists before starting.
+* Added object.check to check if an object(variable) is assigned.
 * Created unit tests for powerAnalyze.r
 * Created unit testing for library file.
 * Created simple test harness for code base with one test. Run with make

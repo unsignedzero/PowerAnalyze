@@ -2,13 +2,26 @@
 # We test the main code base here
 #
 # Created by David Tran
-# Version 0.3.0.0
+# Version 0.3.1.0
 # Last Modified 02-15-2014
 
 source('powerAnalyze.r')
+
 lib('testthat')
 
-context("Power Analyze Test")
+# Set Context of Test
+context("Power Analyze Code Base")
+
+test_that("Local Datasets exist", {
+
+  expect_that(object.exists(ChickWeight), equals(TRUE))
+  expect_that(object.exists(cars), equals(TRUE))
+  expect_that(object.exists(mtcars), equals(TRUE))
+  expect_that(object.exists(Orange), equals(TRUE))
+  expect_that(object.exists(rock), equals(TRUE))
+  expect_that(object.exists(ToothGrowth), equals(TRUE))
+
+})
 
 test_that("Power Analyze code base works", {
   test_that("library.r is correct", {
@@ -110,6 +123,10 @@ test_that("Power Analyze code base works", {
     test_that("loadCsvTrace works", {
 
       testFileName = 'test/testCsvData/testRock.csv'
+      if (!file.exists(testFileName)){
+        printf("File %s does not exist. EXITING!", testFileName)
+        stop("Halting...")
+      }
 
       expect_that(
         to.data.frame(
