@@ -2,7 +2,7 @@
 # We test the main code base here
 #
 # Created by David Tran
-# Version 0.2.0.0
+# Version 0.3.0.0
 # Last Modified 02-15-2014
 
 source('powerAnalyze.r')
@@ -91,7 +91,34 @@ test_that("Power Analyze code base works", {
 
       expect_that(1, equals(1))
     })
+  })
 
+  test_that("powerAnalyze.r is correct", {
+    test_that("processTrace works", {
+
+      expect_that(processTrace(1:49)[['mean']], equals(25))
+
+      expect_that(processTrace(mtcars[['mpg']])[['sd']],
+        equals(sd(mtcars[['mpg']])))
+      expect_that(processTrace(ChickWeight[['weight']])[['mad']],
+        equals(mad(ChickWeight[['weight']])))
+      expect_that(processTrace(rock[['shape']])[['IQR']],
+        equals(IQR(rock[['shape']])))
+
+    })
+
+    test_that("loadCsvTrace works", {
+
+      testFileName = 'test/testCsvData/testRock.csv'
+
+      expect_that(
+        to.data.frame(
+          loadCsvTrace(testFileName, columnName='peri')
+        )[['mean']],
+        equals( mean(rock[['peri']][21:(nrow(rock)-20)]))
+      )
+
+    })
   })
 })
 

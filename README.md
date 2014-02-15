@@ -15,6 +15,7 @@ Created by David Tran (unsignedzero)
 
 # Version/Changelog #
 
+* Created unit tests for powerAnalyze.r
 * Created unit testing for library file.
 * Created simple test harness for code base with one test. Run with make
   test-repo.
