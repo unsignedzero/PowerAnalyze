@@ -15,6 +15,9 @@ Created by David Tran (unsignedzero)
 
 # Version/Changelog #
 
+* New functions added to install a library if its not installed and then
+  load it.
+* Bugfix: Body removed the first (n-1) elements, not n.
 * Sort function created for data frames in library.
 * Code base can now take in a processed and labeled csv and run svm on it.
 

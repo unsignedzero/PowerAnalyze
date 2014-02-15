@@ -4,11 +4,11 @@
 # This is a sub package interfacing with our SVM module.
 #
 # Created by David Tran
-# Version 0.5.3.1
-# Last Modified 02-12-2014
+# Version 0.5.4.0
+# Last Modified 02-15-2014
 
 #install.packages('e1071',dependencies=TRUE)
-library(e1071)
+lib('e1071')
 
 svmConstructor = function ( inputFrame, keyColumn, ... ){
 
