@@ -99,7 +99,8 @@ mag = function(x) {
   else if (class(x) == "complex"){
     return (sqrt(Re(x)^2 + Im(x)^2))
   }
-  else if (class(x) == "list"){
+  else if ((class(x) == "list") || (class(x) == "numeric") ||
+           (class(x) == "integer")){
     return (sqrt(sum(sapply(x, function(x) x^2))))
   }
   else{

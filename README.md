@@ -15,6 +15,7 @@ Created by David Tran (unsignedzero)
 
 # Version/Changelog #
 
+* Created unit testing for library file.
 * Created simple test harness for code base with one test. Run with make
   test-repo.
 * New functions added to install a library if its not installed and then
