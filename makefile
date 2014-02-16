@@ -1,12 +1,19 @@
-# Make file to run this ship
+# Make file to run this code repo
+# Last Modified 02-15-2014
 
 default: normal
 
 normal:
-	r --no-save --file=powerAnalyzeNormalMain.r '--args data'
+	r --no-save --file=front/powerAnalyzeNormalMain.r '--args data'
 
 fft:
-	r --no-save --file=powerAnalyzeFFTMain.r '--args data'
+	r --no-save --file=front/powerAnalyzeFFTMain.r '--args data'
+
+readin:
+	r --no-save --file=front/powerAnalyzeProocessedMain.r '--args outputDataFrame'
+
+test-repo:
+	r --no-save --file=test/testPowerAnalyze.r
 
 clean:
 	rm -rvf *.x *.a *.o *.out *.gcda *.gcov *.gcno

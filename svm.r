@@ -4,11 +4,11 @@
 # This is a sub package interfacing with our SVM module.
 #
 # Created by David Tran
-# Version 0.5.3.0
-# Last Modified 02-11-2014
+# Version 0.5.5.0
+# Last Modified 02-15-2014
 
 #install.packages('e1071',dependencies=TRUE)
-library(e1071)
+lib('e1071')
 
 svmConstructor = function ( inputFrame, keyColumn, ... ){
 
@@ -52,6 +52,9 @@ svmFormatData = function( dataSet, percentage=0.2, guessColumn='label' ){
   # and the test set. The test set is min 1 unless only one element is
   # passed. The 'guessColumn' is what we focus on.
 
+  # Sort data.frame by guessColumn
+  dataSet = sort.data.frame(dataSet, col=guessColumn)
+
   keyVector = unique(unlist(dataSet[[guessColumn]], use.names = FALSE))
   keyVector = keyVector[order(keyVector)]
 
@@ -69,7 +72,8 @@ svmFormatData = function( dataSet, percentage=0.2, guessColumn='label' ){
   trainSet = dataSet[boolVector,]
   testSet = dataSet[!boolVector,]
 
-  return (list(testSet, trainSet))
+  # Creating a list whose names are the element containers
+  return (list(testSet=testSet, trainSet=trainSet))
 }
 
 svmMain = function( dataSet, guessColumn='label' ){
@@ -87,18 +91,17 @@ svmMain = function( dataSet, guessColumn='label' ){
 
   debugprintf("Starting svmMain")
 
-  # Sort data.frame by guessColumn
-  dataSet = dataSet[order(dataSet[guessColumn]),]
-
   output = svmFormatData(dataSet, guessColumn=guessColumn)
 
-  testSet = output[[1]]
-  trainSet = output[[2]]
+  testSet = output[['testSet']]
+  trainSet = output[['trainSet']]
 
   # This is where one can train and test the SVM
+  #svmTune(trainSet, guessColumn)
 
   svmModel = svmConstructor(dataSet, guessColumn,
-    data=trainSet, degree=3, gamma=0.1, cost=100)
+    data=trainSet, degree=3, gamma=1000, cost=1000)
+
   prediction = predict(svmModel, removeColumn(testSet, guessColumn))
 
   confusionMatrix = table(pred=prediction, true=testSet[,guessColumn])
@@ -164,8 +167,8 @@ svmTune = function ( trainSet, testColumn='label' ){
 
   # Tunes an SVM and prints results and guess for best parameters
 
-  tuned <- tune.svm(removeColumn(trainSet,testColumn), dataSet[[testColumn]],
-    data=trainSet, gamma = 10^(-6:-1), cost = 10^(-1:2))
+  tuned = tune.svm(removeColumn(trainSet,testColumn), trainSet[[testColumn]],
+    data=trainSet, gamma = 10^(-6:5), cost = 10^(-2:5))
 
   print(summary(tuned))
 

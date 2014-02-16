@@ -7,13 +7,38 @@ Created by David Tran (unsignedzero)
 
 # TO DO #
 
+* Finish test suite for svm.r
+
 # Notes #
+
+* : has greater precedence than - so [20:40-20] = [(20:40)-20]
 
 # Questions #
 
 * sapply seems to name your vectors for you?
 
 # Version/Changelog #
+
+## 0.7.0.0 [02-16-2014] #
+* Tuned SVM for better results.
+* The three 'main' r files that run the library are moved into front/
+* Moved sort call from svmMain to svmFormatData to make it easier for
+  external calls.
+* libCall suppresses warnings to make the check work.
+* Unit tested completed for svm and thus the core parts of this code base.
+* Updated to do for test branch. Merging with development.
+* Elements from the list output of svmFormatData can be accessed by name.
+* Unit test checks if dataset exists before starting.
+* Added object.check to check if an object(variable) is assigned.
+* Created unit tests for powerAnalyze.r
+* Created unit testing for library file.
+* Created simple test harness for code base with one test. Run with make
+  test-repo.
+* New functions added to install a library if its not installed and then
+  load it.
+* Bugfix: Body removed the first (n-1) elements, not n.
+* Sort function created for data frames in library.
+* Code base can now take in a processed and labeled csv and run svm on it.
 
 ## 0.6.0.0 [02-11-2014] #
 * Merging FFT into Development Branch.
