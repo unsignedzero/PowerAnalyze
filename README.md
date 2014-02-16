@@ -19,6 +19,8 @@ Created by David Tran (unsignedzero)
 
 # Version/Changelog #
 
+## 0.7.0.0 [02-16-2014] #
+* Tuned SVM for better results.
 * The three 'main' r files that run the library are moved into front/
 * Moved sort call from svmMain to svmFormatData to make it easier for
   external calls.

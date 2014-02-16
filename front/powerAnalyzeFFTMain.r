@@ -3,5 +3,5 @@
 
 source('powerAnalyze.r')
 
-print(str(main(function(x) Re(fft(x)))))
+print(str(main(function(x) mag(fft(x)))))
 

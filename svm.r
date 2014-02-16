@@ -4,7 +4,7 @@
 # This is a sub package interfacing with our SVM module.
 #
 # Created by David Tran
-# Version 0.5.4.0
+# Version 0.5.5.0
 # Last Modified 02-15-2014
 
 #install.packages('e1071',dependencies=TRUE)
@@ -97,9 +97,11 @@ svmMain = function( dataSet, guessColumn='label' ){
   trainSet = output[['trainSet']]
 
   # This is where one can train and test the SVM
+  #svmTune(trainSet, guessColumn)
 
   svmModel = svmConstructor(dataSet, guessColumn,
-    data=trainSet, degree=3, gamma=0.1, cost=100)
+    data=trainSet, degree=3, gamma=1000, cost=1000)
+
   prediction = predict(svmModel, removeColumn(testSet, guessColumn))
 
   confusionMatrix = table(pred=prediction, true=testSet[,guessColumn])
@@ -165,8 +167,8 @@ svmTune = function ( trainSet, testColumn='label' ){
 
   # Tunes an SVM and prints results and guess for best parameters
 
-  tuned <- tune.svm(removeColumn(trainSet,testColumn), dataSet[[testColumn]],
-    data=trainSet, gamma = 10^(-6:-1), cost = 10^(-1:2))
+  tuned = tune.svm(removeColumn(trainSet,testColumn), trainSet[[testColumn]],
+    data=trainSet, gamma = 10^(-6:5), cost = 10^(-2:5))
 
   print(summary(tuned))
 
