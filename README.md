@@ -7,6 +7,8 @@ Created by David Tran (unsignedzero)
 
 # TO DO #
 
+* Finish test suite for svm.r
+
 # Notes #
 
 * : has greater precedence than - so [20:40-20] = [(20:40)-20]
@@ -17,6 +19,8 @@ Created by David Tran (unsignedzero)
 
 # Version/Changelog #
 
+* Updated to do for test branch. Merging with development.
+* Elements from the list output of svmFormatData can be accessed by name.
 * Unit test checks if dataset exists before starting.
 * Added object.check to check if an object(variable) is assigned.
 * Created unit tests for powerAnalyze.r
