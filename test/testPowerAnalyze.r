@@ -2,8 +2,8 @@
 # We test the main code base here
 #
 # Created by David Tran
-# Version 0.3.1.0
-# Last Modified 02-15-2014
+# Version 0.4.0.0
+# Last Modified 02-16-2014
 
 source('powerAnalyze.r')
 
@@ -14,6 +14,7 @@ context("Power Analyze Code Base")
 
 test_that("Local Datasets exist", {
 
+  expect_that(object.exists(beaver1), equals(TRUE))
   expect_that(object.exists(ChickWeight), equals(TRUE))
   expect_that(object.exists(cars), equals(TRUE))
   expect_that(object.exists(mtcars), equals(TRUE))
@@ -137,6 +138,61 @@ test_that("Power Analyze code base works", {
 
     })
   })
+
+  test_that("svm.r is correct", {
+    test_that("svmCountSplit works", {
+
+      testOutput=to.data.frame(list(
+        row1=list(a=1, b=2),
+        row2=list(a=1, b=4),
+        row3=list(a=1, b=6),
+        row4=list(a=1, b=8)
+      ))
+
+      expect_that(svmCountSplit(1, testOutput, guessColumn='a'),
+        equals(c(FALSE, TRUE, TRUE, TRUE))
+      )
+
+      expect_that(svmCountSplit(1, testOutput, percentage=0.5, guessColumn='a'),
+        equals(c(FALSE, FALSE, TRUE, TRUE))
+      )
+
+      ret = svmCountSplit(0, sort.data.frame(mtcars), guessColumn='vs')
+
+      expect_that(length(ret), equals(18))
+      expect_that(ret[1:3],
+        equals(c(FALSE, FALSE, FALSE)))
+      expect_that(ret[4:18], equals(as.logical(4:18)))
+
+      ret = svmCountSplit(4, sort.data.frame(mtcars), guessColumn='cyl')
+
+      expect_that(length(ret), equals(11))
+      expect_that(ret[1:2], equals(c(FALSE, FALSE)))
+      expect_that(ret[3:11], equals(as.logical(3:11)))
+    })
+
+    test_that("svmFormatData works", {
+
+      ret = svmFormatData(sort.data.frame(beaver1,'activ'), guessColumn='activ')
+      trainSet = ret[['trainSet']]
+      testSet = ret[['testSet']]
+
+      count = function(dataSet, key, col='activ'){
+        return (nrow(dataSet[dataSet[[col]]==key,]))
+      }
+
+      expect_that(nrow(trainSet), equals(92))
+      expect_that(nrow(testSet), equals(22))
+
+      expect_that(count(trainSet,0), equals(87))
+      expect_that(count(testSet,0), equals(21))
+
+      expect_that(count(trainSet,1), equals(5))
+      expect_that(count(testSet,1), equals(1))
+
+    })
+  })
 })
 
+# Print overview of test
 str(test_file('.'))

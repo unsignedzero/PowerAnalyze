@@ -19,6 +19,8 @@ Created by David Tran (unsignedzero)
 
 # Version/Changelog #
 
+* libCall suppresses warnings to make the check work.
+* Unit tested completed for svm and thus the core parts of this code base.
 * Updated to do for test branch. Merging with development.
 * Elements from the list output of svmFormatData can be accessed by name.
 * Unit test checks if dataset exists before starting.
