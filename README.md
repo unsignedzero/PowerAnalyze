@@ -7,7 +7,11 @@ Created by David Tran (unsignedzero)
 
 # TO DO #
 
+* Finish test suite for svm.r
+
 # Notes #
+
+* : has greater precedence than - so [20:40-20] = [(20:40)-20]
 
 # Questions #
 
@@ -15,6 +19,16 @@ Created by David Tran (unsignedzero)
 
 # Version/Changelog #
 
+* libCall suppresses warnings to make the check work.
+* Unit tested completed for svm and thus the core parts of this code base.
+* Updated to do for test branch. Merging with development.
+* Elements from the list output of svmFormatData can be accessed by name.
+* Unit test checks if dataset exists before starting.
+* Added object.check to check if an object(variable) is assigned.
+* Created unit tests for powerAnalyze.r
+* Created unit testing for library file.
+* Created simple test harness for code base with one test. Run with make
+  test-repo.
 * New functions added to install a library if its not installed and then
   load it.
 * Bugfix: Body removed the first (n-1) elements, not n.

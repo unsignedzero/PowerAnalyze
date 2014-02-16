@@ -2,8 +2,8 @@
 # Library support functions for PowerAnalyze repo
 #
 # Created by David Tran
-# Version 0.5.0.0
-# Last Modified 02-15-2014
+# Version 0.5.1.0
+# Last Modified 02-16-2014
 
 # Background Functions
 body = function ( data, n = 20 ){
@@ -69,9 +69,12 @@ libCall = function (pack, ...){
 
   # Load a lib from .libPaths()[1]
 
-  return (library(pack, lib.loc='/usr/lib/R/site-library',
-  logical.return = TRUE, character.only = TRUE,
-  ...))
+  return (suppressWarnings(
+    library(pack, lib.loc='/usr/lib/R/site-library',
+      logical.return = TRUE, character.only = TRUE,
+    ...)
+    )
+  )
 }
 
 lib = function (pack, ...){
@@ -99,12 +102,21 @@ mag = function(x) {
   else if (class(x) == "complex"){
     return (sqrt(Re(x)^2 + Im(x)^2))
   }
-  else if (class(x) == "list"){
+  else if ((class(x) == "list") || (class(x) == "numeric") ||
+           (class(x) == "integer")){
     return (sqrt(sum(sapply(x, function(x) x^2))))
   }
   else{
     stop("Unknown datatype passed")
   }
+}
+
+object.exists = function(obj) {
+
+  # Check if an object(variable) exists
+
+  return (exists(as.character(substitute(obj))))
+
 }
 
 removeColumn = function( frame , colName ){

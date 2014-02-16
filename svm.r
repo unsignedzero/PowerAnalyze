@@ -69,7 +69,8 @@ svmFormatData = function( dataSet, percentage=0.2, guessColumn='label' ){
   trainSet = dataSet[boolVector,]
   testSet = dataSet[!boolVector,]
 
-  return (list(testSet, trainSet))
+  # Creating a list whose names are the element containers
+  return (list(testSet=testSet, trainSet=trainSet))
 }
 
 svmMain = function( dataSet, guessColumn='label' ){
@@ -88,13 +89,12 @@ svmMain = function( dataSet, guessColumn='label' ){
   debugprintf("Starting svmMain")
 
   # Sort data.frame by guessColumn
-  #dataSet = dataSet[order(dataSet[guessColumn]),]
   dataSet = sort.data.frame(dataSet, col=guessColumn)
 
   output = svmFormatData(dataSet, guessColumn=guessColumn)
 
-  testSet = output[[1]]
-  trainSet = output[[2]]
+  testSet = output[['testSet']]
+  trainSet = output[['trainSet']]
 
   # This is where one can train and test the SVM
 
