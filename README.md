@@ -19,6 +19,7 @@ Created by David Tran (unsignedzero)
 
 # Version/Changelog #
 
+* The three 'main' r files that run the library are moved into front/
 * Moved sort call from svmMain to svmFormatData to make it easier for
   external calls.
 * libCall suppresses warnings to make the check work.

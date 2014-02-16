@@ -4,13 +4,13 @@
 default: normal
 
 normal:
-	r --no-save --file=powerAnalyzeNormalMain.r '--args data'
+	r --no-save --file=front/powerAnalyzeNormalMain.r '--args data'
 
 fft:
-	r --no-save --file=powerAnalyzeFFTMain.r '--args data'
+	r --no-save --file=front/powerAnalyzeFFTMain.r '--args data'
 
 readin:
-	r --no-save --file=powerAnalyzeProocessedMain.r '--args outputDataFrame'
+	r --no-save --file=front/powerAnalyzeProocessedMain.r '--args outputDataFrame'
 
 test-repo:
 	r --no-save --file=test/testPowerAnalyze.r
