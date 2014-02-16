@@ -19,6 +19,8 @@ Created by David Tran (unsignedzero)
 
 # Version/Changelog #
 
+* Moved sort call from svmMain to svmFormatData to make it easier for
+  external calls.
 * libCall suppresses warnings to make the check work.
 * Unit tested completed for svm and thus the core parts of this code base.
 * Updated to do for test branch. Merging with development.

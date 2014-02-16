@@ -52,6 +52,9 @@ svmFormatData = function( dataSet, percentage=0.2, guessColumn='label' ){
   # and the test set. The test set is min 1 unless only one element is
   # passed. The 'guessColumn' is what we focus on.
 
+  # Sort data.frame by guessColumn
+  dataSet = sort.data.frame(dataSet, col=guessColumn)
+
   keyVector = unique(unlist(dataSet[[guessColumn]], use.names = FALSE))
   keyVector = keyVector[order(keyVector)]
 
@@ -87,9 +90,6 @@ svmMain = function( dataSet, guessColumn='label' ){
   }
 
   debugprintf("Starting svmMain")
-
-  # Sort data.frame by guessColumn
-  dataSet = sort.data.frame(dataSet, col=guessColumn)
 
   output = svmFormatData(dataSet, guessColumn=guessColumn)
 
