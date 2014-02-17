@@ -8,8 +8,6 @@ Created by David Tran (unsignedzero)
 
 # TO DO #
 
-* Finish test suite for svm.r
-
 # Notes #
 
 * : has greater precedence than - so [20:40-20] = [(20:40)-20]
@@ -20,6 +18,8 @@ Created by David Tran (unsignedzero)
 
 # Version/Changelog #
 
+* Updated REPORT.md to reflect new changes made since first write.
+* Updated library.r comments.
 * Heatmap output generated from svm file.
 
 ## 0.7.0.0 [02-16-2014] #

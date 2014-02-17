@@ -2,7 +2,7 @@
 # Library support functions for PowerAnalyze repo
 #
 # Created by David Tran
-# Version 0.5.1.0
+# Version 0.5.2.0
 # Last Modified 02-16-2014
 
 # Background Functions
@@ -59,13 +59,13 @@ install = function (pack, ...) {
   # Default install is .libPaths()[1]
 
   install.packages(pack, lib='/usr/lib/R/site-library',
-  dependencies=TRUE, repos='http://cran.us.r-project.org',
-  ...
+    dependencies=TRUE, repos='http://cran.us.r-project.org',
+    ...
   )
 }
-inst = install
+inst = install # Function alias
 
-libCall = function (pack, ...){
+libCheck = function (pack, ...){
 
   # Load a lib from .libPaths()[1]
 
@@ -81,14 +81,14 @@ lib = function (pack, ...){
 
   # Wrapper call to load a library
 
-  if (libCall(pack, ...)){
+  if (libCheck(pack, ...)){
     # Loaded successfully
     return (TRUE)
   }
   else{
     # Try to install and load
     install(pack)
-    return (libCall(pack, ...))
+    return (libCheck(pack, ...))
   }
 }
 
@@ -132,6 +132,8 @@ removeColumn = function( frame , colName ){
 }
 
 sort.data.frame = function ( input, col = NULL ){
+
+  # Sorts a data frame by its first column or another column if given
 
   if (class(input) == "data.frame"){
     if (is.null(col)){

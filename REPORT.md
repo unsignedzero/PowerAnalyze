@@ -6,6 +6,9 @@ run that thought one of support vector machines (SVM) built into R, in this
 repo we opted for e1071, and return back a confusion matrix, with recall and
 precision values for the associated data.
 
+Although the focus of this report is on leveraging this code base for power
+signature analysis, this code can, with little modification, work on different data sets.
+
 R provides quite a few libraries for SVM. We opted for e1071 since it seemed to
 be the first SVM created for R and also the most popular.
 
@@ -31,9 +34,12 @@ suggested that they be exactly one character long for ease of reading the
 matrix. Afterwards, a summary of the data frame is printed and the program
 ends.
 
+The data itself may be transformed, via FFT or other algorithms, before condensing
+it using a mean or some other statstical function.
+
 ### Code Analysis #
 
-This code bases uses apply heavily as opposed to for loops and embraces
+This code base uses apply heavily as opposed to for loops and embraces
 the functional paradigm of programming.
 
 Ignoring the data folder, documents and the makefile, we have three files of
@@ -44,12 +50,17 @@ interest in R.
     * This contains common support functions for powerAnalyze.r and svm.r.
       This file can be used elsewhere as needed.
   * powerAnalyze.r
-    * This function loads all other files and executes it. Contained are
+    * This function loads all other files Contained are
       functions that grab the csv and process it. Once finished the data frame
       is passed into the svm module
   * svm.r
     * Performs the SVM work. Takes a data frame, creates the training and test
       set, runs it thought svm and prints the results.
+
+Some of the other R files are in front directory. This is the small snippits of code
+that load the above, three files, and executes them. This allows users to
+use sections above independantly without it executing. These files are called
+by the makefile which, in turn, start the invokation chain.
 
 The main use of the makefile is to make it easier for users to use the code
 base but that is NOT required. Additional, the makefile can be edited to
@@ -87,14 +98,41 @@ data to the next function. This is much like BASH's tee except no actual
 piping is performed. DEBUG may also be set to true, to display how many files
 powerAnalyze.r was able to process and other information.
 
-Below are a list of additional support functions not stated above and used:
-  * body
-    * As supposed to head and tail keeps all but the first nth, default 20,
-      and last nth, also 20, elements in a data.frame.
-  * halt
-    * Not used but stops the program and prints everything passed into it.
-  * removeColumn
-    * Removes exactly one column in a data frame
-  * to.data.frame
-    * Converts a list of lists to a data frame.
+As stated before, one may transform the data before condensing it down. This is
+easily done by passing a function into make. Note that there will be errors when
+writing to the data.frame if it contained real numbers and was written with complex
+numbers. (This might be avoided by forcing all numbers to be complex but that is
+beyond the scope of this report, currently.)
+
+### Additional library functions #
+
+Below are a list of additional support functions not stated above and mostly used:
+
+* body
+  * As supposed to head and tail keeps all but the first nth, default 20,
+    and last nth, also 20, elements in a data.frame.
+* halt
+  * Not used but stops the program and prints everything passed into it.
+* install
+  * Installs a given package at /usr/lib/R/site-library from the US Repo and its
+    dependencies.
+* libCheck
+  * Checks if a library/package is installed and returns a boolean value with its
+    result.
+* lib
+  * Together with libCheck and install, checks if the dependencies for the code
+    is installed and does so if it isn't.
+* mag
+  * Computes the magnitude of a given input.
+* object.exists
+  * Checks if an object (variable) exists.
+* removeColumn
+  * Removes exactly one column in a data frame.
+* sort.data.frame
+  * Sorts a given data.frame by a column, or the first column if none given.
+* SuccessCount
+  * A simplistic one method object that increments and prints out it values,
+    if debugged is on, and returns it. In general it is an incrementing counter.
+* to.data.frame
+  * Converts a list of lists to a data frame.
 
