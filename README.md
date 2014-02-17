@@ -1,7 +1,8 @@
 # Power Analyze #
 
-We analyze the power of the needy and provide feedback to those that
-need it.
+We analyze the power traces (in CSV) of systems and run it through
+an SVM, e1071. Our goal is to get the SVM to correctly identify as many
+traces as possible given the mean of the trace.
 
 Created by David Tran (unsignedzero)
 
@@ -18,6 +19,8 @@ Created by David Tran (unsignedzero)
 * sapply seems to name your vectors for you?
 
 # Version/Changelog #
+
+* Heatmap output generated from svm file.
 
 ## 0.7.0.0 [02-16-2014] #
 * Tuned SVM for better results.

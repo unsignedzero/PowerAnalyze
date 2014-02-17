@@ -4,11 +4,11 @@
 # This is a sub package interfacing with our SVM module.
 #
 # Created by David Tran
-# Version 0.5.5.0
-# Last Modified 02-15-2014
+# Version 0.6.0.0
+# Last Modified 02-16-2014
 
-#install.packages('e1071',dependencies=TRUE)
 lib('e1071')
+lib('gplots')
 
 svmConstructor = function ( inputFrame, keyColumn, ... ){
 
@@ -105,6 +105,22 @@ svmMain = function( dataSet, guessColumn='label' ){
   prediction = predict(svmModel, removeColumn(testSet, guessColumn))
 
   confusionMatrix = table(pred=prediction, true=testSet[,guessColumn])
+
+  heatmap.2(confusionMatrix,
+    margins=c(5,10), Colv=NULL, Rowv=NULL, srtCol=0,
+    xlab='True', ylab='Prediction',
+    main='Heat map of confusion matrix',
+
+    dendrogram = "none", trace="none",
+
+    col=colorRampPalette(c('white','black')),
+    keysize=1.2,
+
+    labRow=lapply(rownames(confusionMatrix), function(x){
+      return (paste(x, ' - pred count', (sum(confusionMatrix[x,]))))
+    }),
+  )
+
   print(summary(svmModel))
   print(confusionMatrix)
   svmStats(confusionMatrix)
