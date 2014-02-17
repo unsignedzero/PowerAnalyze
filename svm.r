@@ -4,12 +4,17 @@
 # This is a sub package interfacing with our SVM module.
 #
 # Created by David Tran
-# Version 0.6.0.0
-# Last Modified 02-16-2014
+# Version 0.6.0.1
+# Last Modified 02-17-2014
 
 lib('e1071')
 lib('gplots')
 
+#' A wrapper around the svm constructor for the purposes for this repo.
+#'
+#' @param inputFrame the input data frame we will use
+#' @param keyColumn the column we will focus on in the formula
+#' @return the constructed svm with the formula correctly
 svmConstructor = function ( inputFrame, keyColumn, ... ){
 
   # Simplifies the construction call for svm by cutting the data frame in the right place
@@ -23,6 +28,14 @@ svmConstructor = function ( inputFrame, keyColumn, ... ){
   )
 }
 
+#' Creates a logical vector that splits a dataset into training and test.
+#' The first elements marked FALSE will be used for testing and TRUE is marked for
+#' training
+#'
+#' @param key is the unique key in the column that is our data set
+#' @param dataSet is the full data.frame that
+#' @param
+#' @param
 svmCountSplit = function ( key, dataSet, percentage=0.2, guessColumn='label' ){
 
   # This creates the logical vector that tells the calling function
