@@ -18,6 +18,7 @@ Created by David Tran (unsignedzero)
 
 # Version/Changelog #
 
+* roxygen branch end.
 * Slowly converting repo files to be like an R package.
 * Bugfix: lib calls assume the library is at a fixed location which isn't true.
 * Roxygen2 setup working.
