@@ -18,7 +18,3 @@ Description: This code base reads in data from power traces
     of the SVM.
 License: MIT
 URL: http://www.r-project.org,
-Collate:
-    'library.r'
-    'powerAnalyze.r'
-    'svm.r'

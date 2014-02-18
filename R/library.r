@@ -97,7 +97,7 @@ halt = function ( ... ){
 #' @seealso \code{\link{lib}}
 install = function (pack, ...) {
 
-  install.packages(pack, lib='/usr/lib/R/site-library',
+  install.packages(pack,
     dependencies=TRUE, repos='http://cran.us.r-project.org',
     ...
   )
@@ -115,7 +115,7 @@ libCheck = function (pack, ...){
   # Load a lib from .libPaths()[1]
 
   return (suppressWarnings(
-    library(pack, lib.loc='/usr/lib/R/site-library',
+    library(pack,
       logical.return = TRUE, character.only = TRUE,
     ...)
     )
