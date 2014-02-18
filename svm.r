@@ -4,12 +4,17 @@
 # This is a sub package interfacing with our SVM module.
 #
 # Created by David Tran
-# Version 0.6.0.0
-# Last Modified 02-16-2014
+# Version 0.7.0.0
+# Last Modified 02-17-2014
 
 lib('e1071')
 lib('gplots')
 
+#' A wrapper around the svm constructor for the purposes for this repo.
+#'
+#' @param inputFrame the input data frame we will use
+#' @param keyColumn the column we will focus on in the formula
+#' @return the constructed svm with the formula correctly
 svmConstructor = function ( inputFrame, keyColumn, ... ){
 
   # Simplifies the construction call for svm by cutting the data frame in the right place
@@ -23,11 +28,20 @@ svmConstructor = function ( inputFrame, keyColumn, ... ){
   )
 }
 
+#' Creates a logical vector that splits a dataset into training and test.
+#' The first elements marked FALSE will be used for testing and TRUE is marked for
+#' training
+#'
+#' This function is called on by svmFormatData to split the dataSet.
+#'
+#' @param key is the unique key in the column that is our data set
+#' @param percentage is the amount of elements that will be thrown into testing
+#'   min 1, if the data set is larger than 1. Should be a numeric between 0
+#'   and 1.
+#' @param guessColumn the column name the key will filter on
+#' @return a logical vector that can be used to cut the dataset in two
+#' @seealso \code{\link{svmFormatData}}
 svmCountSplit = function ( key, dataSet, percentage=0.2, guessColumn='label' ){
-
-  # This creates the logical vector that tells the calling function
-  # how to split the datasets. key is what we are looking for in the
-  # guessColumn.
 
   count = nrow(dataSet[dataSet[[guessColumn]]==key,])
   splitValue = floor(percentage*count)
@@ -46,13 +60,23 @@ svmCountSplit = function ( key, dataSet, percentage=0.2, guessColumn='label' ){
   return (boolRetVector)
 }
 
+#' Takes the dataSet and the guessColumn and splits it into the training set
+#' and the test set. The test set is min 1 unless only one element is
+#' passed. The 'guessColumn' is what we focus on.
+#;
+#' This function relies on svmCountSplit to create a logic vector to split the
+#' set
+#'
+#' @param dataSet the input data.frame that will be split in
+#' @param percentage is the amount of elements that will be thrown into testing
+#'   min 1, if the data set is larger than 1. Should be a numeric between 0
+#'   and 1.
+#' @param guessColumn the column name the key will filter on
+#' @return a two element list containing the testSet and trainSet data
+#'   partitioned correctly.
+#' @seealso \code{\link{svmCountSplit}}
 svmFormatData = function( dataSet, percentage=0.2, guessColumn='label' ){
 
-  # Takes the dataSet and the guessColumn and splits it into the training set
-  # and the test set. The test set is min 1 unless only one element is
-  # passed. The 'guessColumn' is what we focus on.
-
-  # Sort data.frame by guessColumn
   dataSet = sort.data.frame(dataSet, col=guessColumn)
 
   keyVector = unique(unlist(dataSet[[guessColumn]], use.names = FALSE))
@@ -63,7 +87,6 @@ svmFormatData = function( dataSet, percentage=0.2, guessColumn='label' ){
       dataSet=dataSet, percentage=percentage, guessColumn=guessColumn)
     )
 
-  # Prints out the table combined with the boolVector
   if (DEBUG){
     testData = cbind(dataSet,boolVector)
     print(testData[order(testData[guessColumn]),])
@@ -76,10 +99,17 @@ svmFormatData = function( dataSet, percentage=0.2, guessColumn='label' ){
   return (list(testSet=testSet, trainSet=trainSet))
 }
 
+#' Controls the other functions and splits the dataSet into two
+#' pieces, trains the SVM and runs the test set on it. Once done,
+#' it will print out the confusion matrix.
+#'
+#' This is where we can train the svn.
+#' @seealso \code{\link{svmTune}}
+#'
+#' @param dataSet the input data.frame that the svm will act on
+#' @param guessColumn the column name that the svm will train on
+#' @return the dataSet passed in
 svmMain = function( dataSet, guessColumn='label' ){
-
-  # Given the dataSet and the column of interest, splits the data
-  # into the right pieces and runs the svmModel
 
   if (is.null(dataSet)){
     stop("svmMain: Getting null data on svmMain")
@@ -131,15 +161,24 @@ svmMain = function( dataSet, guessColumn='label' ){
   return (dataSet)
 }
 
+#' Takes the confusion matrix and prints the precision and recall of each
+#' entry.
+#'
+#' This function relies on svmStatsCalc to print the values.
+#'
+#' Given the way the table is printer, pred is on the y-axis and true is on
+#' the x-axis, these facts are true.
+#'
+#'  Precision, tp/(tp+fp) which is
+#'    (True/ROW)
+#'  Recall, tp/(tp+fn) which is
+#'    (True/COL)
+#'
+#' @param confusionMatrix the confusion matrix that we will print the values
+#'   on
+#' @return the confusion matrix
+#' @seealso \code{\link{svmStatsCalc}}
 svmStats = function( confusionMatrix ){
-
-  # Summarized the confusion Matrix with these parameters
-  # Precision, tp/(tp+fp)
-  #   (True/ROW)
-  # Recall, tp/(tp+fn)
-  #   (True/COL)
-
-  error = FALSE
 
   if (nrow(confusionMatrix) != ncol(confusionMatrix)){
     printf("svmStats: Confusion matrix not square. Dim(%d,%d)",
@@ -150,20 +189,20 @@ svmStats = function( confusionMatrix ){
     printf("svmStats: Data Frame size must be 1 or larger")
   }
 
-  if (error){
-    printf("svmStats: Ignoring arg and passing to next function")
-    return (confusionMatrix)
-  }
-
   lapply(rownames(confusionMatrix), svmStatsCalc, confusionMatrix)
 
   return (confusionMatrix)
 }
 
+#' Takes the key and confusion matrix and prints the value on one
+#' specific entry on the diagonal and its associated row and column
+#'
+#' @param key, the diagonal entry this will work on
+#' @param confusionMatrix the confusion matrix that we will print the values
+#'   on
+#' @return the confusion matrix
+#' @seealso \code{\link{svmStats}}
 svmStatsCalc = function ( key, confusionMatrix ){
-
-  # Summzarizes one diagonal entry on the confusionMatrix
-  # selected by key
 
   curEntry = confusionMatrix[key,key]
 
@@ -179,12 +218,19 @@ svmStatsCalc = function ( key, confusionMatrix ){
   return (confusionMatrix)
 }
 
-svmTune = function ( trainSet, testColumn='label' ){
-
-  # Tunes an SVM and prints results and guess for best parameters
+#' Tunes an svm machine to get optimal results and prints the value.
+#'
+#' @param trainSet the data.frame that the svm will train on
+#' @param testColumn the column that the svm will train on
+#' @param gamma a numeric vector that will be the gamma range we will train on
+#' @param cost a numeric vector that will be the cost range we will train on
+#' @param ... any other paramters for the tune function
+#' @return the training set
+svmTune = function ( trainSet, testColumn='label',
+    gamma=10^(-6:5), cost=10^(-2:5), ... ){
 
   tuned = tune.svm(removeColumn(trainSet,testColumn), trainSet[[testColumn]],
-    data=trainSet, gamma = 10^(-6:5), cost = 10^(-2:5))
+    data=trainSet, gamma = gamma, cost = cost, ...)
 
   print(summary(tuned))
 

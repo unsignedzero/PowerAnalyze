@@ -2,8 +2,8 @@
 # We test the main code base here
 #
 # Created by David Tran
-# Version 0.4.0.0
-# Last Modified 02-16-2014
+# Version 0.4.1.0
+# Last Modified 02-17-2014
 
 source('powerAnalyze.r')
 
@@ -71,7 +71,7 @@ test_that("Power Analyze code base works", {
 
       expect_that(square(4), equals(16))
       expect_that(square(c(3,4,5)), equals(c(9,16,25)))
-      expect_that(square(list(3,4,5)), equals(c(9,16,25)))
+      expect_that(square(list(3,4,5)), equals(list(9,16,25)))
     })
 
     test_that("successCount function works", {

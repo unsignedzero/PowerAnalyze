@@ -12,7 +12,7 @@
 source('library.r')
 source('svm.r')
 
-# Debugger state
+#' Debugger flag. Set TRUE to enable debugging or false otherwise.
 DEBUG = FALSE
 
 # Aliases for easier printing
@@ -20,12 +20,12 @@ printf = function (...) print(sprintf(...))
 debugprint = function (...) if (DEBUG) print(...)
 debugprintf = function (...) if (DEBUG) printf(...)
 
-# Main trace functions
-
+#' Given a string label, this function labels the trace. This is used to group
+#' different files together as one group to be able to run svm correctly.
+#'
+#' @param dataLabel the string that will
+#' @return returns the label or 0 is it can't label.
 labelTrace = function(dataLabel) {
-
-  # Regexes the string and maps it to a number so that the confusion
-  # matrix is easier to read
 
   retLabel = NA
 
@@ -86,10 +86,15 @@ labelTrace = function(dataLabel) {
   return (retLabel)
 }
 
+#' Given the traceVector and a label, labels the associated trace and
+#' computes the statistics functions in funs
+#'
+#' @param traceVector the input vector that the statistical functions will
+#'   act on
+#' @param label the label for the trace that will be converted
+#' @return a new vector contains the output of the statistical functions
+#'   and its label
 processTrace = function (traceVector, label=NULL){
-
-  # Applies the statistics functions to the input vector and returns it
-  # labeled. Train on the 'label' column
 
   funs = c(mean, median, sd, mad, IQR)
   output = lapply(funs, function(f) f(traceVector, na.rm = TRUE))
@@ -180,7 +185,7 @@ main = function ( transformFunction = function(x) x) {
 
   setwd(currentDir)
 
-  return (svmMain(tee(to.data.frame(outputDataFrame)[1:2])))
+  return (svmMain(tee(to.data.frame(outputDataFrame))))
 }
 
 processedMain = function ( selectedCols = c('label', 'mean') ){

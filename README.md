@@ -18,6 +18,11 @@ Created by David Tran (unsignedzero)
 
 # Version/Changelog #
 
+* Fixed typo in test with list v vector comparison.
+* Documentation of powerAnalyze finished.
+* Documentation of svm finished.
+* Documentation for first two functions of svm created.
+* Documentation of library created. Testing with doxygen2 now.
 * Updated REPORT.md to reflect new changes made since first write.
 * Updated library.r comments.
 * Heatmap output generated from svm file.
