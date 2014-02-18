@@ -2,7 +2,7 @@
 # Library support functions for PowerAnalyze repo
 #
 # Created by David Tran
-# Version 0.6.1.0
+# Version 0.6.2.0
 # Last Modified 02-18-2014
 
 # Background Functions
@@ -57,7 +57,6 @@ body = function ( data, n = 20 ){
 #' @param listA the first numeric list we will preform the dot product
 #' @param listB the second numeric list we will preform the dot product
 #' @return a numeric containing the dot product
-#' @examples
 dotProduct = function ( listA, listB ){
 
   if (length(listA) != length(listB)){
@@ -94,8 +93,8 @@ halt = function ( ... ){
 #' @return NULL this is a statement. Use other functions to check if
 #'  install works
 #' @examples
-#' @seealso \code{\link{lib}}
 #' install('e1071')
+#' @seealso \code{\link{lib}}
 install = function (pack, ...) {
 
   install.packages(pack, lib='/usr/lib/R/site-library',
@@ -109,7 +108,7 @@ inst = install # Function alias
 #'
 #' @param pack the package we will check
 #' @param ... any other arguments for library
-#' @return
+#' @return a boolean value if it is installed correctly
 #' @seealso \code{\link{lib}}
 libCheck = function (pack, ...){
 
