@@ -4,8 +4,8 @@
 # This is a sub package interfacing with our SVM module.
 #
 # Created by David Tran
-# Version 0.7.0.0
-# Last Modified 02-17-2014
+# Version 0.7.1.0
+# Last Modified 02-18-2014
 
 lib('e1071')
 lib('gplots')
@@ -136,6 +136,25 @@ svmMain = function( dataSet, guessColumn='label' ){
 
   confusionMatrix = table(pred=prediction, true=testSet[,guessColumn])
 
+  svmPlot(confusionMatrix)
+
+  print(summary(svmModel))
+  print(confusionMatrix)
+  svmStats(confusionMatrix)
+
+  printf("Numbers of training data %d", nrow(trainSet))
+  printf("Numbers of test data %d", nrow(testSet))
+
+  return (dataSet)
+}
+
+#' Creates a plot of the confusion matrix.
+#' We use the gplot library to print it.
+#'
+#' @param confusionMatrix the confusion matrix that we will plot
+#' @return the confusion matrix passed in
+svmPlot = function ( confusionMatrix ){
+
   heatmap.2(confusionMatrix,
     margins=c(5,10), Colv=NULL, Rowv=NULL, srtCol=0,
     xlab='True', ylab='Prediction',
@@ -151,18 +170,12 @@ svmMain = function( dataSet, guessColumn='label' ){
     }),
   )
 
-  print(summary(svmModel))
-  print(confusionMatrix)
-  svmStats(confusionMatrix)
+  return (confusionMatrix)
 
-  printf("Numbers of training data %d", nrow(trainSet))
-  printf("Numbers of test data %d", nrow(testSet))
-
-  return (dataSet)
 }
 
 #' Takes the confusion matrix and prints the precision and recall of each
-#' entry.
+#' entry and the average of all values.
 #'
 #' This function relies on svmStatsCalc to print the values.
 #'
@@ -189,7 +202,25 @@ svmStats = function( confusionMatrix ){
     printf("svmStats: Data Frame size must be 1 or larger")
   }
 
-  lapply(rownames(confusionMatrix), svmStatsCalc, confusionMatrix)
+  results = t(sapply(rownames(confusionMatrix), svmStatsCalc, confusionMatrix))
+  results = data.frame(results)
+
+  meanSelect = function (colA, table=results) return (mean(unlist(table[[colA]])))
+  weightedMeanSelect = function (colMain, colWeight, table=results) {
+    return (dotProduct(unlist(table[[colMain]]),
+                       unlist(table[[colWeight]]))/
+      sum(unlist(table[[colWeight]]))
+    )
+  }
+
+  printf( "Unweighted average precision : %-0.8f Unweighted average recall %-0.8f",
+    meanSelect('precision'), meanSelect('recall')
+  )
+
+  printf( "  Weighted average precision : %-0.8f   Weighted average recall %-0.8f",
+    weightedMeanSelect('precision', 'precisionDen'),
+    weightedMeanSelect('recall', 'recallDen')
+  )
 
   return (confusionMatrix)
 }
@@ -200,7 +231,7 @@ svmStats = function( confusionMatrix ){
 #' @param key, the diagonal entry this will work on
 #' @param confusionMatrix the confusion matrix that we will print the values
 #'   on
-#' @return the confusion matrix
+#' @return a list containing the row, precision and their normalized values
 #' @seealso \code{\link{svmStats}}
 svmStatsCalc = function ( key, confusionMatrix ){
 
@@ -209,13 +240,23 @@ svmStatsCalc = function ( key, confusionMatrix ){
   rowSum = sum(confusionMatrix[key,])
   colSum = sum(confusionMatrix[,key])
 
-  printf("Analyzing %s Precision : %-6.4f   Recall : %-6.4f",
+  precision = curEntry/rowSum
+  recall = curEntry/colSum
+  precisionDen = rowSum
+  recallDen = colSum
+
+  printf("Analyzing %s Precision : %d/%d = %-6.4f | Recall : %d/%d = %-6.4f",
     key,
-    curEntry/rowSum,
-    curEntry/colSum
+    curEntry, rowSum,
+    precision,
+    curEntry, colSum,
+    recall
   )
 
-  return (confusionMatrix)
+  return (list(
+    precision = precision,       recall = recall,
+    precisionDen = precisionDen, recallDen = recallDen
+  ))
 }
 
 #' Tunes an svm machine to get optimal results and prints the value.

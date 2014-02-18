@@ -52,7 +52,7 @@ interest in R.
   * powerAnalyze.r
     * This function loads all other files Contained are
       functions that grab the csv and process it. Once finished the data frame
-      is passed into the svm module
+      is passed into the SVM module
   * svm.r
     * Performs the SVM work. Takes a data frame, creates the training and test
       set, runs it thought svm and prints the results.
@@ -135,4 +135,30 @@ Below are a list of additional support functions not stated above and mostly use
     if debugged is on, and returns it. In general it is an incrementing counter.
 * to.data.frame
   * Converts a list of lists to a data frame.
+
+### Experimentation.#
+
+Initially, we started to focus on using just condensing our data set into a mean.
+This yielded lackluster results. (gamma=0.1, cost=100). Less than half of the data
+had precision and recall with only two had values above 50%.
+The rest were between 0% to 20%.
+
+At that point, we opted to explore the FFT domain to see if we can get better results.
+Given the nature of Power Traces being real, we opted to converted the FFT output to
+a real number. We started with the real component only and that yielded worse results.
+This is similarly seen if we take only the imaginary component as well as the magnitude,
+with the magnitude being the best, real only second and imaginary only last. Our best
+result here does not hold well against the untransformed data. We have over half NaNs for
+precision, a quarter 0% and only two with some values. For recall we only have two values
+100% and 40% and the rest are 0.
+
+At that point we tuned the SVM and improved our results drastically (gamma=cost=1000).
+In the time domain, we have one NaN for precision but over half got 100% and similarly
+for recall. FFT, From worst to best we get 57%, 67%, 75%, 83%, and the rest 100% for precision
+and 0%, 50%, 60%, 75% and the rest 100%.
+
+FFT, tuned, achieved and even better result. Our worst values for precision are
+67%, 67% and 80% with the rest being 100%. Similarly for recall we yield, 60%, 75%, 75%,
+80% and finally 100% for the rest. These results come from taking just the mean of each trace
+alone.
 

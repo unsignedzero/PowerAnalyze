@@ -2,8 +2,8 @@
 # Library support functions for PowerAnalyze repo
 #
 # Created by David Tran
-# Version 0.6.0.0
-# Last Modified 02-17-2014
+# Version 0.6.1.0
+# Last Modified 02-18-2014
 
 # Background Functions
 
@@ -49,6 +49,24 @@ body = function ( data, n = 20 ){
     printf("body: Unknown data type %s", class(data))
     return (NA)
   }
+}
+
+#' Preforms the dot product of two lists. Unlike R unequal list lengths
+#' that share a common factor will NOT multiply.
+#'
+#' @param listA the first numeric list we will preform the dot product
+#' @param listB the second numeric list we will preform the dot product
+#' @return a numeric containing the dot product
+#' @examples
+dotProduct = function ( listA, listB ){
+
+  if (length(listA) != length(listB)){
+    printf("Lists %s and %s are not identical in length",
+      str(listA), str(listB))
+    stop("Halting...")
+  }
+
+  return (sum(listA*listB))
 }
 
 #' Stops the program and prints what was passed in
