@@ -18,6 +18,7 @@ Created by David Tran (unsignedzero)
 
 # Version/Changelog #
 
+* Fixed typo in test with list v vector comparison.
 * Documentation of powerAnalyze finished.
 * Documentation of svm finished.
 * Documentation for first two functions of svm created.
