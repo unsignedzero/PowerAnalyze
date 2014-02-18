@@ -18,6 +18,8 @@ Created by David Tran (unsignedzero)
 
 # Version/Changelog #
 
+* SVM now prints average values of recall and precision.
+* Updated library to have a dot product function.
 * Not tested in roxygen but merging for updated comments and fixes.
 * Fixed typo in test with list v vector comparison.
 * Documentation of powerAnalyze finished.
