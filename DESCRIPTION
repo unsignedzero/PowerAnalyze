@@ -1,0 +1,20 @@
+Package: poweranalyze
+Version: 0.7.0.0
+Date: 2014-02-18
+Title: Analyze power traces with an SVM
+Authors@R: c(person("David", "Tran", role = c("aut", "cre"),
+    email = "unsignedzero@gmail.com"))
+Author: David Tran
+Maintainer: David Tran <unsignedzero@gmail.com>
+Depends:
+    R (>= 3.0.1),
+    e1071 (>= 1.6.2)
+Suggests:
+    e1071
+Description: This code base reads in data from power traces
+    of computer systems, condenses it down to a few points, using
+    mean, median and other statistical functions, and runs it
+    through an SVM. The goal is to maximize the precision and recall
+    of the SVM.
+License: MIT
+URL: http://www.r-project.org,

@@ -6,6 +6,9 @@ run that thought one of support vector machines (SVM) built into R, in this
 repo we opted for e1071, and return back a confusion matrix, with recall and
 precision values for the associated data.
 
+Although the focus of this report is on leveraging this code base for power
+signature analysis, this code can, with little modification, work on different data sets.
+
 R provides quite a few libraries for SVM. We opted for e1071 since it seemed to
 be the first SVM created for R and also the most popular.
 
@@ -31,9 +34,12 @@ suggested that they be exactly one character long for ease of reading the
 matrix. Afterwards, a summary of the data frame is printed and the program
 ends.
 
+The data itself may be transformed, via FFT or other algorithms, before condensing
+it using a mean or some other statstical function.
+
 ### Code Analysis #
 
-This code bases uses apply heavily as opposed to for loops and embraces
+This code base uses apply heavily as opposed to for loops and embraces
 the functional paradigm of programming.
 
 Ignoring the data folder, documents and the makefile, we have three files of
@@ -44,12 +50,17 @@ interest in R.
     * This contains common support functions for powerAnalyze.r and svm.r.
       This file can be used elsewhere as needed.
   * powerAnalyze.r
-    * This function loads all other files and executes it. Contained are
+    * This function loads all other files Contained are
       functions that grab the csv and process it. Once finished the data frame
-      is passed into the svm module
+      is passed into the SVM module
   * svm.r
     * Performs the SVM work. Takes a data frame, creates the training and test
       set, runs it thought svm and prints the results.
+
+Some of the other R files are in front directory. This is the small snippits of code
+that load the above, three files, and executes them. This allows users to
+use sections above independantly without it executing. These files are called
+by the makefile which, in turn, start the invokation chain.
 
 The main use of the makefile is to make it easier for users to use the code
 base but that is NOT required. Additional, the makefile can be edited to
@@ -87,14 +98,67 @@ data to the next function. This is much like BASH's tee except no actual
 piping is performed. DEBUG may also be set to true, to display how many files
 powerAnalyze.r was able to process and other information.
 
-Below are a list of additional support functions not stated above and used:
-  * body
-    * As supposed to head and tail keeps all but the first nth, default 20,
-      and last nth, also 20, elements in a data.frame.
-  * halt
-    * Not used but stops the program and prints everything passed into it.
-  * removeColumn
-    * Removes exactly one column in a data frame
-  * to.data.frame
-    * Converts a list of lists to a data frame.
+As stated before, one may transform the data before condensing it down. This is
+easily done by passing a function into make. Note that there will be errors when
+writing to the data.frame if it contained real numbers and was written with complex
+numbers. (This might be avoided by forcing all numbers to be complex but that is
+beyond the scope of this report, currently.)
+
+### Additional library functions #
+
+Below are a list of additional support functions not stated above and mostly used:
+
+* body
+  * As supposed to head and tail keeps all but the first nth, default 20,
+    and last nth, also 20, elements in a data.frame.
+* halt
+  * Not used but stops the program and prints everything passed into it.
+* install
+  * Installs a given package at /usr/lib/R/site-library from the US Repo and its
+    dependencies.
+* libCheck
+  * Checks if a library/package is installed and returns a boolean value with its
+    result.
+* lib
+  * Together with libCheck and install, checks if the dependencies for the code
+    is installed and does so if it isn't.
+* mag
+  * Computes the magnitude of a given input.
+* object.exists
+  * Checks if an object (variable) exists.
+* removeColumn
+  * Removes exactly one column in a data frame.
+* sort.data.frame
+  * Sorts a given data.frame by a column, or the first column if none given.
+* SuccessCount
+  * A simplistic one method object that increments and prints out it values,
+    if debugged is on, and returns it. In general it is an incrementing counter.
+* to.data.frame
+  * Converts a list of lists to a data frame.
+
+### Experimentation.#
+
+Initially, we started to focus on using just condensing our data set into a mean.
+This yielded lackluster results. (gamma=0.1, cost=100). Less than half of the data
+had precision and recall with only two had values above 50%.
+The rest were between 0% to 20%.
+
+At that point, we opted to explore the FFT domain to see if we can get better results.
+Given the nature of Power Traces being real, we opted to converted the FFT output to
+a real number. We started with the real component only and that yielded worse results.
+This is similarly seen if we take only the imaginary component as well as the magnitude,
+with the magnitude being the best, real only second and imaginary only last. Our best
+result here does not hold well against the untransformed data. We have over half NaNs for
+precision, a quarter 0% and only two with some values. For recall we only have two values
+100% and 40% and the rest are 0.
+
+At that point we tuned the SVM and improved our results drastically (gamma=cost=1000).
+In the time domain, we have one NaN for precision but over half got 100% and similarly
+for recall. FFT, From worst to best we get 57%, 67%, 75%, 83%, and the rest 100% for precision
+and 0%, 50%, 60%, 75% and the rest 100%.
+
+FFT, tuned, achieved and even better result. Our worst values for precision are
+67%, 67% and 80% with the rest being 100%. Similarly for recall we yield, 60%, 75%, 75%,
+80% and finally 100% for the rest. These results come from taking just the mean of each trace
+alone.
 

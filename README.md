@@ -1,13 +1,12 @@
 # Power Analyze #
 
-We analyze the power of the needy and provide feedback to those that
-need it.
+We analyze the power traces (in CSV) of systems and run it through
+an SVM, e1071. Our goal is to get the SVM to correctly identify as many
+traces as possible given the mean of the trace.
 
 Created by David Tran (unsignedzero)
 
 # TO DO #
-
-* Finish test suite for svm.r
 
 # Notes #
 
@@ -18,6 +17,23 @@ Created by David Tran (unsignedzero)
 * sapply seems to name your vectors for you?
 
 # Version/Changelog #
+
+* Slowly converting repo files to be like an R package.
+* Bugfix: lib calls assume the library is at a fixed location which isn't true.
+* Roxygen2 setup working.
+* Testing generation of docs using roxygen2.
+* Report updated to include current experiment log.
+* SVM now prints average values of recall and precision.
+* Updated library to have a dot product function.
+* Not tested in roxygen but merging for updated comments and fixes.
+* Fixed typo in test with list v vector comparison.
+* Documentation of powerAnalyze finished.
+* Documentation of svm finished.
+* Documentation for first two functions of svm created.
+* Documentation of library created. Testing with doxygen2 now.
+* Updated REPORT.md to reflect new changes made since first write.
+* Updated library.r comments.
+* Heatmap output generated from svm file.
 
 ## 0.7.0.0 [02-16-2014] #
 * Tuned SVM for better results.
