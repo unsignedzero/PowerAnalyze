@@ -18,6 +18,7 @@ Created by David Tran (unsignedzero)
 
 # Version/Changelog #
 
+* Documentation of powerAnalyze finished.
 * Documentation of svm finished.
 * Documentation for first two functions of svm created.
 * Documentation of library created. Testing with doxygen2 now.
