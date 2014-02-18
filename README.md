@@ -18,6 +18,7 @@ Created by David Tran (unsignedzero)
 
 # Version/Changelog #
 
+* Report updated to include current experiment log.
 * SVM now prints average values of recall and precision.
 * Updated library to have a dot product function.
 * Not tested in roxygen but merging for updated comments and fixes.
