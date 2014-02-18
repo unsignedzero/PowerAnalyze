@@ -18,6 +18,7 @@ Created by David Tran (unsignedzero)
 
 # Version/Changelog #
 
+* Not tested in roxygen but merging for updated comments and fixes.
 * Fixed typo in test with list v vector comparison.
 * Documentation of powerAnalyze finished.
 * Documentation of svm finished.
