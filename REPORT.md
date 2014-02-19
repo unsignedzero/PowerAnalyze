@@ -1,5 +1,7 @@
 ## Power Analyze Report #
 
+### Objective #
+
 The goal of this code base is to take a collection of power traces, summarize
 each individual trace using the mean or some other mathematical function,
 run that thought one of support vector machines (SVM) built into R, in this
@@ -12,7 +14,7 @@ signature analysis, this code can, with little modification, work on different d
 R provides quite a few libraries for SVM. We opted for e1071 since it seemed to
 be the first SVM created for R and also the most popular.
 
-### Overview #
+### Method Overview #
 
 We will assume that ., in the case of this report refers to the repo's base
 directory.
@@ -58,7 +60,7 @@ interest in R.
         is passed into the SVM module
     * svm.r
       * Performs the SVM work. Takes a data frame, creates the training and test
-        set, runs it thought svm and prints the results.
+        set, runs it thought SVM and prints the results.
 
 Some of the other R files are in R/front directory. These are the small snippets
 of code that load the above, three files, and execute them. This allows users to
@@ -90,7 +92,7 @@ function as the other columns. Each row is a file.
 Inside the SVM main, we pass the data frame to svmFormatData who splits the data
 into our two sets, the training and testing. The split points are created from
 a logical vector from svmCountSplit which is called for each label group. The
-two data sets are passed into the svm to be processed. A simplified constructor
+two data sets are passed into the SVM to be processed. A simplified constructor
 svmConstructor, is used to make life easier. Any arguments passed into this
 function are passed to the actual SVM call. Afterwards, the model is created
 and a confusion matrix is created thereafter. The output of the confusion matrix
@@ -178,9 +180,11 @@ has little effect at this point.
 
 ### Dependencies #
 
-This code base relies primarily on e1071 to run. For documentation, roxygen2 is required and
-for plots gplots is required. Gplots may be commented out if a plot is not desired and roxygen2
-is only required when running make gen-doc.
+* Power Traces
+* R (>= 3.0.1)
+  * e1071 (>= 1.6.2) SVM
+  * gplots (>= 2.12.1) Plotting
+  * roxygen2  (>= 2.2)  Document Generation
 
 ### Running the code base #
 
@@ -188,3 +192,19 @@ As stated earlier, this code base can be executed by using the make file. Assumi
 is in data/, the code base can be started with make or make fft, depending on if fft is desired.
 If the data is already parsed, make readin may be used to read in the data and run through an SVM.
 The columns selected may be selected in the R file.
+
+### Future #
+
+In the future, we would like to use the SVM on more data sets and see if the
+SVM maintains precision and recall.
+
+### Works Cited #
+
+"Potentia est Scientia: Security and Privacy Implications of Energy-Proportional Computing"
+by Shane S. Clark, Benjamin Ransford, Kevin Fu.
+
+### Thanks #
+
+Special thanks to Dr. Rivoire for being my advisor and providing the power trace to run
+the SVM on.
+

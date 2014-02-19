@@ -2,10 +2,10 @@
 # We test the main code base here
 #
 # Created by David Tran
-# Version 0.4.1.0
-# Last Modified 02-17-2014
+# Version 0.4.2.0
+# Last Modified 02-18-2014
 
-source('powerAnalyze.r')
+source('R/powerAnalyze.r')
 
 lib('testthat')
 
@@ -123,7 +123,7 @@ test_that("Power Analyze code base works", {
 
     test_that("loadCsvTrace works", {
 
-      testFileName = 'test/testCsvData/testRock.csv'
+      testFileName = 'tests/testCsvData/testRock.csv'
       if (!file.exists(testFileName)){
         printf("File %s does not exist. EXITING!", testFileName)
         stop("Halting...")

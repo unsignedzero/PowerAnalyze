@@ -17,7 +17,7 @@ readin:
 	r --no-save --file=R/front/powerAnalyzeProocessedMain.r '--args outputDataFrame'
 
 test-repo:
-	r --no-save --file=R/tests/testPowerAnalyze.r
+	r --no-save --file=tests/testPowerAnalyze.r
 
 clean:
 	rm -rvf *.x *.a *.o *.out *.gcda *.gcov *.gcno

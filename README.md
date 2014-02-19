@@ -18,6 +18,8 @@ Created by David Tran (unsignedzero)
 
 # Version/Changelog #
 
+* Added more sections to report.
+* Bugfix: Tests working now.
 * Added comments of main parts of powerAnalyze.
 * Bugfix: Graphics dep issues erroring in DESCRIPTION fixed.
 * Report updated.
