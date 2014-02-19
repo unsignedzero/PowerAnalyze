@@ -18,6 +18,7 @@ Created by David Tran (unsignedzero)
 
 # Version/Changelog #
 
+* Bugfix: powerAnalyze.r links to old file locations, pre-R package.
 * Converted date to be ISO format.
 * Updated README to reflect new tag.
 * Changed test to tests

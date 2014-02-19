@@ -5,12 +5,12 @@
 # This is the main package managing the data flow.
 #
 # Created by David Tran
-# Version 0.5.1.0
-# Last Modified 02-11-2014
+# Version 0.5.2.0
+# Last Modified 02-18-2014
 
 # Add more files with this
-source('library.r')
-source('svm.r')
+source('R/library.r')
+source('R/svm.r')
 
 #' Debugger flag. Set TRUE to enable debugging or false otherwise.
 DEBUG = FALSE
