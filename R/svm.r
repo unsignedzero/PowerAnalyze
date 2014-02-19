@@ -4,8 +4,8 @@
 # This is a sub package interfacing with our SVM module.
 #
 # Created by David Tran
-# Version 0.7.1.0
-# Last Modified 02-18-2014
+# Version 0.7.2.0
+# Last Modified 02-19-2014
 
 lib('e1071')
 lib('gplots')
@@ -160,7 +160,7 @@ svmPlot = function ( confusionMatrix ){
     xlab='True', ylab='Prediction',
     main='Heat map of confusion matrix',
 
-    dendrogram = "none", trace="none",
+    dendrogram="none", trace="none",
 
     col=colorRampPalette(c('white','black')),
     keysize=1.2,

@@ -5,8 +5,8 @@
 # This is the main package managing the data flow.
 #
 # Created by David Tran
-# Version 0.5.2.0
-# Last Modified 02-18-2014
+# Version 0.6.0.0
+# Last Modified 02-19-2014
 
 # Add more files with this
 source('R/library.r')
@@ -110,10 +110,19 @@ processTrace = function (traceVector, label=NULL){
   return (output)
 }
 
+#' Opens the csv files and processes the data returning a list containing
+#' the output of processTrace
+#'
+#' @param filename the file that will be opened
+#' @param successfulCallCount a counter function, counting how many times
+#'   this was successfully executed. Mainly used for debugging bad files.
+#' @param columnName the column name we will work on, from the csv.
+#' @param transformFunction a function that should transform the data,
+#'   i.e. fft if desired. This will apply itself before we call processTrace
+#' @return a list containing the output of processTrace
+#' @seealso \code{\link{processTrace}}
 loadCsvTrace = function ( fileName, successfulCallCount = function() NULL,
   columnName = 'watts', transformFunction = function (x) x ) {
-
-  # Attempts to open and read the csv and says if it works
 
   if ((is.null(fileName))| is.na(fileName) | (!file.exists(fileName))){
     printf("loadCsvTrace: File passed %s does not exist.", fileName)
@@ -150,27 +159,32 @@ loadCsvTrace = function ( fileName, successfulCallCount = function() NULL,
   return (lapply(trimmedData, function(x) processTrace(x, fileName)))
 }
 
+#' Loads all files passed in as an argument and passes it to other functions
+#' to parse. If the data is already parsed, use processedMain instead.
+#'
+#' @param transformFunction a function that will be used to transform the
+#'   data i.e. FFT.
+#' @return the output of svmMain which is the data set passed in
+#' @seealso \code{\link{processedMain}}
 main = function ( transformFunction = function(x) x) {
-
-  # Reads in input and setups the call chain for all other functions.
 
   debugprintf("Code read successfully. Executing...")
   args = (commandArgs(TRUE))
   currentDir = getwd()
 
-  if(length(args)==0){
+  if (length(args) == 0){
     printf(
       "main: No arguments supplied. Grabbing all files in the current directory %s",
       getwd())
   }
   else{
-    setwd(file.path(getwd(),args[1]))
+    setwd(file.path(getwd(), args[1]))
   }
 
   # Loads only files with CSV extension
-  args=list.files(pattern='\\.csv$')
+  args = list.files(pattern='\\.csv$')
 
-  fileargs=Filter(file.exists, args)
+  fileargs = Filter(file.exists, args)
 
   if (length(fileargs) == 0){
     printf("main: No files were successfully located at %s", getwd())
@@ -188,9 +202,15 @@ main = function ( transformFunction = function(x) x) {
   return (svmMain(tee(to.data.frame(outputDataFrame))))
 }
 
+#' A variant of main that reads in the csv and passes it onto svm
+#' No processing is done here. If the data needs to be processed,
+#' use main instead.
+#'
+#' @param selectedCols the columns we will pick off from the data
+#'   frame that will be passed into the svm
+#' @return the output of svmMain which is the data set passed in
+#' @seealso \code{\link{main}}
 processedMain = function ( selectedCols = c('label', 'mean') ){
-
-  # Main that takes in a processed Data Frame and passes it to SVM
 
   debugprintf("Code read successfully. Executing...")
   args = (commandArgs(TRUE))
@@ -210,5 +230,6 @@ processedMain = function ( selectedCols = c('label', 'mean') ){
   outputDataFrame = read.csv(fileName)
 
   return (svmMain(outputDataFrame[selectedCols]))
+
 }
 
