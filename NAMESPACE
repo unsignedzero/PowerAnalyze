@@ -1,0 +1,30 @@
+# Exporting "Public" Functions
+
+# Library Functions {
+  export(body)
+  export(dotProduct)
+  export(inst)
+  export(libCheck)
+  export(lib)
+  export(mag)
+  export(object.exists)
+  export(removeColumn)
+  export(sort.data.frame)
+  export(square)
+  export(successCount)
+  export(tee)
+  export(to.data.frame)
+# }
+
+# PowerAnalyze {
+  export(printf)
+}
+
+# SVM {
+  export(svmConstructor)
+  export(svmCountSplit)
+  export(svmFormatData)
+  export(svmPlot)
+  export(svmStats)
+  export(svmTune)
+# }
