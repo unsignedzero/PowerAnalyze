@@ -18,6 +18,12 @@ Created by David Tran (unsignedzero)
 
 # Version/Changelog #
 
+* Converted date to be ISO format.
+* Updated README to reflect new tag.
+* Changed test to tests
+* Adding NAMESPACE file.
+
+## 0.8.0.0 [2014-02-18] #
 * Slowly converting repo files to be like an R package.
 * Bugfix: lib calls assume the library is at a fixed location which isn't true.
 * Roxygen2 setup working.
@@ -35,7 +41,7 @@ Created by David Tran (unsignedzero)
 * Updated library.r comments.
 * Heatmap output generated from svm file.
 
-## 0.7.0.0 [02-16-2014] #
+## 0.7.0.0 [2014-02-16] #
 * Tuned SVM for better results.
 * The three 'main' r files that run the library are moved into front/
 * Moved sort call from svmMain to svmFormatData to make it easier for
@@ -56,7 +62,7 @@ Created by David Tran (unsignedzero)
 * Sort function created for data frames in library.
 * Code base can now take in a processed and labeled csv and run svm on it.
 
-## 0.6.0.0 [02-11-2014] #
+## 0.6.0.0 [2014-02-11] #
 * Merging FFT into Development Branch.
 * Tested Re, Im and mag to see which one has the best results.
 * FFT and not-FFT (normal) versions can be executed separately.
@@ -72,7 +78,7 @@ Created by David Tran (unsignedzero)
 * No need for pipes with R.
 * Added more base cases. Accuracy increased.
 
-## 0.5.0.0 [02-04-2014] #
+## 0.5.0.0 [2014-02-04] #
 * SVM Module now spits out the parameters of interest from the confusion
   matrix.
 * Error messages will display the function name as well for debugging purposes.
@@ -90,7 +96,7 @@ Created by David Tran (unsignedzero)
 * Bugfix: Selecting the right columns for svm, was a position. Now
   selects from the column given.
 
-## 0.4.0.0 [02-03-2014] #
+## 0.4.0.0 [2014-02-03] #
 * Failed to update version numbers correctly on files.
 * Added extra check to see if the column we select from the file
   doesn't exist.
@@ -100,7 +106,7 @@ Created by David Tran (unsignedzero)
   the data.
 * For the model, the data is split by a percentage now.
 
-# 0.3.0.0 [01-30-2014] #
+# 0.3.0.0 [2014-01-30] #
 * Base data added.
 * SVM working and printing confusion matrix.
 * Bugfix: Main now creates a data.frame and not matrix.
@@ -112,7 +118,7 @@ Created by David Tran (unsignedzero)
 * BUgfix: Extra information in trace name.
 * Bugfix: Removing extra print for extra table.
 
-# 0.2.0.0 [01-28-2014] #
+# 0.2.0.0 [2014-01-28] #
 * List is now an acceptable data format for the SVM.
 * Reading multiple data and returning a labeled list.
 * Organized folder hierarchy.
@@ -121,7 +127,7 @@ Created by David Tran (unsignedzero)
 * Tested initial r script.
 * Created make script to automate running r.
 
-# 0.1.0.0 [01-24-2014] #
+# 0.1.0.0 [2014-01-24] #
 * Small support functions created for project.
 * Created small reference page.
 * Function now cuts of first and last 20 points.
