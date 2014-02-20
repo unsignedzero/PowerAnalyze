@@ -2,6 +2,13 @@
 
 ### Objective #
 
+The goal is to use Support Vector Machines (SVM) to classify different power
+traces of computer systems using the mean, median and related functions.
+This was mostly done in R, as it provides all the features, SVM library,
+easy graph output and efficient access and manipulation of lists.
+
+### Code Base Objective #
+
 The goal of this code base is to take a collection of power traces, summarize
 each individual trace using the mean or some other mathematical function,
 run that thought one of support vector machines (SVM) built into R, in this
@@ -47,7 +54,7 @@ the functional paradigm of programming.
 Ignoring the data folder, documents and the makefile, we have three files of
 interest in R.
 
-* Root
+* Root of code base (.)
   * R/
     * front/
       * A set a files that runs the library.
@@ -61,8 +68,14 @@ interest in R.
     * svm.r
       * Performs the SVM work. Takes a data frame, creates the training and test
         set, runs it thought SVM and prints the results.
+  * tests/
+    * testPowerAnalyze.r
+      * Provides tests for the code base.
+    * testCsvData/
+      * testRock.csv
+        * A copy of the Rock data set, given in R, used to test csv reading.
 
-Some of the other R files are in R/front directory. These are the small snippets
+Some of the other R files are in ./R/front directory. These are the small snippets
 of code that load the above, three files, and execute them. This allows users to
 use sections above independently without it executing. These files are called
 by the makefile which, in turn, start the invocation chain.
@@ -124,8 +137,8 @@ Below are a list of additional support functions not stated above and mostly use
 * halt
   * Not used but stops the program and prints everything passed into it.
 * install
-  * Installs a given package at /usr/lib/R/site-library from the US Repo and its
-    dependencies.
+  * Installs a given package at the default directory and its dependencies from
+    the US CRAN Repo.
 * libCheck
   * Checks if a library/package is installed and returns a boolean value with its
     result.
@@ -205,6 +218,6 @@ by Shane S. Clark, Benjamin Ransford, Kevin Fu.
 
 ### Thanks #
 
-Special thanks to Dr. Rivoire for being my advisor and providing the power trace to run
-the SVM on.
-
+Special thanks to Dr. Rivoire for being my advisor and providing the power traces to both train
+and test the SVM on, the rest of the CS department for support and the School of Science and Technology
+(SST) at SSU for providing use of their printer.

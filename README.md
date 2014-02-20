@@ -18,6 +18,7 @@ Created by David Tran (unsignedzero)
 
 # Version/Changelog #
 
+* Slowly updating the report and poster.
 * Added more sections to report.
 * Bugfix: Tests working now.
 * Added comments of main parts of powerAnalyze.
