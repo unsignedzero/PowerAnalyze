@@ -4,8 +4,8 @@
 # This is a sub package interfacing with our SVM module.
 #
 # Created by David Tran
-# Version 0.7.2.0
-# Last Modified 02-19-2014
+# Version 0.7.3.0
+# Last Modified 02-20-2014
 
 lib('e1071')
 lib('gplots')
@@ -205,11 +205,12 @@ svmStats = function( confusionMatrix ){
   results = t(sapply(rownames(confusionMatrix), svmStatsCalc, confusionMatrix))
   results = data.frame(results)
 
-  meanSelect = function (colA, table=results) return (mean(unlist(table[[colA]])))
+  meanSelect = function (colA, table=results) return (mean(unlist(table[[colA]]),
+    na.rm=TRUE))
   weightedMeanSelect = function (colMain, colWeight, table=results) {
     return (dotProduct(unlist(table[[colMain]]),
                        unlist(table[[colWeight]]))/
-      sum(unlist(table[[colWeight]]))
+      sum(unlist(table[[colWeight]]), na.rm = TRUE)
     )
   }
 

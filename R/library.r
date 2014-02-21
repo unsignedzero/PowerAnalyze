@@ -2,8 +2,8 @@
 # Library support functions for PowerAnalyze repo
 #
 # Created by David Tran
-# Version 0.6.2.0
-# Last Modified 02-18-2014
+# Version 0.6.3.0
+# Last Modified 02-20-2014
 
 # Background Functions
 
@@ -65,7 +65,7 @@ dotProduct = function ( listA, listB ){
     stop("Halting...")
   }
 
-  return (sum(listA*listB))
+  return (sum(listA*listB, na.rm=TRUE))
 }
 
 #' Stops the program and prints what was passed in
