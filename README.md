@@ -18,6 +18,7 @@ Created by David Tran (unsignedzero)
 
 # Version/Changelog #
 
+* Report in a final state.
 * Slowly updating the report and poster.
 * Added more sections to report.
 * Bugfix: Tests working now.
