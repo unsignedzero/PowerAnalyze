@@ -18,6 +18,7 @@ Created by David Tran (unsignedzero)
 
 # Version/Changelog #
 
+* Updated report for additional content used in poster.
 * Bugfix: NaNs in output affecting averages.
 * Report in a final state.
 * Slowly updating the report and poster.

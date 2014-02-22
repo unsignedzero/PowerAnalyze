@@ -1,5 +1,9 @@
 ## Power Analyze Report #
 
+Created: David Tran
+Faculty Advisor: Dr. Suzanne Rivoire
+Author Affiliations: SSU CS Department
+
 ### Objective #
 
 The goal of this project is to use Support Vector Machines (SVM) to classify different power
@@ -21,6 +25,22 @@ signature analysis, this code can, with little modification, work on different d
 R provides quite a few libraries for SVM. We opted for e1071 since it seemed to
 be the first SVM created for R and also the most popular.
 
+### Method Overview Summary #
+
+The code base first picks up all .csv files in a directory. The data is run through a
+few statistical functions (mean, median, sd, mad and ITR) and each row of the new data frame
+corresponds to one file. A new column, "label", is added to group different files together.
+
+Once grouped, this data frame is split into two pieces, a training set and a
+test set. This can be configured, but by default we will have 80% training and
+20% testing. This passed into the SVM.
+
+The resulting output is a summary of the classifier, the confusion matrix,
+the precision and recall values for each label and a weighted average.
+
+The data itself may be transformed, via FFT or other algorithms, before condensing
+it using a mean or some other statistical function.
+
 ### Method Overview #
 
 We will assume that ".", in the case of this report refers to the repo's base
@@ -30,7 +50,7 @@ The repo is set up to be easy to use but also modular. Assuming the data is in
 ./data/ the code can be invoked by typing "make" in the base directory. All
 data that ends in .csv will be picked up. The data is run through a few statistical
 functions (mean, median, sd, mad and ITR) and each row of the new data frame
-corresponds to one file. A new column, label, is added to group different files together.
+corresponds to one file. A new column, "label", is added to group different files together.
 
 Once grouped, this data frame is split into two pieces, a training set and a
 test set. This can be configured, but by default we will have 80% training and
@@ -217,6 +237,4 @@ by Shane S. Clark, Benjamin Ransford, Kevin Fu.
 
 ### Thanks #
 
-Special thanks to Dr. Rivoire for being my advisor and providing the power traces upon which to both train
-and test the SVM, the rest of the CS department for support and the School of Science and Technology
-(SST) at SSU for providing use of their printer.
+Undergraduate Research Grants for equipment funding and Matthew Hardwick and Lowell Olson for collecting the traces
