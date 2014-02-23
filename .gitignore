@@ -87,3 +87,6 @@ build/
 *.tar
 *.xz
 *.zip
+
+# R Generated Folders
+man/

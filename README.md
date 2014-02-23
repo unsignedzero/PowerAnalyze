@@ -18,6 +18,7 @@ Created by David Tran (unsignedzero)
 
 # Version/Changelog #
 
+* Updated .gitignore to ignore the man directory, generated from make gen-doc.
 * Updated report for additional content used in poster.
 * Bugfix: NaNs in output affecting averages.
 * Report in a final state.
