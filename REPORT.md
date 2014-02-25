@@ -4,7 +4,28 @@ Created: David Tran
 Faculty Advisor: Dr. Suzanne Rivoire
 Author Affiliations: SSU CS Department
 
+### Background #
+
+Computers from cellphones, and Raspberry Pis, to laptops are ubiquitous in many peoples' lives.
+Servers and super computers are less noticed until problems occur. Mostly all run on
+electricity and one important goal is to try to conserve energy. From the hardware to the software,
+many techniques are employed. These many include powering down idle cores, sleeping and
+ordering applications in a specific order.
+
 ### Objective #
+
+The goal of our research is to analyze power traces and use them to predict what programming we
+might be running. A power trace is a collection of data points, containing information about the
+watt usage of a computer. Each computer has a unique baseline that depends on the hardware usage
+as well as the software currently running in the background. When a programming is running,
+different parts of the system might be used. Some programs are CPU-intensive while others may
+prefer to the GPU or even both. We will collect the power trace of these programs and attempt
+to classify them.
+
+For our report, we will use an Support Vector Machines (SVM). These machines, given the power
+traces above, will create a model and attempt to classify the trace and say which application
+might create the given power trace. This isn't a perfect model but by tuning it, we can increase
+its accuracy.
 
 The goal of this project is to use Support Vector Machines (SVM) to classify different power
 traces of computer systems using the mean, median and related functions.
