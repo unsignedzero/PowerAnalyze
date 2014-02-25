@@ -18,6 +18,7 @@ Created by David Tran (unsignedzero)
 
 # Version/Changelog #
 
+* Separated report and poster content.
 * Added background and more to objective.
 * Updated .gitignore to ignore the man directory, generated from make gen-doc.
 * Updated report for additional content used in poster.
