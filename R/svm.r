@@ -4,8 +4,8 @@
 # This is a sub package interfacing with our SVM module.
 #
 # Created by David Tran
-# Version 0.7.3.0
-# Last Modified 02-20-2014
+# Version 0.8.0.0
+# Last Modified 02-25-2014
 
 lib('e1071')
 lib('gplots')
@@ -99,6 +99,33 @@ svmFormatData = function( dataSet, percentage=0.2, guessColumn='label' ){
   return (list(testSet=testSet, trainSet=trainSet))
 }
 
+#' Sets up which process function we will use to operate on the data.
+#' Each process function represents a different mode.
+#'
+#' @param dataSet the input data.frame that the svm will act on
+#' @param guessColumn the column name that the svm will train on
+#' @param workFunction the
+#' @return the dataSet passed in
+svmMain = function( dataSet, guessColumn='label', svmProcessFunction = NULL ){
+
+  debugprintf("Starting svmMain")
+
+  if (is.null(dataSet)){
+    stop("svmMain: Getting null data on svmMain")
+  }
+
+  if (class(dataSet) == "matrix"){
+    stop("svmMain: dataSet must be a data.frame")
+  }
+
+  if (is.null(svmProcessFunction)){
+    svmProcessFunction = svmProcessPercentSplit
+  }
+
+  return (svmProcessFunction(dataSet, guessColumn))
+
+}
+
 #' Controls the other functions and splits the dataSet into two
 #' pieces, trains the SVM and runs the test set on it. Once done,
 #' it will print out the confusion matrix.
@@ -109,17 +136,7 @@ svmFormatData = function( dataSet, percentage=0.2, guessColumn='label' ){
 #' @param dataSet the input data.frame that the svm will act on
 #' @param guessColumn the column name that the svm will train on
 #' @return the dataSet passed in
-svmMain = function( dataSet, guessColumn='label' ){
-
-  if (is.null(dataSet)){
-    stop("svmMain: Getting null data on svmMain")
-  }
-
-  if (class(dataSet) == "matrix"){
-    stop("svmMain: dataSet must be a data.frame")
-  }
-
-  debugprintf("Starting svmMain")
+svmProcessPercentSplit = function( dataSet, guessColumn='label') {
 
   output = svmFormatData(dataSet, guessColumn=guessColumn)
 
@@ -274,7 +291,26 @@ svmTune = function ( trainSet, testColumn='label',
   tuned = tune.svm(removeColumn(trainSet,testColumn), trainSet[[testColumn]],
     data=trainSet, gamma = gamma, cost = cost, ...)
 
+  plot(tuned)
+
   print(summary(tuned))
 
   return (trainSet)
+}
+
+#' Preforms leave-one-out on the dataset and prints the accuracy.
+#'
+#' This is where we can train the svn.
+#' @seealso \code{\link{svmTune}}
+#'
+#' @param dataSet the input data.frame that the svm will act on
+#' @param guessColumn the column name that the svm will train on
+#' @return the dataSet passed in
+svmProcessLeaveOneOut = function ( dataSet, guessColumn='label' ){
+
+  svmModel = svmConstructor(dataSet, guessColumn,
+    data=trainSet, degree=3, gamma=1000, cost=1000, cross=nrow(dataSet))
+
+  print(summary(svmModel))
+
 }

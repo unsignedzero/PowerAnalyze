@@ -5,8 +5,8 @@
 # This is the main package managing the data flow.
 #
 # Created by David Tran
-# Version 0.6.0.0
-# Last Modified 02-19-2014
+# Version 0.7.0.0
+# Last Modified 02-25-2014
 
 # Add more files with this
 source('R/library.r')
@@ -164,9 +164,10 @@ loadCsvTrace = function ( fileName, successfulCallCount = function() NULL,
 #'
 #' @param transformFunction a function that will be used to transform the
 #'   data i.e. FFT.
+#' @param svmProcessFunction a svm process function stating which mode to use
 #' @return the output of svmMain which is the data set passed in
 #' @seealso \code{\link{processedMain}}
-main = function ( transformFunction = function(x) x) {
+main = function ( transformFunction = function(x) x, svmProcessFunction = NULL) {
 
   debugprintf("Code read successfully. Executing...")
   args = (commandArgs(TRUE))
@@ -199,7 +200,7 @@ main = function ( transformFunction = function(x) x) {
 
   setwd(currentDir)
 
-  return (svmMain(tee(to.data.frame(outputDataFrame))))
+  return (svmMain(tee(to.data.frame(outputDataFrame)), svmProcessFunction=svmProcessFunction))
 }
 
 #' A variant of main that reads in the csv and passes it onto svm
@@ -208,9 +209,10 @@ main = function ( transformFunction = function(x) x) {
 #'
 #' @param selectedCols the columns we will pick off from the data
 #'   frame that will be passed into the svm
+#' @param svmProcessFunction a svm process function stating which mode to use
 #' @return the output of svmMain which is the data set passed in
 #' @seealso \code{\link{main}}
-processedMain = function ( selectedCols = c('label', 'mean') ){
+processedMain = function ( selectedCols = c('label', 'mean'), svmProcessFunction = NULL ){
 
   debugprintf("Code read successfully. Executing...")
   args = (commandArgs(TRUE))
@@ -229,7 +231,7 @@ processedMain = function ( selectedCols = c('label', 'mean') ){
 
   outputDataFrame = read.csv(fileName)
 
-  return (svmMain(outputDataFrame[selectedCols]))
+  return (svmMain(outputDataFrame[selectedCols], svmProcessFunction=svmProcessFunction))
 
 }
 

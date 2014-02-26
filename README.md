@@ -18,6 +18,10 @@ Created by David Tran (unsignedzero)
 
 # Version/Changelog #
 
+## 0.9.0.0 [2014-02-26] #
+* Bugfix: Typos fixed with one of the front files.
+* Leave one out, as known as n-folds, where n is the size of the training set,
+  is implemented. Summary output printed too.
 * Separated report and poster content.
 * Added background and more to objective.
 * Updated .gitignore to ignore the man directory, generated from make gen-doc.
