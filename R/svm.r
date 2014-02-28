@@ -4,8 +4,8 @@
 # This is a sub package interfacing with our SVM module.
 #
 # Created by David Tran
-# Version 0.8.0.0
-# Last Modified 02-25-2014
+# Version 0.8.0.1
+# Last Modified 02-28-2014
 
 lib('e1071')
 lib('gplots')
@@ -263,7 +263,7 @@ svmStatsCalc = function ( key, confusionMatrix ){
   precisionDen = rowSum
   recallDen = colSum
 
-  printf("Analyzing %s Precision : %d/%d = %-6.4f | Recall : %d/%d = %-6.4f",
+  printf("Analyzing precision of group %s: %d/%d = %-6.4f | Recall : %d/%d = %-6.4f",
     key,
     curEntry, rowSum,
     precision,

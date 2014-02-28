@@ -18,6 +18,8 @@ Created by David Tran (unsignedzero)
 
 # Version/Changelog #
 
+* Optimized leave-one-out (LOO) parameters to get the best results.
+
 ## 0.9.0.0 [2014-02-26] #
 * Bugfix: Typos fixed with one of the front files.
 * Leave one out, as known as n-folds, where n is the size of the training set,

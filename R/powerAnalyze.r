@@ -5,8 +5,8 @@
 # This is the main package managing the data flow.
 #
 # Created by David Tran
-# Version 0.7.0.0
-# Last Modified 02-25-2014
+# Version 0.7.0.1
+# Last Modified 02-28-2014
 
 # Add more files with this
 source('R/library.r')
@@ -200,7 +200,7 @@ main = function ( transformFunction = function(x) x, svmProcessFunction = NULL) 
 
   setwd(currentDir)
 
-  return (svmMain(tee(to.data.frame(outputDataFrame)), svmProcessFunction=svmProcessFunction))
+  return (svmMain(tee(to.data.frame(outputDataFrame)[1:2]), svmProcessFunction=svmProcessFunction))
 }
 
 #' A variant of main that reads in the csv and passes it onto svm
