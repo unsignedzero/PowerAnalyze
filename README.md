@@ -6,6 +6,13 @@ traces as possible given the mean of the trace.
 
 Created by David Tran (unsignedzero)
 
+# Quick Start #
+
+1. Remove the bad data (filenames start with QQ\_)
+2. Load your own data [MUST end in .csv extension]
+3. Type make (or make fft) for 5-fold test.
+4. Grab output and Rplots.pdf file.
+
 # TO DO #
 
 # Notes #
@@ -18,6 +25,7 @@ Created by David Tran (unsignedzero)
 
 # Version/Changelog #
 
+* Added quick start guide for repo.
 * Optimized leave-one-out (LOO) parameters to get the best results.
 
 ## 0.9.0.0 [2014-02-26] #
