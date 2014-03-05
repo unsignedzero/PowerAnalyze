@@ -1,5 +1,5 @@
 # Make file to run this code repo
-# Last Modified 02-15-2014
+# Last Modified 03-04-2014
 
 default: normal
 
@@ -21,6 +21,8 @@ fft:
 
 readin:
 	r --no-save --file=R/front/powerAnalyzeProcessedMain.r '--args outputDataFrame'
+
+test: test-repo
 
 test-repo:
 	r --no-save --file=tests/testPowerAnalyze.r

@@ -25,6 +25,11 @@ Created by David Tran (unsignedzero)
 
 # Version/Changelog #
 
+* Cleaned comments in library.r.
+* Cleaned up code formatting. Strings use double quotes and spaces added
+  after comma, around single and double equals. Extra space after return removed.
+* Make test alias for make test-repo.
+* Added success message for test.
 * Added plot code and more support functions.
 * Added quick start guide for repo.
 * Optimized leave-one-out (LOO) parameters to get the best results.

@@ -4,11 +4,11 @@
 # This is a sub package interfacing with our SVM module.
 #
 # Created by David Tran
-# Version 0.8.0.1
-# Last Modified 02-28-2014
+# Version 0.8.1.0
+# Last Modified 03-04-2014
 
-lib('e1071')
-lib('gplots')
+lib("e1071")
+lib("gplots")
 
 #' A wrapper around the svm constructor for the purposes for this repo.
 #'
@@ -23,7 +23,7 @@ svmConstructor = function ( inputFrame, keyColumn, ... ){
     stop("svmConstructor: dataSet must be a data.frame")
   }
 
-  return (
+  return(
     svm(removeColumn(inputFrame, keyColumn), inputFrame[[keyColumn]], ... )
   )
 }
@@ -41,9 +41,9 @@ svmConstructor = function ( inputFrame, keyColumn, ... ){
 #' @param guessColumn the column name the key will filter on
 #' @return a logical vector that can be used to cut the dataset in two
 #' @seealso \code{\link{svmFormatData}}
-svmCountSplit = function ( key, dataSet, percentage=0.2, guessColumn='label' ){
+svmCountSplit = function ( key, dataSet, percentage = 0.2, guessColumn = "label" ){
 
-  count = nrow(dataSet[dataSet[[guessColumn]]==key,])
+  count = nrow(dataSet[dataSet[[guessColumn]] == key, ])
   splitValue = floor(percentage*count)
 
   if (count == 0){
@@ -57,12 +57,12 @@ svmCountSplit = function ( key, dataSet, percentage=0.2, guessColumn='label' ){
   boolRetVector = as.logical(1:count)
   boolRetVector[1:splitValue] = FALSE
 
-  return (boolRetVector)
+  return(boolRetVector)
 }
 
 #' Takes the dataSet and the guessColumn and splits it into the training set
 #' and the test set. The test set is min 1 unless only one element is
-#' passed. The 'guessColumn' is what we focus on.
+#' passed. The "guessColumn" is what we focus on.
 #;
 #' This function relies on svmCountSplit to create a logic vector to split the
 #' set
@@ -75,28 +75,28 @@ svmCountSplit = function ( key, dataSet, percentage=0.2, guessColumn='label' ){
 #' @return a two element list containing the testSet and trainSet data
 #'   partitioned correctly.
 #' @seealso \code{\link{svmCountSplit}}
-svmFormatData = function( dataSet, percentage=0.2, guessColumn='label' ){
+svmFormatData = function( dataSet, percentage = 0.2, guessColumn = "label" ){
 
-  dataSet = sort.data.frame(dataSet, col=guessColumn)
+  dataSet = sort.data.frame(dataSet, col = guessColumn)
 
   keyVector = unique(unlist(dataSet[[guessColumn]], use.names = FALSE))
   keyVector = keyVector[order(keyVector)]
 
   boolVector = unlist(
     sapply(keyVector, svmCountSplit,
-      dataSet=dataSet, percentage=percentage, guessColumn=guessColumn)
+      dataSet = dataSet, percentage = percentage, guessColumn = guessColumn)
     )
 
   if (DEBUG){
-    testData = cbind(dataSet,boolVector)
-    print(testData[order(testData[guessColumn]),])
+    testData = cbind(dataSet, boolVector)
+    print(testData[order(testData[guessColumn]), ])
   }
 
-  trainSet = dataSet[boolVector,]
-  testSet = dataSet[!boolVector,]
+  trainSet = dataSet[boolVector, ]
+  testSet = dataSet[!boolVector, ]
 
   # Creating a list whose names are the element containers
-  return (list(testSet=testSet, trainSet=trainSet))
+  return(list(testSet = testSet, trainSet = trainSet))
 }
 
 #' Sets up which process function we will use to operate on the data.
@@ -106,7 +106,7 @@ svmFormatData = function( dataSet, percentage=0.2, guessColumn='label' ){
 #' @param guessColumn the column name that the svm will train on
 #' @param workFunction the
 #' @return the dataSet passed in
-svmMain = function( dataSet, guessColumn='label', svmProcessFunction = NULL ){
+svmMain = function( dataSet, guessColumn = "label", svmProcessFunction = NULL ){
 
   debugprintf("Starting svmMain")
 
@@ -122,7 +122,7 @@ svmMain = function( dataSet, guessColumn='label', svmProcessFunction = NULL ){
     svmProcessFunction = svmProcessPercentSplit
   }
 
-  return (svmProcessFunction(dataSet, guessColumn))
+  return(svmProcessFunction(dataSet, guessColumn))
 
 }
 
@@ -136,22 +136,22 @@ svmMain = function( dataSet, guessColumn='label', svmProcessFunction = NULL ){
 #' @param dataSet the input data.frame that the svm will act on
 #' @param guessColumn the column name that the svm will train on
 #' @return the dataSet passed in
-svmProcessPercentSplit = function( dataSet, guessColumn='label') {
+svmProcessPercentSplit = function( dataSet, guessColumn = "label") {
 
-  output = svmFormatData(dataSet, guessColumn=guessColumn)
+  output = svmFormatData(dataSet, guessColumn = guessColumn)
 
-  testSet = output[['testSet']]
-  trainSet = output[['trainSet']]
+  testSet = output[["testSet"]]
+  trainSet = output[["trainSet"]]
 
   # This is where one can train and test the SVM
   #svmTune(trainSet, guessColumn)
 
   svmModel = svmConstructor(dataSet, guessColumn,
-    data=trainSet, degree=3, gamma=1000, cost=1000)
+    data = trainSet, degree = 3, gamma = 1000, cost = 1000)
 
   prediction = predict(svmModel, removeColumn(testSet, guessColumn))
 
-  confusionMatrix = table(pred=prediction, true=testSet[,guessColumn])
+  confusionMatrix = table(pred = prediction, true = testSet[, guessColumn])
 
   svmPlot(confusionMatrix)
 
@@ -162,7 +162,7 @@ svmProcessPercentSplit = function( dataSet, guessColumn='label') {
   printf("Numbers of training data %d", nrow(trainSet))
   printf("Numbers of test data %d", nrow(testSet))
 
-  return (dataSet)
+  return(dataSet)
 }
 
 #' Creates a plot of the confusion matrix.
@@ -173,21 +173,21 @@ svmProcessPercentSplit = function( dataSet, guessColumn='label') {
 svmPlot = function ( confusionMatrix ){
 
   heatmap.2(confusionMatrix,
-    margins=c(5,10), Colv=NULL, Rowv=NULL, srtCol=0,
-    xlab='True', ylab='Prediction',
-    main='Heat map of confusion matrix',
+    margins = c(5, 10), Colv = NULL, Rowv = NULL, srtCol = 0,
+    xlab = "True", ylab = "Prediction",
+    main = "Heat map of confusion matrix",
 
-    dendrogram="none", trace="none",
+    dendrogram = "none", trace = "none",
 
-    col=colorRampPalette(c('white','black')),
-    keysize=1.2,
+    col = colorRampPalette(c("white", "black")),
+    keysize = 1.2,
 
-    labRow=lapply(rownames(confusionMatrix), function(x){
-      return (paste(x, ' - pred count', (sum(confusionMatrix[x,]))))
+    labRow = lapply(rownames(confusionMatrix), function(x){
+      return(paste(x, " - pred count", (sum(confusionMatrix[x, ]))))
     }),
   )
 
-  return (confusionMatrix)
+  return(confusionMatrix)
 
 }
 
@@ -211,7 +211,7 @@ svmPlot = function ( confusionMatrix ){
 svmStats = function( confusionMatrix ){
 
   if (nrow(confusionMatrix) != ncol(confusionMatrix)){
-    printf("svmStats: Confusion matrix not square. Dim(%d,%d)",
+    printf("svmStats: Confusion matrix not square. Dim(%d, %d)",
       nrow(confusionMatrix), ncol(confusionMatrix)
     )
   }
@@ -222,25 +222,25 @@ svmStats = function( confusionMatrix ){
   results = t(sapply(rownames(confusionMatrix), svmStatsCalc, confusionMatrix))
   results = data.frame(results)
 
-  meanSelect = function (colA, table=results) return (mean(unlist(table[[colA]]),
-    na.rm=TRUE))
-  weightedMeanSelect = function (colMain, colWeight, table=results) {
-    return (dotProduct(unlist(table[[colMain]]),
+  meanSelect = function (colA, table = results) return(mean(unlist(table[[colA]]),
+    na.rm = TRUE))
+  weightedMeanSelect = function (colMain, colWeight, table = results) {
+    return(dotProduct(unlist(table[[colMain]]),
                        unlist(table[[colWeight]]))/
       sum(unlist(table[[colWeight]]), na.rm = TRUE)
     )
   }
 
   printf( "Unweighted average precision : %-0.8f Unweighted average recall %-0.8f",
-    meanSelect('precision'), meanSelect('recall')
+    meanSelect("precision"), meanSelect("recall")
   )
 
   printf( "  Weighted average precision : %-0.8f   Weighted average recall %-0.8f",
-    weightedMeanSelect('precision', 'precisionDen'),
-    weightedMeanSelect('recall', 'recallDen')
+    weightedMeanSelect("precision", "precisionDen"),
+    weightedMeanSelect("recall", "recallDen")
   )
 
-  return (confusionMatrix)
+  return(confusionMatrix)
 }
 
 #' Takes the key and confusion matrix and prints the value on one
@@ -253,10 +253,10 @@ svmStats = function( confusionMatrix ){
 #' @seealso \code{\link{svmStats}}
 svmStatsCalc = function ( key, confusionMatrix ){
 
-  curEntry = confusionMatrix[key,key]
+  curEntry = confusionMatrix[key, key]
 
-  rowSum = sum(confusionMatrix[key,])
-  colSum = sum(confusionMatrix[,key])
+  rowSum = sum(confusionMatrix[key, ])
+  colSum = sum(confusionMatrix[, key])
 
   precision = curEntry/rowSum
   recall = curEntry/colSum
@@ -271,7 +271,7 @@ svmStatsCalc = function ( key, confusionMatrix ){
     recall
   )
 
-  return (list(
+  return(list(
     precision = precision,       recall = recall,
     precisionDen = precisionDen, recallDen = recallDen
   ))
@@ -285,17 +285,17 @@ svmStatsCalc = function ( key, confusionMatrix ){
 #' @param cost a numeric vector that will be the cost range we will train on
 #' @param ... any other paramters for the tune function
 #' @return the training set
-svmTune = function ( trainSet, testColumn='label',
-    gamma=10^(-6:5), cost=10^(-2:5), ... ){
+svmTune = function ( trainSet, testColumn = "label",
+    gamma = 10^(-6:5), cost = 10^(-2:5), ... ){
 
-  tuned = tune.svm(removeColumn(trainSet,testColumn), trainSet[[testColumn]],
-    data=trainSet, gamma = gamma, cost = cost, ...)
+  tuned = tune.svm(removeColumn(trainSet, testColumn), trainSet[[testColumn]],
+    data = trainSet, gamma = gamma, cost = cost, ...)
 
   plot(tuned)
 
   print(summary(tuned))
 
-  return (trainSet)
+  return(trainSet)
 }
 
 #' Preforms leave-one-out on the dataset and prints the accuracy.
@@ -306,10 +306,10 @@ svmTune = function ( trainSet, testColumn='label',
 #' @param dataSet the input data.frame that the svm will act on
 #' @param guessColumn the column name that the svm will train on
 #' @return the dataSet passed in
-svmProcessLeaveOneOut = function ( dataSet, guessColumn='label' ){
+svmProcessLeaveOneOut = function ( dataSet, guessColumn = "label" ){
 
   svmModel = svmConstructor(dataSet, guessColumn,
-    data=trainSet, degree=3, gamma=1000, cost=1000, cross=nrow(dataSet))
+    data = trainSet, degree = 3, gamma = 1000, cost = 1000, cross = nrow(dataSet))
 
   print(summary(svmModel))
 

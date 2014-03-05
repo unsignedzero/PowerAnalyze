@@ -5,12 +5,12 @@
 # This is the main package managing the data flow.
 #
 # Created by David Tran
-# Version 0.7.0.2
+# Version 0.7.1.0
 # Last Modified 03-04-2014
 
 # Add more files with this
-source('R/library.r')
-source('R/svm.r')
+source("R/library.r")
+source("R/svm.r")
 
 #' Debugger flag. Set TRUE to enable debugging or false otherwise.
 DEBUG = FALSE
@@ -32,47 +32,47 @@ labelTrace = function(dataLabel) {
   if (is.null(dataLabel)){
     retLabel = -1
   }
-  else if (grepl('^.._baseline', dataLabel)){
+  else if (grepl("^.._baseline", dataLabel)){
     retLabel = 1
   }
-  else if (grepl('^.._Graph500', dataLabel)){
+  else if (grepl("^.._Graph500", dataLabel)){
     retLabel = 2
   }
-  else if (grepl('^.._nsort', dataLabel)){
+  else if (grepl("^.._nsort", dataLabel)){
     retLabel = 3
   }
-  else if (grepl('^.._p95', dataLabel)){
+  else if (grepl("^.._p95", dataLabel)){
     retLabel = 4
   }
-  else if (grepl('^.._stream', dataLabel)){
+  else if (grepl("^.._stream", dataLabel)){
     retLabel = 5
   }
-  else if (grepl('^.._systemburn_DGEMM', dataLabel)){
+  else if (grepl("^.._systemburn_DGEMM", dataLabel)){
     retLabel = 6
   }
-  else if (grepl('^.._systemburn_FFT1D', dataLabel)){
+  else if (grepl("^.._systemburn_FFT1D", dataLabel)){
     retLabel = 7
   }
-  else if (grepl('^.._sb_fft1d', dataLabel)){
+  else if (grepl("^.._sb_fft1d", dataLabel)){
     retLabel = 7
   }
-  else if (grepl('^.._systemburn_FFT2D', dataLabel)){
+  else if (grepl("^.._systemburn_FFT2D", dataLabel)){
     retLabel = 8
   }
-  else if (grepl('^.._systemburn_GUPS', dataLabel)){
+  else if (grepl("^.._systemburn_GUPS", dataLabel)){
     retLabel = 9
   }
-  else if (grepl('^.._systemburn_SCUBLAS', dataLabel)){
-    retLabel = 'A'
+  else if (grepl("^.._systemburn_SCUBLAS", dataLabel)){
+    retLabel = "A"
   }
-  else if (grepl('^.._systemburn_TILT', dataLabel)){
-    retLabel = 'B'
+  else if (grepl("^.._systemburn_TILT", dataLabel)){
+    retLabel = "B"
   }
-  else if (grepl('^.._sb_tilt', dataLabel)){
-    retLabel = 'B'
+  else if (grepl("^.._sb_tilt", dataLabel)){
+    retLabel = "B"
   }
-  else if (grepl('^.._calib', dataLabel)){
-    retLabel = 'C'
+  else if (grepl("^.._calib", dataLabel)){
+    retLabel = "C"
   }
   else{
     printf("labelTrace: Bad label for %s", dataLabel)
@@ -83,7 +83,7 @@ labelTrace = function(dataLabel) {
 
   debugprintf("File %s, labeled as %s", dataLabel, retLabel)
 
-  return (retLabel)
+  return(retLabel)
 }
 
 #' Given the traceVector and a label, labels the associated trace and
@@ -94,20 +94,20 @@ labelTrace = function(dataLabel) {
 #' @param label the label for the trace that will be converted
 #' @return a new vector contains the output of the statistical functions
 #'   and its label
-processTrace = function (traceVector, label=NULL){
+processTrace = function (traceVector, label = NULL){
 
   funs = c(mean, median, sd, mad, IQR)
   output = lapply(funs, function(f) f(traceVector, na.rm = TRUE))
 
-  # Add 'label' to first entry in vector.
+  # Add "label" to first entry in vector.
   traceLabel = labelTrace(label)
-  output = c(traceLabel,output)
+  output = c(traceLabel, output)
 
   names(output) = c("label",
     c("mean", "median", "sd", "mad", "IQR")
   )
 
-  return (output)
+  return(output)
 }
 
 #' Opens the csv files and processes the data returning a list containing
@@ -122,11 +122,11 @@ processTrace = function (traceVector, label=NULL){
 #' @return a list containing the output of processTrace
 #' @seealso \code{\link{processTrace}}
 loadCsvTrace = function ( fileName, successfulCallCount = function() NULL,
-  columnName = 'watts', transformFunction = function (x) x ) {
+  columnName = "watts", transformFunction = function (x) x ) {
 
   if ((is.null(fileName))| is.na(fileName) | (!file.exists(fileName))){
     printf("loadCsvTrace: File passed %s does not exist.", fileName)
-    return (NA)
+    return(NA)
   }
   else {
     debugprintf("loadCsvTrace: Loading %s", fileName)
@@ -138,8 +138,8 @@ loadCsvTrace = function ( fileName, successfulCallCount = function() NULL,
   usefulColumns = c(columnName)
 
   # Plot it
-  #plotPowerTrace(dataFrame=trimmedData, y="watts",
-  #  fileName=subStr(fileName,0,nchar(fileName)-4))
+  #plotPowerTrace(dataFrame = trimmedData, y = "watts",
+  #  fileName = subStr(fileName, 0, nchar(fileName)-4))
 
   if (usefulColumns %in% colnames(trimmedData)){
     trimmedData = trimmedData[usefulColumns]
@@ -160,7 +160,7 @@ loadCsvTrace = function ( fileName, successfulCallCount = function() NULL,
   debugprintf("loadCsvTrace: File %s processed", fileName)
 
   # Get statistical work
-  return (lapply(trimmedData, function(x) processTrace(x, fileName)))
+  return(lapply(trimmedData, function(x) processTrace(x, fileName)))
 }
 
 #' Loads all files passed in as an argument and passes it to other functions
@@ -187,7 +187,7 @@ main = function ( transformFunction = function(x) x, svmProcessFunction = NULL) 
   }
 
   # Loads only files with CSV extension
-  args = list.files(pattern='\\.csv$')
+  args = list.files(pattern = "\\.csv$")
 
   fileargs = Filter(file.exists, args)
 
@@ -200,11 +200,11 @@ main = function ( transformFunction = function(x) x, svmProcessFunction = NULL) 
   callCounter = successCount()
 
   outputDataFrame = sapply(fileargs, loadCsvTrace, callCounter,
-    columnName='watts', transformFunction=transformFunction)
+    columnName = "watts", transformFunction = transformFunction)
 
   setwd(currentDir)
 
-  return (svmMain(tee(to.data.frame(outputDataFrame)[1:2]), svmProcessFunction=svmProcessFunction))
+  return(svmMain(tee(to.data.frame(outputDataFrame)[1:2]), svmProcessFunction = svmProcessFunction))
 }
 
 #' A variant of main that reads in the csv and passes it onto svm
@@ -216,13 +216,13 @@ main = function ( transformFunction = function(x) x, svmProcessFunction = NULL) 
 #' @param svmProcessFunction a svm process function stating which mode to use
 #' @return the output of svmMain which is the data set passed in
 #' @seealso \code{\link{main}}
-processedMain = function ( selectedCols = c('label', 'mean'), svmProcessFunction = NULL ){
+processedMain = function ( selectedCols = c("label", "mean"), svmProcessFunction = NULL ){
 
   debugprintf("Code read successfully. Executing...")
   args = (commandArgs(TRUE))
   fileName = NULL
 
-  if(length(args) == 0){
+  if (length(args) == 0){
     stop("main: No processed csv passed. Exiting....")
   }
 
@@ -235,7 +235,7 @@ processedMain = function ( selectedCols = c('label', 'mean'), svmProcessFunction
 
   outputDataFrame = read.csv(fileName)
 
-  return (svmMain(outputDataFrame[selectedCols], svmProcessFunction=svmProcessFunction))
+  return(svmMain(outputDataFrame[selectedCols], svmProcessFunction = svmProcessFunction))
 
 }
 

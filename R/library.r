@@ -2,10 +2,8 @@
 # Library support functions for PowerAnalyze repo
 #
 # Created by David Tran
-# Version 0.6.4.0
+# Version 0.7.0.0
 # Last Modified 03-04-2014
-
-# Background Functions
 
 #' As oppose to head and tail, we grab all but the first nth
 #' and last nth elements of the data, if it is possible.
@@ -19,17 +17,17 @@
 #' @examples
 #' body(1:50) -> 21:30
 #' body(1:6, 2) -> 3:4
-#' body(1:10, n=4) -> 5:6
+#' body(1:10, n = 4) -> 5:6
 body = function ( data, n = 20 ){
 
   if (class(data) == "data.frame"){
     len = nrow(data)
     if ( (n+1) > (len-n) ){
       printf("body: Impossible range %d to %d", n, len-n)
-      return (data[NULL,])
+      return(data[NULL, ])
     }
 
-    return (data[(n+1):(len-n),])
+    return(data[(n+1):(len-n), ])
 
   } else if (class(data) == "list"   || class(data) == "integer" ||
             class(data) == "numeric" || class(data) == "character" ||
@@ -38,7 +36,7 @@ body = function ( data, n = 20 ){
 
     if ( (n+1) > (len-n) ){
       printf("body: Impossible range %d to %d", n, len-n)
-      return (NULL)
+      return(NULL)
     }
 
     output = data[(n+1):(len-n)]
@@ -47,7 +45,7 @@ body = function ( data, n = 20 ){
 
   } else{
     printf("body: Unknown data type %s", class(data))
-    return (NA)
+    return(NA)
   }
 }
 
@@ -65,10 +63,10 @@ dotProduct = function ( listA, listB ){
     stop("Halting...")
   }
 
-  return (sum(listA*listB, na.rm=TRUE))
+  return(sum(listA*listB, na.rm = TRUE))
 }
 
-#' Stops the program and prints what was passed in
+#' Stops the program and prints what was passed in.
 #'
 #' @param ... prints out anything passes
 #' @return any input passed (should not happen)
@@ -79,7 +77,7 @@ halt = function ( ... ){
   stop("Halting execution...")
 
   # This should NOT happen
-  return (...)
+  return(...)
 }
 
 #' Installs the package, if it exists, and bypasses the interactive
@@ -93,19 +91,19 @@ halt = function ( ... ){
 #' @return NULL this is a statement. Use other functions to check if
 #'  install works
 #' @examples
-#' install('e1071')
+#' install("e1071")
 #' @seealso \code{\link{lib}}
 install = function (pack, ...) {
 
   install.packages(pack,
-    dependencies=TRUE, repos='http://cran.us.r-project.org',
+    dependencies = TRUE, repos = "http://cran.us.r-project.org",
     ...
   )
 }
 inst = install # Function alias
 
 #' Checks if a package is installed and loads it. If not, it will install and then
-#' try to load it
+#' try to load it.
 #'
 #' @param pack the package that will be checked
 #' @param ... other arguments passed into libCheck
@@ -114,16 +112,16 @@ lib = function (pack, ...){
 
   if (libCheck(pack, ...)){
     # Loaded successfully
-    return (TRUE)
+    return(TRUE)
   }
   else{
     # Try to install and load
     install(pack)
-    return (libCheck(pack, ...))
+    return(libCheck(pack, ...))
   }
 }
 
-#' Checks if a package is installed
+#' Checks if a package is installed.
 #'
 #' @param pack the package we will check
 #' @param ... any other arguments for library
@@ -131,9 +129,7 @@ lib = function (pack, ...){
 #' @seealso \code{\link{lib}}
 libCheck = function (pack, ...){
 
-  # Load a lib from .libPaths()[1]
-
-  return (suppressWarnings(
+  return(suppressWarnings(
     library(pack,
       logical.return = TRUE, character.only = TRUE,
     ...)
@@ -141,34 +137,34 @@ libCheck = function (pack, ...){
   )
 }
 
-#' Computes the magnitude of a complex number of list
+#' Computes the magnitude of a complex number of list.
 #'
 #' @param x input numeric vector(list)
 #' @return the computed magnitude
 #' @examples
-#' mag(3,4) -> 5
+#' mag(3, 4) -> 5
 #' mag(5+12i) -> 13
-#' mag(c(6,8)) -> 10
+#' mag(c(6, 8)) -> 10
 mag = function(x) {
 
   # Computes the magnitude
 
   if (class(x) == "numeric"){
-    return (x)
+    return(x)
   }
   else if (class(x) == "complex"){
-    return (sqrt(Re(x)^2 + Im(x)^2))
+    return(sqrt(Re(x)^2 + Im(x)^2))
   }
   else if ((class(x) == "list") || (class(x) == "numeric") ||
            (class(x) == "integer")){
-    return (sqrt(sum(sapply(x, function(x) x^2))))
+    return(sqrt(sum(sapply(x, function(x) x^2))))
   }
   else{
     stop("Unknown datatype passed")
   }
 }
 
-#' Checks if a variable (object) exists
+#' Checks if a variable (object) exists.
 #'
 #' @param obj the object it will check
 #' @return a boolean if it does exist
@@ -180,7 +176,7 @@ object.exists = function(obj) {
 
   # Check if an object(variable) exists
 
-  return (exists(as.character(substitute(obj))))
+  return(exists(as.character(substitute(obj))))
 
 }
 
@@ -193,44 +189,41 @@ object.exists = function(obj) {
 plotPowerTrace = function ( dataFrame, y, fileName, ... ){
 
   if (is.null(fileName)){
-    name='output'
-    fileName = 'output.pdf'
+    name = "output"
+    fileName = "output.pdf"
   }
   else{
-    name=fileName
-    fileName = paste(fileName, ".pdf", sep="")
+    name = fileName
+    fileName = paste(fileName, ".pdf", sep = "")
   }
 
   pdf(fileName)
-  plot(x=1:nrow(dataFrame), y=dataFrame[[y]],
-    xlab='Seconds', ylab='Watts',
-    col="blue",
-    main=paste('Power Trace of', name),
-    type='l', ...
+  plot(x = 1:nrow(dataFrame), y = dataFrame[[y]],
+    xlab = "Seconds", ylab = "Watts",
+    col = "blue",
+    main = paste("Power Trace of", name),
+    type = "l", ...
   )
   dev.off()
 
-  return (dataFrame)
+  return(dataFrame)
 }
 
-
-#' Removes a column from a given frame if it exists
-#' This is analogous to frame[-n] where n is the column number
+#' Removes a column from a given frame if it exists.
+#' This is analogous to frame[-n] where n is the column number.
 #' Reference https://stackoverflow.com/questions/11940605/printing-a-subset-of-columns-in-a-data-table-r
 #'
 #' @param frame the input data.frame
 #' @param colName a string that it will search for
 #' @return the data.frame with the specified column removed
 #' @examples
-#' removeColumn(mtcars, 'mpg')
-#' removeColumn(rock, 'perm')
+#' removeColumn(mtcars, "mpg")
+#' removeColumn(rock, "perm")
 removeColumn = function( frame , colName ){
 
+  logicVector = unlist(lapply(colnames(frame), function(x) (!grepl(colName, x))))
 
-  logicVector = unlist(lapply(colnames(frame),
-    function(x) (!grepl(colName, x))))
-
-  return (frame[logicVector])
+  return(frame[logicVector])
 }
 
 #' Sorts a data.frame by the column specified or the first column if not.
@@ -239,36 +232,35 @@ removeColumn = function( frame , colName ){
 #' @param col the column we will sort by or the first column is not passed
 #' @return the sorted data frame
 #' @examples
-#' sort.data.frame(mtcars, 'wt')
-#' sort.data.frame(rock, 'shape')
+#' sort.data.frame(mtcars, "wt")
+#' sort.data.frame(rock, "shape")
 sort.data.frame = function ( frame, col = NULL ){
 
   if (class(frame) == "data.frame"){
     if (is.null(col)){
-      return (frame[order(frame[1]),])
+      return(frame[order(frame[1]), ])
     }
     else if (col %in% colnames(frame)){
-      return (frame[order(frame[col]),])
+      return(frame[order(frame[col]), ])
     }
     else{
       stop("sort: Col %s passed does not exist in data frame %s",
         str(col), str(frame)
       )
-      return (-1)
+      return(-1)
     }
   }
-  else if(class(frame) == "list"){
-    return (frame[order(unlist(frame))])
+  else if (class(frame) == "list"){
+    return(frame[order(unlist(frame))])
   }
-  else if(class(frame) == "numeric" || class(frame) == "character" ||
+  else if (class(frame) == "numeric" || class(frame) == "character" ||
           class(frame) == "integer" )
         {
-    #return (frame[order(frame)])
-    return (sort(frame))
+    return(sort(frame))
   }
   else{
     stop("sort: Unknown data type %s passed.", class(frame))
-    return (-1)
+    return(-1)
   }
 }
 
@@ -279,7 +271,7 @@ sort.data.frame = function ( frame, col = NULL ){
 #' @param start the starting place to cut, or end if one arg.
 #' @param end the end point.
 #' @return the substring
-subStr = function (str, start=0, end=NULL){
+subStr = function (str, start = 0, end = NULL){
 
   if (nchar(str) == 0){
     return(str)
@@ -300,32 +292,31 @@ subStr = function (str, start=0, end=NULL){
     stop("subStr start can't be less than 0")
   }
 
-  return (paste((unlist(strsplit(str,""))[start:end]), collapse=""))
+  return(paste((unlist(strsplit(str, ""))[start:end]), collapse = ""))
 }
 
-#' Squares the given input, be it a numeric or vector
+#' Squares the given input, be it a numeric or vector.
 #'
 #' @param x the numberic input that will be squared
 #' @return the input with all elements squared
 #' @seealso \code{\link{mag}}
 #' @examples
 #' square(4) -> 16
-#' square(list(3,4)) -> list(16,25)
+#' square(list(3, 4)) -> list(16, 25)
 square = function (x) {
 
-  # Squares all elements passed
-
   if (class(x) == "numeric"){
-    return (x^2)
+    return(x^2)
   }
   else{
-    return (lapply(x, function(x) x^2))
+    return(lapply(x, function(x) x^2))
   }
 }
 
 
 #' A increment counter used to keep track of how many times something worked
-#' DEBUG needs to be enabled for this to print.
+#' DEBUG needs to be enabled for this to print. This is a factory function
+#' so the returned value should be invoked to increment the counter.
 #'
 #' @param n the initial start value of the counter, should be an integer
 #' @param startMsg a string that will be shown before the number is printed
@@ -342,44 +333,35 @@ square = function (x) {
 successCount = function ( n = 0, startMsg = "This is the ",
     endMsg = "th successful call" ){
 
-  # This is a factory function that creates an incrementing
-  # counter from n onward. Note this returns a function so
-  # invoke the return type as a function
-
   increment = function () {
     n <<- n + 1
     debugprintf("%s%d%s", startMsg, n, endMsg)
-    return (n)
+    return(n)
   }
 
-  return (increment)
+  return(increment)
 }
 
 #' Prints the current data.frame passed into a file and passes it to the next
-#' function. Useful for debugging
+#' function, useful for debugging.
 #'
 #' @param csvData the data.frame that will be written to the file and passed
 #' @param fileName the filename that the csvData will be written to
 #' @return csvData
 #' @examples
 #' (...tee(function(... input)))
-tee = function(csvData, fileName='outputDataFrame'){
+tee = function(csvData, fileName = "outputDataFrame"){
 
-  # Writes the current data in the stream to file and passes it
-  # to the next invoked function
+  write.csv(csvData, file = fileName)
 
-  write.csv(csvData, file=fileName)
-
-  return (csvData)
+  return(csvData)
 }
 
-#' Converts a list of lists (matrix) into a data.frame
+#' Converts a list of lists (matrix) into a data.frame.
 #'
 #' @param mat the input matrix that will be coverted
 #' @return the data.frame
 to.data.frame = function ( mat ){
 
-  # Converts a list of lists to a data.frame
-
-  return (do.call(rbind.data.frame, mat))
+  return(do.call(rbind.data.frame, mat))
 }
