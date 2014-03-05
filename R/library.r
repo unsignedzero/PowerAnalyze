@@ -2,8 +2,8 @@
 # Library support functions for PowerAnalyze repo
 #
 # Created by David Tran
-# Version 0.6.3.0
-# Last Modified 02-20-2014
+# Version 0.6.4.0
+# Last Modified 03-04-2014
 
 # Background Functions
 
@@ -104,24 +104,6 @@ install = function (pack, ...) {
 }
 inst = install # Function alias
 
-#' Checks if a package is installed
-#'
-#' @param pack the package we will check
-#' @param ... any other arguments for library
-#' @return a boolean value if it is installed correctly
-#' @seealso \code{\link{lib}}
-libCheck = function (pack, ...){
-
-  # Load a lib from .libPaths()[1]
-
-  return (suppressWarnings(
-    library(pack,
-      logical.return = TRUE, character.only = TRUE,
-    ...)
-    )
-  )
-}
-
 #' Checks if a package is installed and loads it. If not, it will install and then
 #' try to load it
 #'
@@ -139,6 +121,24 @@ lib = function (pack, ...){
     install(pack)
     return (libCheck(pack, ...))
   }
+}
+
+#' Checks if a package is installed
+#'
+#' @param pack the package we will check
+#' @param ... any other arguments for library
+#' @return a boolean value if it is installed correctly
+#' @seealso \code{\link{lib}}
+libCheck = function (pack, ...){
+
+  # Load a lib from .libPaths()[1]
+
+  return (suppressWarnings(
+    library(pack,
+      logical.return = TRUE, character.only = TRUE,
+    ...)
+    )
+  )
 }
 
 #' Computes the magnitude of a complex number of list
@@ -183,6 +183,36 @@ object.exists = function(obj) {
   return (exists(as.character(substitute(obj))))
 
 }
+
+#' Plot function to create plots from Power Traces
+#' for posters.
+#'
+#' @param dataFrame the input dataFrame
+#' @param y the name of the column that will be used
+#' @return the input dataFrame
+plotPowerTrace = function ( dataFrame, y, fileName, ... ){
+
+  if (is.null(fileName)){
+    name='output'
+    fileName = 'output.pdf'
+  }
+  else{
+    name=fileName
+    fileName = paste(fileName, ".pdf", sep="")
+  }
+
+  pdf(fileName)
+  plot(x=1:nrow(dataFrame), y=dataFrame[[y]],
+    xlab='Seconds', ylab='Watts',
+    col="blue",
+    main=paste('Power Trace of', name),
+    type='l', ...
+  )
+  dev.off()
+
+  return (dataFrame)
+}
+
 
 #' Removes a column from a given frame if it exists
 #' This is analogous to frame[-n] where n is the column number
@@ -240,6 +270,37 @@ sort.data.frame = function ( frame, col = NULL ){
     stop("sort: Unknown data type %s passed.", class(frame))
     return (-1)
   }
+}
+
+#' Returns a substring of a string. May take one arg or two. One arg
+#' cuts from 0 to start. Two args takes from start to end.
+#'
+#' @param str the input string
+#' @param start the starting place to cut, or end if one arg.
+#' @param end the end point.
+#' @return the substring
+subStr = function (str, start=0, end=NULL){
+
+  if (nchar(str) == 0){
+    return(str)
+  }
+
+  if (is.null(end)){
+    end = start
+    start = 0
+  }
+
+  if (end < start){
+    temp = start
+    start = end
+    end = temp
+  }
+
+  if (start < 0){
+    stop("subStr start can't be less than 0")
+  }
+
+  return (paste((unlist(strsplit(str,""))[start:end]), collapse=""))
 }
 
 #' Squares the given input, be it a numeric or vector

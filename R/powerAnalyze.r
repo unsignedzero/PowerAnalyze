@@ -5,8 +5,8 @@
 # This is the main package managing the data flow.
 #
 # Created by David Tran
-# Version 0.7.0.1
-# Last Modified 02-28-2014
+# Version 0.7.0.2
+# Last Modified 03-04-2014
 
 # Add more files with this
 source('R/library.r')
@@ -136,6 +136,10 @@ loadCsvTrace = function ( fileName, successfulCallCount = function() NULL,
   trimmedData = ((body(read.csv(fileName))))
 
   usefulColumns = c(columnName)
+
+  # Plot it
+  #plotPowerTrace(dataFrame=trimmedData, y="watts",
+  #  fileName=subStr(fileName,0,nchar(fileName)-4))
 
   if (usefulColumns %in% colnames(trimmedData)){
     trimmedData = trimmedData[usefulColumns]
