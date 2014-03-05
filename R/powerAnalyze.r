@@ -5,7 +5,7 @@
 # This is the main package managing the data flow.
 #
 # Created by David Tran
-# Version 0.7.1.0
+# Version 0.7.2.0
 # Last Modified 03-04-2014
 
 # Add more files with this
@@ -13,73 +13,73 @@ source("R/library.r")
 source("R/svm.r")
 
 #' Debugger flag. Set TRUE to enable debugging or false otherwise.
-DEBUG = FALSE
+DEBUG <- FALSE
 
 # Aliases for easier printing
-printf = function (...) print(sprintf(...))
-debugprint = function (...) if (DEBUG) print(...)
-debugprintf = function (...) if (DEBUG) printf(...)
+printf <- function (...) print(sprintf(...))
+debugprint <- function (...) if (DEBUG) print(...)
+debugprintf <- function (...) if (DEBUG) printf(...)
 
 #' Given a string label, this function labels the trace. This is used to group
 #' different files together as one group to be able to run svm correctly.
 #'
 #' @param dataLabel the string that will
 #' @return returns the label or 0 is it can't label.
-labelTrace = function(dataLabel) {
+labelTrace <- function(dataLabel) {
 
-  retLabel = NA
+  retLabel <- NA
 
   if (is.null(dataLabel)){
-    retLabel = -1
+    retLabel <- -1
   }
   else if (grepl("^.._baseline", dataLabel)){
-    retLabel = 1
+    retLabel <- 1
   }
   else if (grepl("^.._Graph500", dataLabel)){
-    retLabel = 2
+    retLabel <- 2
   }
   else if (grepl("^.._nsort", dataLabel)){
-    retLabel = 3
+    retLabel <- 3
   }
   else if (grepl("^.._p95", dataLabel)){
-    retLabel = 4
+    retLabel <- 4
   }
   else if (grepl("^.._stream", dataLabel)){
-    retLabel = 5
+    retLabel <- 5
   }
   else if (grepl("^.._systemburn_DGEMM", dataLabel)){
-    retLabel = 6
+    retLabel <- 6
   }
   else if (grepl("^.._systemburn_FFT1D", dataLabel)){
-    retLabel = 7
+    retLabel <- 7
   }
   else if (grepl("^.._sb_fft1d", dataLabel)){
-    retLabel = 7
+    retLabel <- 7
   }
   else if (grepl("^.._systemburn_FFT2D", dataLabel)){
-    retLabel = 8
+    retLabel <- 8
   }
   else if (grepl("^.._systemburn_GUPS", dataLabel)){
-    retLabel = 9
+    retLabel <- 9
   }
   else if (grepl("^.._systemburn_SCUBLAS", dataLabel)){
-    retLabel = "A"
+    retLabel <- "A"
   }
   else if (grepl("^.._systemburn_TILT", dataLabel)){
-    retLabel = "B"
+    retLabel <- "B"
   }
   else if (grepl("^.._sb_tilt", dataLabel)){
-    retLabel = "B"
+    retLabel <- "B"
   }
   else if (grepl("^.._calib", dataLabel)){
-    retLabel = "C"
+    retLabel <- "C"
   }
   else{
     printf("labelTrace: Bad label for %s", dataLabel)
-    retLabel = 0
+    retLabel <- 0
   }
 
-  retLabel = as.character(retLabel)
+  retLabel <- as.character(retLabel)
 
   debugprintf("File %s, labeled as %s", dataLabel, retLabel)
 
@@ -94,16 +94,16 @@ labelTrace = function(dataLabel) {
 #' @param label the label for the trace that will be converted
 #' @return a new vector contains the output of the statistical functions
 #'   and its label
-processTrace = function (traceVector, label = NULL){
+processTrace <- function (traceVector, label = NULL){
 
-  funs = c(mean, median, sd, mad, IQR)
-  output = lapply(funs, function(f) f(traceVector, na.rm = TRUE))
+  funs <- c(mean, median, sd, mad, IQR)
+  output <- lapply(funs, function(f) f(traceVector, na.rm = TRUE))
 
   # Add "label" to first entry in vector.
-  traceLabel = labelTrace(label)
-  output = c(traceLabel, output)
+  traceLabel <- labelTrace(label)
+  output <- c(traceLabel, output)
 
-  names(output) = c("label",
+  names(output) <- c("label",
     c("mean", "median", "sd", "mad", "IQR")
   )
 
@@ -121,7 +121,7 @@ processTrace = function (traceVector, label = NULL){
 #'   i.e. fft if desired. This will apply itself before we call processTrace
 #' @return a list containing the output of processTrace
 #' @seealso \code{\link{processTrace}}
-loadCsvTrace = function ( fileName, successfulCallCount = function() NULL,
+loadCsvTrace <- function ( fileName, successfulCallCount = function() NULL,
   columnName = "watts", transformFunction = function (x) x ) {
 
   if ((is.null(fileName))| is.na(fileName) | (!file.exists(fileName))){
@@ -133,9 +133,9 @@ loadCsvTrace = function ( fileName, successfulCallCount = function() NULL,
   }
 
   # Grab what we need from the data
-  trimmedData = ((body(read.csv(fileName))))
+  trimmedData <- ((body(read.csv(fileName))))
 
-  usefulColumns = c(columnName)
+  usefulColumns <- c(columnName)
 
   # Plot it
   #plotPowerTrace(dataFrame = trimmedData, y = "watts",
@@ -151,10 +151,10 @@ loadCsvTrace = function ( fileName, successfulCallCount = function() NULL,
   }
 
   # Transform Data as needed
-  trimmedData[usefulColumns] = transformFunction(trimmedData[[usefulColumns]])
+  trimmedData[usefulColumns] <- transformFunction(trimmedData[[usefulColumns]])
 
   # Removes header info
-  names(trimmedData) = c()
+  names(trimmedData) <- c()
 
   successfulCallCount()
   debugprintf("loadCsvTrace: File %s processed", fileName)
@@ -171,11 +171,11 @@ loadCsvTrace = function ( fileName, successfulCallCount = function() NULL,
 #' @param svmProcessFunction a svm process function stating which mode to use
 #' @return the output of svmMain which is the data set passed in
 #' @seealso \code{\link{processedMain}}
-main = function ( transformFunction = function(x) x, svmProcessFunction = NULL) {
+main <- function ( transformFunction = function(x) x, svmProcessFunction = NULL) {
 
   debugprintf("Code read successfully. Executing...")
-  args = (commandArgs(TRUE))
-  currentDir = getwd()
+  args <- (commandArgs(TRUE))
+  currentDir <- getwd()
 
   if (length(args) == 0){
     printf(
@@ -187,9 +187,9 @@ main = function ( transformFunction = function(x) x, svmProcessFunction = NULL) 
   }
 
   # Loads only files with CSV extension
-  args = list.files(pattern = "\\.csv$")
+  args <- list.files(pattern = "\\.csv$")
 
-  fileargs = Filter(file.exists, args)
+  fileargs <- Filter(file.exists, args)
 
   if (length(fileargs) == 0){
     printf("main: No files were successfully located at %s", getwd())
@@ -197,9 +197,9 @@ main = function ( transformFunction = function(x) x, svmProcessFunction = NULL) 
   }
 
   # We create an instance of a call counter for debugging purposes
-  callCounter = successCount()
+  callCounter <- successCount()
 
-  outputDataFrame = sapply(fileargs, loadCsvTrace, callCounter,
+  outputDataFrame <- sapply(fileargs, loadCsvTrace, callCounter,
     columnName = "watts", transformFunction = transformFunction)
 
   setwd(currentDir)
@@ -216,24 +216,24 @@ main = function ( transformFunction = function(x) x, svmProcessFunction = NULL) 
 #' @param svmProcessFunction a svm process function stating which mode to use
 #' @return the output of svmMain which is the data set passed in
 #' @seealso \code{\link{main}}
-processedMain = function ( selectedCols = c("label", "mean"), svmProcessFunction = NULL ){
+processedMain <- function ( selectedCols = c("label", "mean"), svmProcessFunction = NULL ){
 
   debugprintf("Code read successfully. Executing...")
-  args = (commandArgs(TRUE))
-  fileName = NULL
+  args <- (commandArgs(TRUE))
+  fileName <- NULL
 
   if (length(args) == 0){
     stop("main: No processed csv passed. Exiting....")
   }
 
-  fileName = args[1]
+  fileName <- args[1]
 
   if (!file.exists(fileName)){
     printf("File passed %s does not exist.", fileName)
     stop("Halting...")
   }
 
-  outputDataFrame = read.csv(fileName)
+  outputDataFrame <- read.csv(fileName)
 
   return(svmMain(outputDataFrame[selectedCols], svmProcessFunction = svmProcessFunction))
 

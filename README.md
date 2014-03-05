@@ -25,6 +25,8 @@ Created by David Tran (unsignedzero)
 
 # Version/Changelog #
 
+* Further testing needed.
+* Cleaned up = to <- in the correct context.
 * Cleaned comments in library.r.
 * Cleaned up code formatting. Strings use double quotes and spaces added
   after comma, around single and double equals. Extra space after return removed.

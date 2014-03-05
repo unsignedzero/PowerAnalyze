@@ -2,7 +2,7 @@
 # Library support functions for PowerAnalyze repo
 #
 # Created by David Tran
-# Version 0.7.0.0
+# Version 0.7.1.0
 # Last Modified 03-04-2014
 
 #' As oppose to head and tail, we grab all but the first nth
@@ -18,10 +18,10 @@
 #' body(1:50) -> 21:30
 #' body(1:6, 2) -> 3:4
 #' body(1:10, n = 4) -> 5:6
-body = function ( data, n = 20 ){
+body <- function ( data, n = 20 ){
 
   if (class(data) == "data.frame"){
-    len = nrow(data)
+    len <- nrow(data)
     if ( (n+1) > (len-n) ){
       printf("body: Impossible range %d to %d", n, len-n)
       return(data[NULL, ])
@@ -32,14 +32,14 @@ body = function ( data, n = 20 ){
   } else if (class(data) == "list"   || class(data) == "integer" ||
             class(data) == "numeric" || class(data) == "character" ||
             class(data) == "logical" ){
-    len = length(data)
+    len <- length(data)
 
     if ( (n+1) > (len-n) ){
       printf("body: Impossible range %d to %d", n, len-n)
       return(NULL)
     }
 
-    output = data[(n+1):(len-n)]
+    output <- data[(n+1):(len-n)]
     print(output)
     return(output)
 
@@ -55,7 +55,7 @@ body = function ( data, n = 20 ){
 #' @param listA the first numeric list we will preform the dot product
 #' @param listB the second numeric list we will preform the dot product
 #' @return a numeric containing the dot product
-dotProduct = function ( listA, listB ){
+dotProduct <- function ( listA, listB ){
 
   if (length(listA) != length(listB)){
     printf("Lists %s and %s are not identical in length",
@@ -71,7 +71,7 @@ dotProduct = function ( listA, listB ){
 #' @param ... prints out anything passes
 #' @return any input passed (should not happen)
 
-halt = function ( ... ){
+halt <- function ( ... ){
 
   print(...)
   stop("Halting execution...")
@@ -93,14 +93,14 @@ halt = function ( ... ){
 #' @examples
 #' install("e1071")
 #' @seealso \code{\link{lib}}
-install = function (pack, ...) {
+install <- function (pack, ...) {
 
   install.packages(pack,
     dependencies = TRUE, repos = "http://cran.us.r-project.org",
     ...
   )
 }
-inst = install # Function alias
+inst <- install # Function alias
 
 #' Checks if a package is installed and loads it. If not, it will install and then
 #' try to load it.
@@ -108,7 +108,7 @@ inst = install # Function alias
 #' @param pack the package that will be checked
 #' @param ... other arguments passed into libCheck
 #' @return a boolean stating if it is loaded
-lib = function (pack, ...){
+lib <- function (pack, ...){
 
   if (libCheck(pack, ...)){
     # Loaded successfully
@@ -127,7 +127,7 @@ lib = function (pack, ...){
 #' @param ... any other arguments for library
 #' @return a boolean value if it is installed correctly
 #' @seealso \code{\link{lib}}
-libCheck = function (pack, ...){
+libCheck <- function (pack, ...){
 
   return(suppressWarnings(
     library(pack,
@@ -145,7 +145,7 @@ libCheck = function (pack, ...){
 #' mag(3, 4) -> 5
 #' mag(5+12i) -> 13
 #' mag(c(6, 8)) -> 10
-mag = function(x) {
+mag <- function(x) {
 
   # Computes the magnitude
 
@@ -172,7 +172,7 @@ mag = function(x) {
 #' object.exists(mtcars) -> TRUE
 #' object.exists(1) -> FALSE
 #' object.exists(NA) -> FALSE
-object.exists = function(obj) {
+object.exists <- function(obj) {
 
   # Check if an object(variable) exists
 
@@ -186,15 +186,15 @@ object.exists = function(obj) {
 #' @param dataFrame the input dataFrame
 #' @param y the name of the column that will be used
 #' @return the input dataFrame
-plotPowerTrace = function ( dataFrame, y, fileName, ... ){
+plotPowerTrace <- function ( dataFrame, y, fileName, ... ){
 
   if (is.null(fileName)){
-    name = "output"
-    fileName = "output.pdf"
+    name <- "output"
+    fileName <- "output.pdf"
   }
   else{
-    name = fileName
-    fileName = paste(fileName, ".pdf", sep = "")
+    name <- fileName
+    fileName <- paste(fileName, ".pdf", sep = "")
   }
 
   pdf(fileName)
@@ -219,9 +219,9 @@ plotPowerTrace = function ( dataFrame, y, fileName, ... ){
 #' @examples
 #' removeColumn(mtcars, "mpg")
 #' removeColumn(rock, "perm")
-removeColumn = function( frame , colName ){
+removeColumn <- function( frame , colName ){
 
-  logicVector = unlist(lapply(colnames(frame), function(x) (!grepl(colName, x))))
+  logicVector <- unlist(lapply(colnames(frame), function(x) (!grepl(colName, x))))
 
   return(frame[logicVector])
 }
@@ -234,7 +234,7 @@ removeColumn = function( frame , colName ){
 #' @examples
 #' sort.data.frame(mtcars, "wt")
 #' sort.data.frame(rock, "shape")
-sort.data.frame = function ( frame, col = NULL ){
+sort.data.frame <- function ( frame, col = NULL ){
 
   if (class(frame) == "data.frame"){
     if (is.null(col)){
@@ -271,21 +271,21 @@ sort.data.frame = function ( frame, col = NULL ){
 #' @param start the starting place to cut, or end if one arg.
 #' @param end the end point.
 #' @return the substring
-subStr = function (str, start = 0, end = NULL){
+subStr <- function (str, start = 0, end = NULL){
 
   if (nchar(str) == 0){
     return(str)
   }
 
   if (is.null(end)){
-    end = start
-    start = 0
+    end <- start
+    start <- 0
   }
 
   if (end < start){
-    temp = start
-    start = end
-    end = temp
+    temp <- start
+    start <- end
+    end <- temp
   }
 
   if (start < 0){
@@ -303,7 +303,7 @@ subStr = function (str, start = 0, end = NULL){
 #' @examples
 #' square(4) -> 16
 #' square(list(3, 4)) -> list(16, 25)
-square = function (x) {
+square <- function (x) {
 
   if (class(x) == "numeric"){
     return(x^2)
@@ -324,16 +324,16 @@ square = function (x) {
 #' @return a function that needs to be invoked to increment the number that
 #'   will return the incremented number
 #' @examples
-#' a = successCount(1)
-#' b = successCount(0)
+#' a <- successCount(1)
+#' b <- successCount(0)
 #' a() -> 2
 #' b() -> 0
 #' b() -> 1
 #' b() -> 2
-successCount = function ( n = 0, startMsg = "This is the ",
+successCount <- function ( n = 0, startMsg = "This is the ",
     endMsg = "th successful call" ){
 
-  increment = function () {
+  increment <- function () {
     n <<- n + 1
     debugprintf("%s%d%s", startMsg, n, endMsg)
     return(n)
@@ -350,7 +350,7 @@ successCount = function ( n = 0, startMsg = "This is the ",
 #' @return csvData
 #' @examples
 #' (...tee(function(... input)))
-tee = function(csvData, fileName = "outputDataFrame"){
+tee <- function(csvData, fileName = "outputDataFrame"){
 
   write.csv(csvData, file = fileName)
 
@@ -361,7 +361,7 @@ tee = function(csvData, fileName = "outputDataFrame"){
 #'
 #' @param mat the input matrix that will be coverted
 #' @return the data.frame
-to.data.frame = function ( mat ){
+to.data.frame <- function ( mat ){
 
   return(do.call(rbind.data.frame, mat))
 }

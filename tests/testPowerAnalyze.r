@@ -2,7 +2,7 @@
 # We test the main code base here
 #
 # Created by David Tran
-# Version 0.4.3.0
+# Version 0.4.4.0
 # Last Modified 03-04-2014
 
 source("R/powerAnalyze.r")
@@ -28,7 +28,7 @@ test_that("Power Analyze code base works", {
   test_that("library.r is correct", {
     test_that("body function works", {
 
-      lambda = function(x) integer(x)
+      lambda <- function(x) integer(x)
 
       expect_that(body(1:50), equals(21:30))
       expect_that(body(1:20, 4), equals(5:16))
@@ -76,9 +76,9 @@ test_that("Power Analyze code base works", {
 
     test_that("successCount function works", {
 
-      counterA = successCount(5)
-      counterB = successCount(0)
-      counterC = successCount(7)
+      counterA <- successCount(5)
+      counterB <- successCount(0)
+      counterC <- successCount(7)
 
       expect_that(counterA(), equals(6))
       expect_that(counterB(), equals(1))
@@ -90,12 +90,12 @@ test_that("Power Analyze code base works", {
 
     test_that("to.data.frame works", {
 
-      input = list(
+      input <- list(
         row1 = list(a = 1, b = 2),
         row2 = list(a = 3, b = 4)
       )
 
-      output = (rbind(
+      output <- (rbind(
         row1 = list(a = 1, b = 2),
         row2 = list(a = 3, b = 4)
       ))
@@ -123,7 +123,7 @@ test_that("Power Analyze code base works", {
 
     test_that("loadCsvTrace works", {
 
-      testFileName = "tests/testCsvData/testRock.csv"
+      testFileName <- "tests/testCsvData/testRock.csv"
       if (!file.exists(testFileName)){
         printf("File %s does not exist. EXITING!", testFileName)
         stop("Halting...")
@@ -142,7 +142,7 @@ test_that("Power Analyze code base works", {
   test_that("svm.r is correct", {
     test_that("svmCountSplit works", {
 
-      testOutput = to.data.frame(list(
+      testOutput <- to.data.frame(list(
         row1 = list(a = 1, b = 2),
         row2 = list(a = 1, b = 4),
         row3 = list(a = 1, b = 6),
@@ -157,14 +157,14 @@ test_that("Power Analyze code base works", {
         equals(c(FALSE, FALSE, TRUE, TRUE))
       )
 
-      ret = svmCountSplit(0, sort.data.frame(mtcars), guessColumn = "vs")
+      ret <- svmCountSplit(0, sort.data.frame(mtcars), guessColumn = "vs")
 
       expect_that(length(ret), equals(18))
       expect_that(ret[1:3],
         equals(c(FALSE, FALSE, FALSE)))
       expect_that(ret[4:18], equals(as.logical(4:18)))
 
-      ret = svmCountSplit(4, sort.data.frame(mtcars), guessColumn = "cyl")
+      ret <- svmCountSplit(4, sort.data.frame(mtcars), guessColumn = "cyl")
 
       expect_that(length(ret), equals(11))
       expect_that(ret[1:2], equals(c(FALSE, FALSE)))
@@ -173,11 +173,11 @@ test_that("Power Analyze code base works", {
 
     test_that("svmFormatData works", {
 
-      ret = svmFormatData(sort.data.frame(beaver1, "activ"), guessColumn = "activ")
-      trainSet = ret[["trainSet"]]
-      testSet = ret[["testSet"]]
+      ret <- svmFormatData(sort.data.frame(beaver1, "activ"), guessColumn = "activ")
+      trainSet <- ret[["trainSet"]]
+      testSet <- ret[["testSet"]]
 
-      count = function(dataSet, key, col = "activ"){
+      count <- function(dataSet, key, col = "activ"){
         return(nrow(dataSet[dataSet[[col]] == key, ]))
       }
 

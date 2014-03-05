@@ -4,7 +4,7 @@
 # This is a sub package interfacing with our SVM module.
 #
 # Created by David Tran
-# Version 0.8.1.0
+# Version 0.8.2.0
 # Last Modified 03-04-2014
 
 lib("e1071")
@@ -15,7 +15,7 @@ lib("gplots")
 #' @param inputFrame the input data frame we will use
 #' @param keyColumn the column we will focus on in the formula
 #' @return the constructed svm with the formula correctly
-svmConstructor = function ( inputFrame, keyColumn, ... ){
+svmConstructor <- function ( inputFrame, keyColumn, ... ){
 
   # Simplifies the construction call for svm by cutting the data frame in the right place
 
@@ -41,21 +41,21 @@ svmConstructor = function ( inputFrame, keyColumn, ... ){
 #' @param guessColumn the column name the key will filter on
 #' @return a logical vector that can be used to cut the dataset in two
 #' @seealso \code{\link{svmFormatData}}
-svmCountSplit = function ( key, dataSet, percentage = 0.2, guessColumn = "label" ){
+svmCountSplit <- function ( key, dataSet, percentage = 0.2, guessColumn = "label" ){
 
-  count = nrow(dataSet[dataSet[[guessColumn]] == key, ])
-  splitValue = floor(percentage*count)
+  count <- nrow(dataSet[dataSet[[guessColumn]] == key, ])
+  splitValue <- floor(percentage*count)
 
   if (count == 0){
     stop("svmCountSplit getting 0 elements to split from. Exiting")
   }
 
   if (splitValue== 0 && count > 1){
-    splitValue = 1
+    splitValue <- 1
   }
 
-  boolRetVector = as.logical(1:count)
-  boolRetVector[1:splitValue] = FALSE
+  boolRetVector <- as.logical(1:count)
+  boolRetVector[1:splitValue] <- FALSE
 
   return(boolRetVector)
 }
@@ -75,25 +75,25 @@ svmCountSplit = function ( key, dataSet, percentage = 0.2, guessColumn = "label"
 #' @return a two element list containing the testSet and trainSet data
 #'   partitioned correctly.
 #' @seealso \code{\link{svmCountSplit}}
-svmFormatData = function( dataSet, percentage = 0.2, guessColumn = "label" ){
+svmFormatData <- function( dataSet, percentage = 0.2, guessColumn = "label" ){
 
-  dataSet = sort.data.frame(dataSet, col = guessColumn)
+  dataSet <- sort.data.frame(dataSet, col = guessColumn)
 
-  keyVector = unique(unlist(dataSet[[guessColumn]], use.names = FALSE))
-  keyVector = keyVector[order(keyVector)]
+  keyVector <- unique(unlist(dataSet[[guessColumn]], use.names = FALSE))
+  keyVector <- keyVector[order(keyVector)]
 
-  boolVector = unlist(
+  boolVector <- unlist(
     sapply(keyVector, svmCountSplit,
       dataSet = dataSet, percentage = percentage, guessColumn = guessColumn)
     )
 
   if (DEBUG){
-    testData = cbind(dataSet, boolVector)
+    testData <- cbind(dataSet, boolVector)
     print(testData[order(testData[guessColumn]), ])
   }
 
-  trainSet = dataSet[boolVector, ]
-  testSet = dataSet[!boolVector, ]
+  trainSet <- dataSet[boolVector, ]
+  testSet <- dataSet[!boolVector, ]
 
   # Creating a list whose names are the element containers
   return(list(testSet = testSet, trainSet = trainSet))
@@ -106,7 +106,7 @@ svmFormatData = function( dataSet, percentage = 0.2, guessColumn = "label" ){
 #' @param guessColumn the column name that the svm will train on
 #' @param workFunction the
 #' @return the dataSet passed in
-svmMain = function( dataSet, guessColumn = "label", svmProcessFunction = NULL ){
+svmMain <- function( dataSet, guessColumn = "label", svmProcessFunction = NULL ){
 
   debugprintf("Starting svmMain")
 
@@ -136,22 +136,22 @@ svmMain = function( dataSet, guessColumn = "label", svmProcessFunction = NULL ){
 #' @param dataSet the input data.frame that the svm will act on
 #' @param guessColumn the column name that the svm will train on
 #' @return the dataSet passed in
-svmProcessPercentSplit = function( dataSet, guessColumn = "label") {
+svmProcessPercentSplit <- function( dataSet, guessColumn = "label") {
 
-  output = svmFormatData(dataSet, guessColumn = guessColumn)
+  output <- svmFormatData(dataSet, guessColumn = guessColumn)
 
-  testSet = output[["testSet"]]
-  trainSet = output[["trainSet"]]
+  testSet <- output[["testSet"]]
+  trainSet <- output[["trainSet"]]
 
   # This is where one can train and test the SVM
   #svmTune(trainSet, guessColumn)
 
-  svmModel = svmConstructor(dataSet, guessColumn,
+  svmModel <- svmConstructor(dataSet, guessColumn,
     data = trainSet, degree = 3, gamma = 1000, cost = 1000)
 
-  prediction = predict(svmModel, removeColumn(testSet, guessColumn))
+  prediction <- predict(svmModel, removeColumn(testSet, guessColumn))
 
-  confusionMatrix = table(pred = prediction, true = testSet[, guessColumn])
+  confusionMatrix <- table(pred = prediction, true = testSet[, guessColumn])
 
   svmPlot(confusionMatrix)
 
@@ -170,7 +170,7 @@ svmProcessPercentSplit = function( dataSet, guessColumn = "label") {
 #'
 #' @param confusionMatrix the confusion matrix that we will plot
 #' @return the confusion matrix passed in
-svmPlot = function ( confusionMatrix ){
+svmPlot <- function ( confusionMatrix ){
 
   heatmap.2(confusionMatrix,
     margins = c(5, 10), Colv = NULL, Rowv = NULL, srtCol = 0,
@@ -208,7 +208,7 @@ svmPlot = function ( confusionMatrix ){
 #'   on
 #' @return the confusion matrix
 #' @seealso \code{\link{svmStatsCalc}}
-svmStats = function( confusionMatrix ){
+svmStats <- function( confusionMatrix ){
 
   if (nrow(confusionMatrix) != ncol(confusionMatrix)){
     printf("svmStats: Confusion matrix not square. Dim(%d, %d)",
@@ -219,12 +219,12 @@ svmStats = function( confusionMatrix ){
     printf("svmStats: Data Frame size must be 1 or larger")
   }
 
-  results = t(sapply(rownames(confusionMatrix), svmStatsCalc, confusionMatrix))
-  results = data.frame(results)
+  results <- t(sapply(rownames(confusionMatrix), svmStatsCalc, confusionMatrix))
+  results <- data.frame(results)
 
-  meanSelect = function (colA, table = results) return(mean(unlist(table[[colA]]),
+  meanSelect <- function (colA, table = results) return(mean(unlist(table[[colA]]),
     na.rm = TRUE))
-  weightedMeanSelect = function (colMain, colWeight, table = results) {
+  weightedMeanSelect <- function (colMain, colWeight, table = results) {
     return(dotProduct(unlist(table[[colMain]]),
                        unlist(table[[colWeight]]))/
       sum(unlist(table[[colWeight]]), na.rm = TRUE)
@@ -251,17 +251,17 @@ svmStats = function( confusionMatrix ){
 #'   on
 #' @return a list containing the row, precision and their normalized values
 #' @seealso \code{\link{svmStats}}
-svmStatsCalc = function ( key, confusionMatrix ){
+svmStatsCalc <- function ( key, confusionMatrix ){
 
-  curEntry = confusionMatrix[key, key]
+  curEntry <- confusionMatrix[key, key]
 
-  rowSum = sum(confusionMatrix[key, ])
-  colSum = sum(confusionMatrix[, key])
+  rowSum <- sum(confusionMatrix[key, ])
+  colSum <- sum(confusionMatrix[, key])
 
-  precision = curEntry/rowSum
-  recall = curEntry/colSum
-  precisionDen = rowSum
-  recallDen = colSum
+  precision <- curEntry/rowSum
+  recall <- curEntry/colSum
+  precisionDen <- rowSum
+  recallDen <- colSum
 
   printf("Analyzing precision of group %s: %d/%d = %-6.4f | Recall : %d/%d = %-6.4f",
     key,
@@ -285,10 +285,10 @@ svmStatsCalc = function ( key, confusionMatrix ){
 #' @param cost a numeric vector that will be the cost range we will train on
 #' @param ... any other paramters for the tune function
 #' @return the training set
-svmTune = function ( trainSet, testColumn = "label",
+svmTune <- function ( trainSet, testColumn = "label",
     gamma = 10^(-6:5), cost = 10^(-2:5), ... ){
 
-  tuned = tune.svm(removeColumn(trainSet, testColumn), trainSet[[testColumn]],
+  tuned <- tune.svm(removeColumn(trainSet, testColumn), trainSet[[testColumn]],
     data = trainSet, gamma = gamma, cost = cost, ...)
 
   plot(tuned)
@@ -306,9 +306,9 @@ svmTune = function ( trainSet, testColumn = "label",
 #' @param dataSet the input data.frame that the svm will act on
 #' @param guessColumn the column name that the svm will train on
 #' @return the dataSet passed in
-svmProcessLeaveOneOut = function ( dataSet, guessColumn = "label" ){
+svmProcessLeaveOneOut <- function ( dataSet, guessColumn = "label" ){
 
-  svmModel = svmConstructor(dataSet, guessColumn,
+  svmModel <- svmConstructor(dataSet, guessColumn,
     data = trainSet, degree = 3, gamma = 1000, cost = 1000, cross = nrow(dataSet))
 
   print(summary(svmModel))
