@@ -8,7 +8,8 @@ Author: David Tran
 Maintainer: David Tran <unsignedzero@gmail.com>
 Depends:
     R (>= 3.0.1),
-    e1071 (>= 1.6.2)
+    e1071 (>= 1.6.2),
+    gplots (>= 2.12.1)
 Suggests:
     e1071
 Description: This code base reads in data from power traces

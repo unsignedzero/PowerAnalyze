@@ -7,6 +7,12 @@ gen-doc:
 	r --no-save --file=R/front/powerAnalyzeGenDoc.r
 	r CMD Rd2pdf --title='Power Analyze' -o output.tex man/*.Rd
 
+lnormal:
+	r --no-save --file=R/front/powerAnalyzeNormalMainLOO.r '--args data'
+
+lfft:
+	r --no-save --file=R/front/powerAnalyzeFFTMainLOO.r '--args data'
+
 normal:
 	r --no-save --file=R/front/powerAnalyzeNormalMain.r '--args data'
 
@@ -14,10 +20,10 @@ fft:
 	r --no-save --file=R/front/powerAnalyzeFFTMain.r '--args data'
 
 readin:
-	r --no-save --file=R/front/powerAnalyzeProocessedMain.r '--args outputDataFrame'
+	r --no-save --file=R/front/powerAnalyzeProcessedMain.r '--args outputDataFrame'
 
 test-repo:
-	r --no-save --file=R/tests/testPowerAnalyze.r
+	r --no-save --file=tests/testPowerAnalyze.r
 
 clean:
 	rm -rvf *.x *.a *.o *.out *.gcda *.gcov *.gcno
