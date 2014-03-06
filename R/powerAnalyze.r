@@ -5,8 +5,8 @@
 # This is the main package managing the data flow.
 #
 # Created by David Tran
-# Version 0.7.2.0
-# Last Modified 03-04-2014
+# Version 0.7.3.0
+# Last Modified 03-05-2014
 
 # Add more files with this
 source("R/library.r")
@@ -14,6 +14,9 @@ source("R/svm.r")
 
 #' Debugger flag. Set TRUE to enable debugging or false otherwise.
 DEBUG <- FALSE
+
+#' Plot data flag. Set TRUE to plot out all input data.
+PLOTDATA <- FALSE
 
 # Aliases for easier printing
 printf <- function (...) print(sprintf(...))
@@ -94,7 +97,7 @@ labelTrace <- function(dataLabel) {
 #' @param label the label for the trace that will be converted
 #' @return a new vector contains the output of the statistical functions
 #'   and its label
-processTrace <- function (traceVector, label = NULL){
+processTrace <- function ( traceVector, label = NULL ) {
 
   funs <- c(mean, median, sd, mad, IQR)
   output <- lapply(funs, function(f) f(traceVector, na.rm = TRUE))
@@ -138,8 +141,10 @@ loadCsvTrace <- function ( fileName, successfulCallCount = function() NULL,
   usefulColumns <- c(columnName)
 
   # Plot it
-  #plotPowerTrace(dataFrame = trimmedData, y = "watts",
-  #  fileName = subStr(fileName, 0, nchar(fileName)-4))
+  if (PLOTDATA){
+    plotPowerTrace(dataFrame = trimmedData, y = "watts",
+      fileName = subStr(fileName, 0, nchar(fileName) - 4))
+  }
 
   if (usefulColumns %in% colnames(trimmedData)){
     trimmedData = trimmedData[usefulColumns]
@@ -171,7 +176,8 @@ loadCsvTrace <- function ( fileName, successfulCallCount = function() NULL,
 #' @param svmProcessFunction a svm process function stating which mode to use
 #' @return the output of svmMain which is the data set passed in
 #' @seealso \code{\link{processedMain}}
-main <- function ( transformFunction = function(x) x, svmProcessFunction = NULL) {
+main <- function ( transformFunction = function(x) x,
+    svmProcessFunction = NULL) {
 
   debugprintf("Code read successfully. Executing...")
   args <- (commandArgs(TRUE))
@@ -204,7 +210,9 @@ main <- function ( transformFunction = function(x) x, svmProcessFunction = NULL)
 
   setwd(currentDir)
 
-  return(svmMain(tee(to.data.frame(outputDataFrame)[1:2]), svmProcessFunction = svmProcessFunction))
+  # Configure the feature set that will passed into the SVM here
+  return(svmMain(tee(to.data.frame(outputDataFrame)[1:3]),
+    svmProcessFunction = svmProcessFunction))
 }
 
 #' A variant of main that reads in the csv and passes it onto svm
@@ -216,7 +224,8 @@ main <- function ( transformFunction = function(x) x, svmProcessFunction = NULL)
 #' @param svmProcessFunction a svm process function stating which mode to use
 #' @return the output of svmMain which is the data set passed in
 #' @seealso \code{\link{main}}
-processedMain <- function ( selectedCols = c("label", "mean"), svmProcessFunction = NULL ){
+processedMain <- function ( selectedCols = c("label", "mean"),
+    svmProcessFunction = NULL ) {
 
   debugprintf("Code read successfully. Executing...")
   args <- (commandArgs(TRUE))
@@ -235,7 +244,8 @@ processedMain <- function ( selectedCols = c("label", "mean"), svmProcessFunctio
 
   outputDataFrame <- read.csv(fileName)
 
-  return(svmMain(outputDataFrame[selectedCols], svmProcessFunction = svmProcessFunction))
+  return(svmMain(outputDataFrame[selectedCols],
+    svmProcessFunction = svmProcessFunction))
 
 }
 

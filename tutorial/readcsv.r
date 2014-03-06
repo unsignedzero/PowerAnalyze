@@ -3,9 +3,9 @@
 # r --no-save < readcsv.r "--args sample.csv"
 
 # https://stackoverflow.com/questions/2175809/alternative-to-is-null-in-r
-is.defined <- function(x)!is.null(x)
+is.defined <- function ( x ) !is.null(x)
 # http://www.inside-r.org/r-doc/base/file.remove
-exists <- function(x)file.exists(x)
+exists <- function ( x ) file.exists(x)
 
 readcsv <- function ( fin ) {
 
@@ -21,15 +21,15 @@ readcsv <- function ( fin ) {
   limit <- as.integer(20)
   print( limit )
   print( length(inputcsv[[1]]) - limit )
-  temp1 <- inputcsv[[1]][limit:(length(inputcsv[[1]])-limit)]
-  temp2 <- inputcsv[[2]][limit:(length(inputcsv[[2]])-limit)]
+  temp1 <- inputcsv[[1]][limit:(length(inputcsv[[1]]) - limit)]
+  temp2 <- inputcsv[[2]][limit:(length(inputcsv[[2]]) - limit)]
   outputcsv <- data.frame(cbind(temp1, temp2))
 
   print( outputcsv )
 
 }
 
-main <- function (){
+main <- function () {
   args <- (commandArgs(TRUE))
   if (length(args) == 0){
     stop("No arguments supplied.")

@@ -10,14 +10,16 @@ Created by David Tran (unsignedzero)
 
 1. Remove the bad data (filenames start with QQ\_)
 2. Load your own data [MUST end in .csv extension]
-3. Type make (or make fft) for 5-fold test.
-4. Grab output and Rplots.pdf file.
+3. Configure labelTrace to group the files correctly.
+4. Type make (or make fft) for 5-fold test. Add l in front for n cross
+   validation.
+5. Grab output and Rplots.pdf file.
 
 # TO DO #
 
 # Notes #
 
-* : has greater precedence than - so [20:40-20] = [(20:40)-20]
+* : has greater precedence than - so [20:40-20] is [(20:40)-20]
 
 # Questions #
 
@@ -25,11 +27,15 @@ Created by David Tran (unsignedzero)
 
 # Version/Changelog #
 
+* Uploading to Github.
+* Cleaned up ){ to ){. Added more spacing and each line has at most 80
+  characters.
 * Further testing needed.
 * Cleaned up = to <- in the correct context.
 * Cleaned comments in library.r.
 * Cleaned up code formatting. Strings use double quotes and spaces added
-  after comma, around single and double equals. Extra space after return removed.
+  after comma, around single and double equals. Extra space after return
+  removed.
 * Make test alias for make test-repo.
 * Added success message for test.
 * Added plot code and more support functions.

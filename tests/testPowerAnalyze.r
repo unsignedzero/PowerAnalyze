@@ -2,8 +2,8 @@
 # We test the main code base here
 #
 # Created by David Tran
-# Version 0.4.4.0
-# Last Modified 03-04-2014
+# Version 0.4.5.0
+# Last Modified 03-05-2014
 
 source("R/powerAnalyze.r")
 
@@ -43,7 +43,7 @@ test_that("Power Analyze code base works", {
 
       expect_that(mag(3), equals(3))
       expect_that(mag(3:4), equals(5))
-      expect_that(mag(3+4i), equals(5))
+      expect_that(mag(3 + 4i), equals(5))
       expect_that(mag(list(5, 12)), equals(13))
     })
 
@@ -133,7 +133,7 @@ test_that("Power Analyze code base works", {
         to.data.frame(
           loadCsvTrace(testFileName, columnName = "peri")
         )[["mean"]],
-        equals( mean(rock[["peri"]][21:(nrow(rock)-20)]))
+        equals( mean(rock[["peri"]][21:(nrow(rock) - 20)]))
       )
 
     })
@@ -153,7 +153,8 @@ test_that("Power Analyze code base works", {
         equals(c(FALSE, TRUE, TRUE, TRUE))
       )
 
-      expect_that(svmCountSplit(1, testOutput, percentage = 0.5, guessColumn = "a"),
+      expect_that(
+        svmCountSplit(1, testOutput, percentage = 0.5, guessColumn = "a"),
         equals(c(FALSE, FALSE, TRUE, TRUE))
       )
 
@@ -173,11 +174,12 @@ test_that("Power Analyze code base works", {
 
     test_that("svmFormatData works", {
 
-      ret <- svmFormatData(sort.data.frame(beaver1, "activ"), guessColumn = "activ")
+      ret <- svmFormatData(sort.data.frame(beaver1, "activ"),
+        guessColumn = "activ")
       trainSet <- ret[["trainSet"]]
       testSet <- ret[["testSet"]]
 
-      count <- function(dataSet, key, col = "activ"){
+      count <- function(dataSet, key, col = "activ") {
         return(nrow(dataSet[dataSet[[col]] == key, ]))
       }
 
