@@ -5,17 +5,37 @@
 # This is the main package managing the data flow.
 #
 # Created by David Tran
-# Version 0.7.3.0
-# Last Modified 03-05-2014
+# Version 0.8.0.0
+# Last Modified 03-06-2014
 
 # Add more files with this
-source("R/library.r")
-source("R/svm.r")
+# Paths check if we are building documentation or not.
+if (object.exists(docBuild)){
+  source("library.r")
+  #source("svm.r")
+}
+if (!object.exists(docBuild)){
+  source("R/library.r")
+  #source("R/svm.r")
+}
+
+srcFile("R/svm.r")
 
 #' Debugger flag. Set TRUE to enable debugging or false otherwise.
+#'
+#' With this off, the verbosity is at a minimum.
+#'
+#' @usage DEBUG <- logical type
+#' @format logical type (default FALSE)
 DEBUG <- FALSE
 
 #' Plot data flag. Set TRUE to plot out all input data.
+#'
+#' Can slow down the program given large inputs. The values are not modified
+#' before being plotted.
+#'
+#' @usage PLOTDATA <- logical type
+#' @format logical type (default FALSE)
 PLOTDATA <- FALSE
 
 # Aliases for easier printing
@@ -23,12 +43,17 @@ printf <- function (...) print(sprintf(...))
 debugprint <- function (...) if (DEBUG) print(...)
 debugprintf <- function (...) if (DEBUG) printf(...)
 
-#' Given a string label, this function labels the trace. This is used to group
-#' different files together as one group to be able to run svm correctly.
+#' Given a string label, this function maps the label to a group ID number.
 #'
-#' @param dataLabel the string that will
-#' @return returns the label or 0 is it can't label.
-labelTrace <- function(dataLabel) {
+#' This is used to group different filenames into similar groups. This uses
+#' regexes and should be EDITED before working on different data sets. This
+#' allows the SVM to group different datasets correctly.
+#'
+#' NAs will return a -1.
+#'
+#' @param dataLabel The string that will used to identify a group ID.
+#' @return A group ID or 0 if it can't be matched.
+labelTrace <- function( dataLabel ) {
 
   retLabel <- NA
 
@@ -89,14 +114,18 @@ labelTrace <- function(dataLabel) {
   return(retLabel)
 }
 
-#' Given the traceVector and a label, labels the associated trace and
-#' computes the statistics functions in funs
+#' Given a vector and a label, returns a vector containing its group ID and
+#' output from mean, median, sd, mad and IQR.
 #'
-#' @param traceVector the input vector that the statistical functions will
-#'   act on
-#' @param label the label for the trace that will be converted
-#' @return a new vector contains the output of the statistical functions
-#'   and its label
+#' This function, preforms the mean, median, sd, mad and IQR on the dataset.
+#' This returns back a six-element vector containing the group ID of the trace
+#' and then the outputs of mean, median, sd, mad and IQR.
+#'
+#' @param traceVector The input numeric vector.
+#' @param label (optional, default NULL) The label for the trace that will be
+#'   used to group the trace.
+#' @return A new vector contains the group ID and output of the statistical
+#'   functions.
 processTrace <- function ( traceVector, label = NULL ) {
 
   funs <- c(mean, median, sd, mad, IQR)
@@ -113,16 +142,27 @@ processTrace <- function ( traceVector, label = NULL ) {
   return(output)
 }
 
-#' Opens the csv files and processes the data returning a list containing
-#' the output of processTrace
+#' Opens the csv files and processes the data, returning a list containing
+#' the condensed output of processTrace.
 #'
-#' @param filename the file that will be opened
-#' @param successfulCallCount a counter function, counting how many times
-#'   this was successfully executed. Mainly used for debugging bad files.
-#' @param columnName the column name we will work on, from the csv.
-#' @param transformFunction a function that should transform the data,
-#'   i.e. fft if desired. This will apply itself before we call processTrace
-#' @return a list containing the output of processTrace
+#' This is a loader function that calls other functions and processes the
+#' data so that it will work for the next function. This function is called
+#' once for each csv file. Invalid or malformatted files return NA.
+#'
+#' If plots of the input csv are desired, it is suggested that the flag
+#' PLOTDATA be set to true.
+#'
+#' @param filename The csv file that will be opened and processed.
+#' @param successfulCallCount A counter function, counting how many times
+#'   this function was successfully executed. Mainly used for counting bad
+#'   files.
+#' @param columnName The column name, from the csv, that will be used as
+#'   the dataset.
+#' @param transformFunction A function that should transform the data,
+#'   i.e. FFT, if desired. This will apply itself before processTrace is
+#'   called.
+#' @return A list containing the output of processTrace. Each row maps to
+#'   a csv file.
 #' @seealso \code{\link{processTrace}}
 loadCsvTrace <- function ( fileName, successfulCallCount = function() NULL,
   columnName = "watts", transformFunction = function (x) x ) {
@@ -168,13 +208,19 @@ loadCsvTrace <- function ( fileName, successfulCallCount = function() NULL,
   return(lapply(trimmedData, function(x) processTrace(x, fileName)))
 }
 
-#' Loads all files passed in as an argument and passes it to other functions
-#' to parse. If the data is already parsed, use processedMain instead.
+#' Takes a directory of CSV files, loads it and calls other functions to
+#' process and parse the input. Then it is passed into the SVM package.
 #'
-#' @param transformFunction a function that will be used to transform the
-#'   data i.e. FFT.
-#' @param svmProcessFunction a svm process function stating which mode to use
-#' @return the output of svmMain which is the data set passed in
+#' This function sets up the calls for all other functions. Implicitly,
+#' it is assumed that the data is in separate files. If the data is already
+#' collected, from another run, processedMain may be used instead to speed
+#' up the process and avoid processing the CSV files.
+#'
+#' @param transformFunction A function that will be used to transform the
+#'   data, i.e. FFT.
+#' @param svmProcessFunction (optional, default NULL) An SVM process function
+#'   stating which mode to use.
+#' @return The output of svmMain which is the data set passed in
 #' @seealso \code{\link{processedMain}}
 main <- function ( transformFunction = function(x) x,
     svmProcessFunction = NULL) {
@@ -215,14 +261,16 @@ main <- function ( transformFunction = function(x) x,
     svmProcessFunction = svmProcessFunction))
 }
 
-#' A variant of main that reads in the csv and passes it onto svm
+#' A variant of main that reads in the csv and passes it onto SVM.
+#'
 #' No processing is done here. If the data needs to be processed,
 #' use main instead.
 #'
-#' @param selectedCols the columns we will pick off from the data
-#'   frame that will be passed into the svm
-#' @param svmProcessFunction a svm process function stating which mode to use
-#' @return the output of svmMain which is the data set passed in
+#' @param selectedCols The vector of columns names used to pick off the desired
+#'   elements for the feature vector that will be used in the SVM.
+#' @param svmProcessFunction (optional, default NULL) An SVM process function
+#'   stating which mode to use.
+#' @return The output of svmMain which is the data set passed in
 #' @seealso \code{\link{main}}
 processedMain <- function ( selectedCols = c("label", "mean"),
     svmProcessFunction = NULL ) {

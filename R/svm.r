@@ -4,17 +4,24 @@
 # This is a sub package interfacing with our SVM module.
 #
 # Created by David Tran
-# Version 0.8.3.0
-# Last Modified 03-05-2014
+# Version 0.9.0.0
+# Last Modified 03-06-2014
 
 lib("e1071")
 lib("gplots")
 
-#' A wrapper around the svm constructor for the purposes for this repo.
+#' A wrapper around the SVM constructor to make it easier to pass in right
+#'   columns for grouping and data.
 #'
-#' @param inputFrame the input data frame we will use
-#' @param keyColumn the column we will focus on in the formula
-#' @return the constructed svm with the formula correctly
+#' This function allows one to control which columns of the input data frame
+#' is used for what.
+#'
+#' @param inputFrame The input data frame that will be used as the model for
+#'    the SVM.
+#' @param keyColumn The column that will be focused on in the SVM model.
+#' @param ... Any other arguments for the SVM constructor.
+#' @return The constructed SVM model with the correct formula from the input
+#'   data.
 svmConstructor <- function ( inputFrame, keyColumn, ... ) {
 
   if (class(inputFrame) != "data.frame"){
@@ -26,18 +33,24 @@ svmConstructor <- function ( inputFrame, keyColumn, ... ) {
   )
 }
 
-#' Creates a logical vector that splits a dataset into training and test.
-#' The first elements marked FALSE will be used for testing and TRUE is marked
-#' for training
+#' Creates a logical vector can be used to split a data set into the training
+#' set and the test set.
+#'
+#' The first elements are marked false and will be used for testing in this
+#' repo. The rest of the elements are marked true and used for training.
 #'
 #' This function is called on by svmFormatData to split the dataSet.
 #'
-#' @param key is the unique key in the column that is our data set
-#' @param percentage is the amount of elements that will be thrown into testing
-#'   min 1, if the data set is larger than 1. Should be a numeric between 0
-#'   and 1.
-#' @param guessColumn the column name the key will filter on
-#' @return a logical vector that can be used to cut the dataset in two
+#' @param key The unique key that identfies one group in the column.
+#' @param dataSet The input data frame that will be split.
+#' @param percentage (optional, default 0.2) The percentage of elements that
+#'   will be thrown into testing min one, if the group size is larger than one.
+#'   Should be a numeric value between zero and one. The other 1 - percentage
+#'   elements will be used for training. We will take the floor amount of
+#'   elements if the percentages results in a non-integer value.
+#' @param guessColumn (optional, default "label") The column name containing
+#'   the group information.
+#' @return A logical vector that can be used to cut the data set in two.
 #' @seealso \code{\link{svmFormatData}}
 svmCountSplit <- function ( key, dataSet, percentage = 0.2,
     guessColumn = "label" ) {
@@ -59,20 +72,26 @@ svmCountSplit <- function ( key, dataSet, percentage = 0.2,
   return(boolRetVector)
 }
 
+#' Splits the dataSet into two pieces and returns a list containing said
+#' pieces.
+#'
 #' Takes the dataSet and the guessColumn and splits it into the training set
-#' and the test set. The test set is min 1 unless only one element is
-#' passed. The "guessColumn" is what we focus on.
-#;
+#' and the test set. The test set is min one, unless only one element is
+#' passed. The guessColumn should contain the group information that will
+#' be used in the svmCountSplit.
+#'
 #' This function relies on svmCountSplit to create a logic vector to split the
 #' set
 #'
-#' @param dataSet the input data.frame that will be split in
-#' @param percentage is the amount of elements that will be thrown into testing
-#'   min 1, if the data set is larger than 1. Should be a numeric between 0
-#'   and 1.
-#' @param guessColumn the column name the key will filter on
-#' @return a two element list containing the testSet and trainSet data
-#'   partitioned correctly.
+#' @param dataSet The input data frame that will be split.
+#' @param percentage (optional, default 0.2) The percentage of elements that
+#'   will be thrown into testing min one, if the group size is larger than one.
+#'   Should be a numeric value between zero and one. The other 1 - percentage
+#'   elements will be used for training. We will take the floor amount of
+#'   elements if the percentages results in a non-integer value.
+#' @param guessColumn (optional, default "label") The column name containing
+#'   the group information.
+#' @return A two-element list containing the testSet and trainSet data.
 #' @seealso \code{\link{svmCountSplit}}
 svmFormatData <- function( dataSet, percentage = 0.2, guessColumn = "label" ) {
 
@@ -98,13 +117,13 @@ svmFormatData <- function( dataSet, percentage = 0.2, guessColumn = "label" ) {
   return(list(testSet = testSet, trainSet = trainSet))
 }
 
-#' Sets up which process function we will use to operate on the data.
-#' Each process function represents a different mode.
+#' Sets up which process function that will operate on the data.
 #'
-#' @param dataSet the input data.frame that the svm will act on
-#' @param guessColumn the column name that the svm will train on
-#' @param workFunction the
-#' @return the dataSet passed in
+#' @param dataSet The input data frame that the SVM will use.
+#' @param guessColumn The column name containing the group information.
+#' @param workFunction (optional, default NULL) The work function that will
+#'   use the data.
+#' @return The input dataSet passed in.
 svmMain <- function( dataSet, guessColumn = "label",
     svmProcessFunction = NULL ) {
 
@@ -126,50 +145,12 @@ svmMain <- function( dataSet, guessColumn = "label",
 
 }
 
-#' Controls the other functions and splits the dataSet into two
-#' pieces, trains the SVM and runs the test set on it. Once done,
-#' it will print out the confusion matrix.
-#'
-#' This is where we can train the svn.
-#' @seealso \code{\link{svmTune}}
-#'
-#' @param dataSet the input data.frame that the svm will act on
-#' @param guessColumn the column name that the svm will train on
-#' @return the dataSet passed in
-svmProcessPercentSplit <- function( dataSet, guessColumn = "label") {
-
-  output <- svmFormatData(dataSet, guessColumn = guessColumn)
-
-  testSet <- output[["testSet"]]
-  trainSet <- output[["trainSet"]]
-
-  # This is where one can train and test the SVM
-  #svmTune(trainSet, guessColumn)
-
-  svmModel <- svmConstructor(dataSet, guessColumn,
-    data = trainSet, degree = 3, gamma = 1000, cost = 1000)
-
-  prediction <- predict(svmModel, removeColumn(testSet, guessColumn))
-
-  confusionMatrix <- table(pred = prediction, true = testSet[, guessColumn])
-
-  svmPlot(confusionMatrix)
-
-  print(summary(svmModel))
-  print(confusionMatrix)
-  svmStats(confusionMatrix)
-
-  printf("Numbers of training data %d", nrow(trainSet))
-  printf("Numbers of test data %d", nrow(testSet))
-
-  return(dataSet)
-}
-
 #' Creates a plot of the confusion matrix.
-#' We use the gplot library to print it.
 #'
-#' @param confusionMatrix the confusion matrix that we will plot
-#' @return the confusion matrix passed in
+#' Creates a heat map from the confusion matrix using gplot.
+#'
+#' @param confusionMatrix The confusion matrix that will be plotted.
+#' @return The input confusion matrix.
 svmPlot <- function ( confusionMatrix ) {
 
   heatmap.2(confusionMatrix,
@@ -191,22 +172,84 @@ svmPlot <- function ( confusionMatrix ) {
 
 }
 
+#' Preforms leave-one-out on the data set.
+#'
+#' Preforms leave-one-out on the data set which is called k-folds, where k
+#' is the number of rows on the data set. Configure gamma and cost to maximize
+#' results.
+#'
+#' @param dataSet The input data frame.
+#' @param guessColumn (optional, default "label") The column name containing
+#'   the group information.
+#' @param ... Any other paramters for the svmConstructor.
+#' @return The input data frame.
+svmProcessLeaveOneOut <- function ( dataSet, guessColumn = "label", ... ) {
+
+  svmModel <- svmConstructor(dataSet, guessColumn,
+    data = trainSet, degree = 3, gamma = 1000, cost = 1000,
+    cross = nrow(dataSet), ...
+  )
+
+  print(summary(svmModel))
+
+}
+
+#' Splits the data set into training set and test set, by percentages,
+#' and runs the SVM.
+#'
+#' If tuning is desired, it is suggested that the call to
+#' \code{\link{svmTune}} be made in this function.
+#'
+#' @param dataSet The input data frame.
+#' @param guessColumn (optional, default "label") The column name containing
+#'   the group information.
+#' @return The input data frame.
+svmProcessPercentSplit <- function( dataSet, guessColumn = "label") {
+
+  output <- svmFormatData(dataSet, guessColumn = guessColumn)
+
+  testSet <- output[["testSet"]]
+  trainSet <- output[["trainSet"]]
+
+  # Uncomment and train
+  #svmTune(trainSet, guessColumn)
+
+  svmModel <- svmConstructor(dataSet, guessColumn,
+    data = trainSet, degree = 3, gamma = 1000, cost = 1000)
+
+  prediction <- predict(svmModel, removeColumn(testSet, guessColumn))
+
+  confusionMatrix <- table(pred = prediction, true = testSet[, guessColumn])
+
+  svmPlot(confusionMatrix)
+
+  print(summary(svmModel))
+  print(confusionMatrix)
+  svmStats(confusionMatrix)
+
+  printf("Numbers of training data %d", nrow(trainSet))
+  printf("Numbers of test data %d", nrow(testSet))
+
+  return(dataSet)
+}
+
 #' Takes the confusion matrix and prints the precision and recall of each
 #' entry and the average of all values.
 #'
-#' This function relies on svmStatsCalc to print the values.
+#' This function relies on svmStatsCalc to print the values. All NAs are
+#' ignored by the mean, which can skew results.
 #'
-#' Given the way the table is printer, pred is on the y-axis and true is on
-#' the x-axis, these facts are true.
+#' Given the way the table is printed, the prediction is on the y-axis and the
+#' actual value is printed on the x-axis.
 #'
-#'  Precision, tp/(tp + fp) which is
-#'    (True/ROW)
-#'  Recall, tp/(tp + fn) which is
-#'    (True/COL)
+#' Due to the orientation of the table, these are true:
+#' Precision is tp/(tp + fp) which is
+#'   (True/ROW)
+#' Recall is tp/(tp + fn) which is
+#'   (True/COL)
 #'
-#' @param confusionMatrix the confusion matrix that we will print the values
-#'   on
-#' @return the confusion matrix
+#' @param confusionMatrix The confusion matrix that will be analyzed.
+#' @return The input confusion matrix.
 #' @seealso \code{\link{svmStatsCalc}}
 svmStats <- function( confusionMatrix ) {
 
@@ -247,20 +290,24 @@ svmStats <- function( confusionMatrix ) {
   return(confusionMatrix)
 }
 
-#' Takes the key and confusion matrix and prints the value on one
-#' specific entry on the diagonal and its associated row and column
+#' Prints the recall and precision for one specific entry.
 #'
-#' @param key, the diagonal entry this will work on
-#' @param confusionMatrix the confusion matrix that we will print the values
-#'   on
-#' @return a list containing the row, precision and their normalized values
+#' Recall should, in the worst case, be zero. The precision may be NA, due to
+#' a division by zero. That is to say sum of rows can be zero but sum of
+#' columns cannot be.
+#'
+#' @param colPos The current column (specifically diagonal entry) that
+#'   the recall and precision will be printed.
+#' @param confusionMatrix The input confusion matrix.
+#' @return A list containing the numerator and denominator of precision
+#'   and recall.
 #' @seealso \code{\link{svmStats}}
-svmStatsCalc <- function ( key, confusionMatrix ) {
+svmStatsCalc <- function ( colPos, confusionMatrix ) {
 
-  curEntry <- confusionMatrix[key, key]
+  curEntry <- confusionMatrix[colPos, colPos]
 
-  rowSum <- sum(confusionMatrix[key, ])
-  colSum <- sum(confusionMatrix[, key])
+  rowSum <- sum(confusionMatrix[colPos, ])
+  colSum <- sum(confusionMatrix[, colPos])
 
   precision <- curEntry/rowSum
   recall <- curEntry/colSum
@@ -269,7 +316,7 @@ svmStatsCalc <- function ( key, confusionMatrix ) {
 
   printf(
     "Analyzing precision of group %s: %d/%d = %-6.4f | Recall : %d/%d = %-6.4f",
-    key,
+    colPos,
     curEntry, rowSum,
     precision,
     curEntry, colSum,
@@ -282,14 +329,22 @@ svmStatsCalc <- function ( key, confusionMatrix ) {
   ))
 }
 
-#' Tunes an svm machine to get optimal results and prints the value.
+#' Tunes an SVM machine to get optimal results and prints a table of the
+#' best parameters.
 #'
-#' @param trainSet the data.frame that the svm will train on
-#' @param testColumn the column that the svm will train on
-#' @param gamma a numeric vector that will be the gamma range we will train on
-#' @param cost a numeric vector that will be the cost range we will train on
-#' @param ... any other paramters for the tune function
-#' @return the training set
+#' This should be used every time a different data set is used as a tuned SVM
+#' has a nominally improved precision and recall. This should be the first
+#' place to experiment when those two values need to be increased.
+#'
+#' @param trainSet The input training data frame.
+#' @param testColumn (optional, default "label") The column name containing
+#'   the group information.
+#' @param gamma A numeric vector containing a collection of gamma values used
+#'    for exploration.
+#' @param cost A numeric vector containing a collection of cost values used
+#'    for exploration.
+#' @param ... Any other arguments for the tune function.
+#' @return The input training frame.
 svmTune <- function ( trainSet, testColumn = "label",
     gamma = 10^(-6:5), cost = 10^(-2:5), ... ) {
 
@@ -303,21 +358,3 @@ svmTune <- function ( trainSet, testColumn = "label",
   return(trainSet)
 }
 
-#' Preforms leave-one-out on the dataset and prints the accuracy.
-#'
-#' This is where we can train the svn.
-#' @seealso \code{\link{svmTune}}
-#'
-#' @param dataSet the input data.frame that the svm will act on
-#' @param guessColumn the column name that the svm will train on
-#' @return the dataSet passed in
-svmProcessLeaveOneOut <- function ( dataSet, guessColumn = "label" ) {
-
-  svmModel <- svmConstructor(dataSet, guessColumn,
-    data = trainSet, degree = 3, gamma = 1000, cost = 1000,
-    cross = nrow(dataSet)
-  )
-
-  print(summary(svmModel))
-
-}

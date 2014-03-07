@@ -4,4 +4,5 @@
 source('R/library.r')
 lib('roxygen2')
 
+docBuild <- TRUE
 print(roxygenize('.'))

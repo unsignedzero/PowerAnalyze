@@ -17,6 +17,8 @@ Created by David Tran (unsignedzero)
 
 # TO DO #
 
+* Check NAMESPACE file.
+
 # Notes #
 
 * : has greater precedence than - so [20:40-20] is [(20:40)-20]
@@ -27,6 +29,9 @@ Created by David Tran (unsignedzero)
 
 # Version/Changelog #
 
+## 1.0.0.0 [2014-03-06] #
+* Bugfix: gen-doc now working due to bad source directory.
+* Cleaned up all comments for roxygen2.
 * Uploading to Github.
 * Cleaned up ){ to ){. Added more spacing and each line has at most 80
   characters.
