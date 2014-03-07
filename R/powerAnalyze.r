@@ -5,137 +5,186 @@
 # This is the main package managing the data flow.
 #
 # Created by David Tran
-# Version 0.7.0.0
-# Last Modified 02-25-2014
+# Version 0.8.0.0
+# Last Modified 03-06-2014
 
 # Add more files with this
-source('R/library.r')
-source('R/svm.r')
+# Paths check if we are building documentation or not.
+if (object.exists(docBuild)){
+  source("library.r")
+  #source("svm.r")
+}
+if (!object.exists(docBuild)){
+  source("R/library.r")
+  #source("R/svm.r")
+}
+
+srcFile("R/svm.r")
 
 #' Debugger flag. Set TRUE to enable debugging or false otherwise.
-DEBUG = FALSE
+#'
+#' With this off, the verbosity is at a minimum.
+#'
+#' @usage DEBUG <- logical type
+#' @format logical type (default FALSE)
+DEBUG <- FALSE
+
+#' Plot data flag. Set TRUE to plot out all input data.
+#'
+#' Can slow down the program given large inputs. The values are not modified
+#' before being plotted.
+#'
+#' @usage PLOTDATA <- logical type
+#' @format logical type (default FALSE)
+PLOTDATA <- FALSE
 
 # Aliases for easier printing
-printf = function (...) print(sprintf(...))
-debugprint = function (...) if (DEBUG) print(...)
-debugprintf = function (...) if (DEBUG) printf(...)
+printf <- function (...) print(sprintf(...))
+debugprint <- function (...) if (DEBUG) print(...)
+debugprintf <- function (...) if (DEBUG) printf(...)
 
-#' Given a string label, this function labels the trace. This is used to group
-#' different files together as one group to be able to run svm correctly.
+#' Given a string label, this function maps the label to a group ID number.
 #'
-#' @param dataLabel the string that will
-#' @return returns the label or 0 is it can't label.
-labelTrace = function(dataLabel) {
+#' This is used to group different filenames into similar groups. This uses
+#' regexes and should be EDITED before working on different data sets. This
+#' allows the SVM to group different datasets correctly.
+#'
+#' NAs will return a -1.
+#'
+#' @param dataLabel The string that will used to identify a group ID.
+#' @return A group ID or 0 if it can't be matched.
+labelTrace <- function( dataLabel ) {
 
-  retLabel = NA
+  retLabel <- NA
 
   if (is.null(dataLabel)){
-    retLabel = -1
+    retLabel <- -1
   }
-  else if (grepl('^.._baseline', dataLabel)){
-    retLabel = 1
+  else if (grepl("^.._baseline", dataLabel)){
+    retLabel <- 1
   }
-  else if (grepl('^.._Graph500', dataLabel)){
-    retLabel = 2
+  else if (grepl("^.._Graph500", dataLabel)){
+    retLabel <- 2
   }
-  else if (grepl('^.._nsort', dataLabel)){
-    retLabel = 3
+  else if (grepl("^.._nsort", dataLabel)){
+    retLabel <- 3
   }
-  else if (grepl('^.._p95', dataLabel)){
-    retLabel = 4
+  else if (grepl("^.._p95", dataLabel)){
+    retLabel <- 4
   }
-  else if (grepl('^.._stream', dataLabel)){
-    retLabel = 5
+  else if (grepl("^.._stream", dataLabel)){
+    retLabel <- 5
   }
-  else if (grepl('^.._systemburn_DGEMM', dataLabel)){
-    retLabel = 6
+  else if (grepl("^.._systemburn_DGEMM", dataLabel)){
+    retLabel <- 6
   }
-  else if (grepl('^.._systemburn_FFT1D', dataLabel)){
-    retLabel = 7
+  else if (grepl("^.._systemburn_FFT1D", dataLabel)){
+    retLabel <- 7
   }
-  else if (grepl('^.._sb_fft1d', dataLabel)){
-    retLabel = 7
+  else if (grepl("^.._sb_fft1d", dataLabel)){
+    retLabel <- 7
   }
-  else if (grepl('^.._systemburn_FFT2D', dataLabel)){
-    retLabel = 8
+  else if (grepl("^.._systemburn_FFT2D", dataLabel)){
+    retLabel <- 8
   }
-  else if (grepl('^.._systemburn_GUPS', dataLabel)){
-    retLabel = 9
+  else if (grepl("^.._systemburn_GUPS", dataLabel)){
+    retLabel <- 9
   }
-  else if (grepl('^.._systemburn_SCUBLAS', dataLabel)){
-    retLabel = 'A'
+  else if (grepl("^.._systemburn_SCUBLAS", dataLabel)){
+    retLabel <- "A"
   }
-  else if (grepl('^.._systemburn_TILT', dataLabel)){
-    retLabel = 'B'
+  else if (grepl("^.._systemburn_TILT", dataLabel)){
+    retLabel <- "B"
   }
-  else if (grepl('^.._sb_tilt', dataLabel)){
-    retLabel = 'B'
+  else if (grepl("^.._sb_tilt", dataLabel)){
+    retLabel <- "B"
   }
-  else if (grepl('^.._calib', dataLabel)){
-    retLabel = 'C'
+  else if (grepl("^.._calib", dataLabel)){
+    retLabel <- "C"
   }
   else{
     printf("labelTrace: Bad label for %s", dataLabel)
-    retLabel = 0
+    retLabel <- 0
   }
 
-  retLabel = as.character(retLabel)
+  retLabel <- as.character(retLabel)
 
   debugprintf("File %s, labeled as %s", dataLabel, retLabel)
 
-  return (retLabel)
+  return(retLabel)
 }
 
-#' Given the traceVector and a label, labels the associated trace and
-#' computes the statistics functions in funs
+#' Given a vector and a label, returns a vector containing its group ID and
+#' output from mean, median, sd, mad and IQR.
 #'
-#' @param traceVector the input vector that the statistical functions will
-#'   act on
-#' @param label the label for the trace that will be converted
-#' @return a new vector contains the output of the statistical functions
-#'   and its label
-processTrace = function (traceVector, label=NULL){
+#' This function, preforms the mean, median, sd, mad and IQR on the dataset.
+#' This returns back a six-element vector containing the group ID of the trace
+#' and then the outputs of mean, median, sd, mad and IQR.
+#'
+#' @param traceVector The input numeric vector.
+#' @param label (optional, default NULL) The label for the trace that will be
+#'   used to group the trace.
+#' @return A new vector contains the group ID and output of the statistical
+#'   functions.
+processTrace <- function ( traceVector, label = NULL ) {
 
-  funs = c(mean, median, sd, mad, IQR)
-  output = lapply(funs, function(f) f(traceVector, na.rm = TRUE))
+  funs <- c(mean, median, sd, mad, IQR)
+  output <- lapply(funs, function(f) f(traceVector, na.rm = TRUE))
 
-  # Add 'label' to first entry in vector.
-  traceLabel = labelTrace(label)
-  output = c(traceLabel,output)
+  # Add "label" to first entry in vector.
+  traceLabel <- labelTrace(label)
+  output <- c(traceLabel, output)
 
-  names(output) = c("label",
+  names(output) <- c("label",
     c("mean", "median", "sd", "mad", "IQR")
   )
 
-  return (output)
+  return(output)
 }
 
-#' Opens the csv files and processes the data returning a list containing
-#' the output of processTrace
+#' Opens the csv files and processes the data, returning a list containing
+#' the condensed output of processTrace.
 #'
-#' @param filename the file that will be opened
-#' @param successfulCallCount a counter function, counting how many times
-#'   this was successfully executed. Mainly used for debugging bad files.
-#' @param columnName the column name we will work on, from the csv.
-#' @param transformFunction a function that should transform the data,
-#'   i.e. fft if desired. This will apply itself before we call processTrace
-#' @return a list containing the output of processTrace
+#' This is a loader function that calls other functions and processes the
+#' data so that it will work for the next function. This function is called
+#' once for each csv file. Invalid or malformatted files return NA.
+#'
+#' If plots of the input csv are desired, it is suggested that the flag
+#' PLOTDATA be set to true.
+#'
+#' @param filename The csv file that will be opened and processed.
+#' @param successfulCallCount A counter function, counting how many times
+#'   this function was successfully executed. Mainly used for counting bad
+#'   files.
+#' @param columnName The column name, from the csv, that will be used as
+#'   the dataset.
+#' @param transformFunction A function that should transform the data,
+#'   i.e. FFT, if desired. This will apply itself before processTrace is
+#'   called.
+#' @return A list containing the output of processTrace. Each row maps to
+#'   a csv file.
 #' @seealso \code{\link{processTrace}}
-loadCsvTrace = function ( fileName, successfulCallCount = function() NULL,
-  columnName = 'watts', transformFunction = function (x) x ) {
+loadCsvTrace <- function ( fileName, successfulCallCount = function() NULL,
+  columnName = "watts", transformFunction = function (x) x ) {
 
   if ((is.null(fileName))| is.na(fileName) | (!file.exists(fileName))){
     printf("loadCsvTrace: File passed %s does not exist.", fileName)
-    return (NA)
+    return(NA)
   }
   else {
     debugprintf("loadCsvTrace: Loading %s", fileName)
   }
 
   # Grab what we need from the data
-  trimmedData = ((body(read.csv(fileName))))
+  trimmedData <- ((body(read.csv(fileName))))
 
-  usefulColumns = c(columnName)
+  usefulColumns <- c(columnName)
+
+  # Plot it
+  if (PLOTDATA){
+    plotPowerTrace(dataFrame = trimmedData, y = "watts",
+      fileName = subStr(fileName, 0, nchar(fileName) - 4))
+  }
 
   if (usefulColumns %in% colnames(trimmedData)){
     trimmedData = trimmedData[usefulColumns]
@@ -147,31 +196,38 @@ loadCsvTrace = function ( fileName, successfulCallCount = function() NULL,
   }
 
   # Transform Data as needed
-  trimmedData[usefulColumns] = transformFunction(trimmedData[[usefulColumns]])
+  trimmedData[usefulColumns] <- transformFunction(trimmedData[[usefulColumns]])
 
   # Removes header info
-  names(trimmedData) = c()
+  names(trimmedData) <- c()
 
   successfulCallCount()
   debugprintf("loadCsvTrace: File %s processed", fileName)
 
   # Get statistical work
-  return (lapply(trimmedData, function(x) processTrace(x, fileName)))
+  return(lapply(trimmedData, function(x) processTrace(x, fileName)))
 }
 
-#' Loads all files passed in as an argument and passes it to other functions
-#' to parse. If the data is already parsed, use processedMain instead.
+#' Takes a directory of CSV files, loads it and calls other functions to
+#' process and parse the input. Then it is passed into the SVM package.
 #'
-#' @param transformFunction a function that will be used to transform the
-#'   data i.e. FFT.
-#' @param svmProcessFunction a svm process function stating which mode to use
-#' @return the output of svmMain which is the data set passed in
+#' This function sets up the calls for all other functions. Implicitly,
+#' it is assumed that the data is in separate files. If the data is already
+#' collected, from another run, processedMain may be used instead to speed
+#' up the process and avoid processing the CSV files.
+#'
+#' @param transformFunction A function that will be used to transform the
+#'   data, i.e. FFT.
+#' @param svmProcessFunction (optional, default NULL) An SVM process function
+#'   stating which mode to use.
+#' @return The output of svmMain which is the data set passed in
 #' @seealso \code{\link{processedMain}}
-main = function ( transformFunction = function(x) x, svmProcessFunction = NULL) {
+main <- function ( transformFunction = function(x) x,
+    svmProcessFunction = NULL) {
 
   debugprintf("Code read successfully. Executing...")
-  args = (commandArgs(TRUE))
-  currentDir = getwd()
+  args <- (commandArgs(TRUE))
+  currentDir <- getwd()
 
   if (length(args) == 0){
     printf(
@@ -183,9 +239,9 @@ main = function ( transformFunction = function(x) x, svmProcessFunction = NULL) 
   }
 
   # Loads only files with CSV extension
-  args = list.files(pattern='\\.csv$')
+  args <- list.files(pattern = "\\.csv$")
 
-  fileargs = Filter(file.exists, args)
+  fileargs <- Filter(file.exists, args)
 
   if (length(fileargs) == 0){
     printf("main: No files were successfully located at %s", getwd())
@@ -193,45 +249,51 @@ main = function ( transformFunction = function(x) x, svmProcessFunction = NULL) 
   }
 
   # We create an instance of a call counter for debugging purposes
-  callCounter = successCount()
+  callCounter <- successCount()
 
-  outputDataFrame = sapply(fileargs, loadCsvTrace, callCounter,
-    columnName='watts', transformFunction=transformFunction)
+  outputDataFrame <- sapply(fileargs, loadCsvTrace, callCounter,
+    columnName = "watts", transformFunction = transformFunction)
 
   setwd(currentDir)
 
-  return (svmMain(tee(to.data.frame(outputDataFrame)), svmProcessFunction=svmProcessFunction))
+  # Configure the feature set that will passed into the SVM here
+  return(svmMain(tee(to.data.frame(outputDataFrame)[1:3]),
+    svmProcessFunction = svmProcessFunction))
 }
 
-#' A variant of main that reads in the csv and passes it onto svm
+#' A variant of main that reads in the csv and passes it onto SVM.
+#'
 #' No processing is done here. If the data needs to be processed,
 #' use main instead.
 #'
-#' @param selectedCols the columns we will pick off from the data
-#'   frame that will be passed into the svm
-#' @param svmProcessFunction a svm process function stating which mode to use
-#' @return the output of svmMain which is the data set passed in
+#' @param selectedCols The vector of columns names used to pick off the desired
+#'   elements for the feature vector that will be used in the SVM.
+#' @param svmProcessFunction (optional, default NULL) An SVM process function
+#'   stating which mode to use.
+#' @return The output of svmMain which is the data set passed in
 #' @seealso \code{\link{main}}
-processedMain = function ( selectedCols = c('label', 'mean'), svmProcessFunction = NULL ){
+processedMain <- function ( selectedCols = c("label", "mean"),
+    svmProcessFunction = NULL ) {
 
   debugprintf("Code read successfully. Executing...")
-  args = (commandArgs(TRUE))
-  fileName = NULL
+  args <- (commandArgs(TRUE))
+  fileName <- NULL
 
-  if(length(args) == 0){
+  if (length(args) == 0){
     stop("main: No processed csv passed. Exiting....")
   }
 
-  fileName = args[1]
+  fileName <- args[1]
 
   if (!file.exists(fileName)){
     printf("File passed %s does not exist.", fileName)
     stop("Halting...")
   }
 
-  outputDataFrame = read.csv(fileName)
+  outputDataFrame <- read.csv(fileName)
 
-  return (svmMain(outputDataFrame[selectedCols], svmProcessFunction=svmProcessFunction))
+  return(svmMain(outputDataFrame[selectedCols],
+    svmProcessFunction = svmProcessFunction))
 
 }
 

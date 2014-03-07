@@ -1,63 +1,66 @@
 # PowerAnalyze Library Module
-# Library support functions for PowerAnalyze repo
+# Library support functions for the PowerAnalyze repo
 #
 # Created by David Tran
-# Version 0.6.3.0
-# Last Modified 02-20-2014
+# Version 0.8.0.0
+# Last Modified 03-06-2014
 
-# Background Functions
-
-#' As oppose to head and tail, we grab all but the first nth
-#' and last nth elements of the data, if it is possible.
-#' We return the empty container if it is not possible.
+#' Grabs all but the first nth and last nth elements of a list.
 #'
-#' @param data input data structure (data.frame, list or vector)
-#' @param n (optional) specifies how many elements from the front
-#'   and end we will remove. Defaults to 20 if not specified.
-#' @return the data strcture with the elements removed or the empty
+#' As oppose to head and tail, we grab all but the first nth
+#' and last nth elements of the data, if it is possible, and return the empty
+#' container otherwise.
+#'
+#' @param data The data input data structure (data.frame, list, or vector)
+#' @param n (optional, default 20) Specifies the number of elements from the
+#'   front and end that will be removed.
+#' @return The data structure with the elements removed or the empty
 #'   structure if it is not possible.
 #' @examples
 #' body(1:50) -> 21:30
 #' body(1:6, 2) -> 3:4
-#' body(1:10, n=4) -> 5:6
-body = function ( data, n = 20 ){
+#' body(1:10, n = 4) -> 5:6
+body <- function ( data, n = 20 ) {
 
   if (class(data) == "data.frame"){
-    len = nrow(data)
+    len <- nrow(data)
     if ( (n+1) > (len-n) ){
       printf("body: Impossible range %d to %d", n, len-n)
-      return (data[NULL,])
+      return(data[NULL, ])
     }
 
-    return (data[(n+1):(len-n),])
+    return(data[(n+1):(len-n), ])
 
   } else if (class(data) == "list"   || class(data) == "integer" ||
             class(data) == "numeric" || class(data) == "character" ||
             class(data) == "logical" ){
-    len = length(data)
+    len <- length(data)
 
     if ( (n+1) > (len-n) ){
       printf("body: Impossible range %d to %d", n, len-n)
-      return (NULL)
+      return(NULL)
     }
 
-    output = data[(n+1):(len-n)]
+    output <- data[(n+1):(len-n)]
     print(output)
     return(output)
 
   } else{
     printf("body: Unknown data type %s", class(data))
-    return (NA)
+    return(NA)
   }
 }
 
-#' Preforms the dot product of two lists. Unlike R unequal list lengths
-#' that share a common factor will NOT multiply.
+#' Preforms the dot product on two numeric lists.
 #'
-#' @param listA the first numeric list we will preform the dot product
-#' @param listB the second numeric list we will preform the dot product
-#' @return a numeric containing the dot product
-dotProduct = function ( listA, listB ){
+#' Multiplies matching elements in different lists and adds all these products
+#' together. Unlike R, unequal list lengths that share a common factor will
+#' NOT be multiplied.
+#'
+#' @param listA The first numeric list that will be used in the dot product.
+#' @param listB The second numeric list that will be used in the dot product.
+#' @return A value containing the dot product.
+dotProduct <- function ( listA, listB ) {
 
   if (length(listA) != length(listB)){
     printf("Lists %s and %s are not identical in length",
@@ -65,56 +68,86 @@ dotProduct = function ( listA, listB ){
     stop("Halting...")
   }
 
-  return (sum(listA*listB, na.rm=TRUE))
+  return(sum(listA*listB, na.rm = TRUE))
 }
 
-#' Stops the program and prints what was passed in
+#' Stops the program and prints what was passed in.
 #'
-#' @param ... prints out anything passes
-#' @return any input passed (should not happen)
-
-halt = function ( ... ){
+#' @param ... Prints out anything passed.
+#' @return The input but this should not happen.
+halt <- function ( ... ) {
 
   print(...)
   stop("Halting execution...")
 
   # This should NOT happen
-  return (...)
+  return(...)
 }
 
 #' Installs the package, if it exists, and bypasses the interactive
 #' prompt.
 #'
-#' The default location, if not specified, is at .libPaths()[1] which is
-#; usually /usr/lib/R/site-library
+#' A wrapper around install.packages, this function installs the package while
+#' bypassing the interactive move. This is set to download from
+#' the US CRAN repo. The default location, if not specified, is
+#' at .libPaths()[1] which can be /usr/lib/R/site-library
 #'
-#' @param pack the package that will be installed
-#' @param ... any other arguments passed for install.packages
-#' @return NULL this is a statement. Use other functions to check if
-#'  install works
+#' @param pack The package, as a string that will be installed/loaded.
+#' @param ... Any other arguments passed to install.packages.
+#' @return NULL This is a statement. Use other functions to check if
+#'   install works
 #' @examples
-#' install('e1071')
+#' install("e1071")
 #' @seealso \code{\link{lib}}
-install = function (pack, ...) {
+install <- function ( pack, ... ) {
 
   install.packages(pack,
-    dependencies=TRUE, repos='http://cran.us.r-project.org',
+    dependencies = TRUE, repos = "http://cran.us.r-project.org",
     ...
   )
 }
-inst = install # Function alias
+inst <- install # Function alias
 
-#' Checks if a package is installed
+#' Checks if a package is installed and loads it. If not, it will install and
+#' then try to load it.
 #'
-#' @param pack the package we will check
-#' @param ... any other arguments for library
-#' @return a boolean value if it is installed correctly
+#' Unlike library, this function will INSTALL the package if it is not
+#' available on the current system. If the package is already installed, it
+#' will load it.
+#'
+#' Should the package not exist, due to a typo or incompatible version number,
+#' this function will error out like library but also return false.
+#'
+#' @param pack The package, as a string, that will be checked and
+#'   loaded/installed accordingly.
+#' @param ... Other arguments passed into the libCheck function.
+#' @return A boolean value stating if the requested package is loaded.
+lib <- function ( pack, ... ) {
+
+  if (libCheck(pack, ...)){
+    # Loaded successfully
+    return(TRUE)
+  }
+  else{
+    # Try to install and load
+    install(pack)
+    return(libCheck(pack, ...))
+  }
+}
+
+#' Checks if a package is installed.
+#'
+#' Returns true if the package is installed and false otherwise. This DOES NOT
+#' emit an error message.
+#'
+#' @param pack The package, as a string, that will be checked and
+#'   loaded/installed accordingly.
+#' @param ... Any other arguments for the library function.
+#' @return A boolean value stating if the requested package is loaded.
 #' @seealso \code{\link{lib}}
-libCheck = function (pack, ...){
+libCheck <- function ( pack, ... ) {
 
-  # Load a lib from .libPaths()[1]
-
-  return (suppressWarnings(
+  return(suppressWarnings(
     library(pack,
       logical.return = TRUE, character.only = TRUE,
     ...)
@@ -122,203 +155,321 @@ libCheck = function (pack, ...){
   )
 }
 
-#' Checks if a package is installed and loads it. If not, it will install and then
-#' try to load it
+#' Computes the magnitude of a complex number or a numeric list.
 #'
-#' @param pack the package that will be checked
-#' @param ... other arguments passed into libCheck
-#' @return a boolean stating if it is loaded
-lib = function (pack, ...){
-
-  if (libCheck(pack, ...)){
-    # Loaded successfully
-    return (TRUE)
-  }
-  else{
-    # Try to install and load
-    install(pack)
-    return (libCheck(pack, ...))
-  }
-}
-
-#' Computes the magnitude of a complex number of list
+#' For a list, each element is squared before it is added and then the sum is
+#' is square rooted. This is analogous to the distance formula. For singletons,
+#' this function returns back the value passed.
 #'
-#' @param x input numeric vector(list)
-#' @return the computed magnitude
+#' @param x The input numeric list, or complex number.
+#' @return The computed magnitude of the input.
 #' @examples
-#' mag(3,4) -> 5
-#' mag(5+12i) -> 13
-#' mag(c(6,8)) -> 10
-mag = function(x) {
+#' mag(3, 4) -> 5
+#' mag(5 + 12i) -> 13
+#' mag(c(6, 8)) -> 10
+mag <- function( x ) {
 
   # Computes the magnitude
 
   if (class(x) == "numeric"){
-    return (x)
+    return(x)
   }
   else if (class(x) == "complex"){
-    return (sqrt(Re(x)^2 + Im(x)^2))
+    return(sqrt(Re(x)^2 + Im(x)^2))
   }
   else if ((class(x) == "list") || (class(x) == "numeric") ||
            (class(x) == "integer")){
-    return (sqrt(sum(sapply(x, function(x) x^2))))
+    return(sqrt(sum(sapply(x, function(x) x^2))))
   }
   else{
     stop("Unknown datatype passed")
   }
 }
 
-#' Checks if a variable (object) exists
+#' Checks if a variable (object) exists.
 #'
-#' @param obj the object it will check
-#' @return a boolean if it does exist
+#' Returns true if it does and false otherwise.
+#'
+#' @param obj The object, this function will check if it exists.
+#' @return A boolean value stating if it exist.
 #' @examples
 #' object.exists(mtcars) -> TRUE
 #' object.exists(1) -> FALSE
 #' object.exists(NA) -> FALSE
-object.exists = function(obj) {
+object.exists <- function( obj ) {
 
   # Check if an object(variable) exists
 
-  return (exists(as.character(substitute(obj))))
+  return(exists(as.character(substitute(obj))))
 
 }
 
-#' Removes a column from a given frame if it exists
-#' This is analogous to frame[-n] where n is the column number
-#' Reference https://stackoverflow.com/questions/11940605/printing-a-subset-of-columns-in-a-data-table-r
+#' Plot function used to create plots from Power Traces for posters.
 #'
-#' @param frame the input data.frame
-#' @param colName a string that it will search for
-#' @return the data.frame with the specified column removed
+#' Generates a time-series of the dataset with 1:n on the X-axis and the data
+#' on the Y-axis. The output is a pdf file.
+#'
+#' @param dataFrame The input data frame that holds the data.
+#' @param y The name of the column that the dataset that will be plotted
+#'    lives in.
+#' @param fileName The filename for the output without the .pdf extension.
+#' @param ... Any other arguments that will be passed into plot.
+#' @return The input data frame.
+plotPowerTrace <- function ( dataFrame, y, fileName, ... ) {
+
+  if (is.null(fileName)){
+    name <- "output"
+    fileName <- "output.pdf"
+  }
+  else{
+    name <- fileName
+    fileName <- paste(fileName, ".pdf", collapse = "")
+  }
+
+  pdf(fileName)
+  plot(x = 1:nrow(dataFrame), y = dataFrame[[y]],
+    xlab = "Seconds", ylab = "Watts",
+    col = "blue",
+    main = paste("Power Trace of", name),
+    type = "l", ...
+  )
+  dev.off()
+
+  return(dataFrame)
+}
+
+#' Removes a column with its names from a given data frame, if it exists.
+#'
+#' This is analogous to frame[-n] where n is the column number of the matching
+#' column name this function is searching for where n is the length of the
+#' input data set.
+#'
+#' @param frame The input data frame.
+#' @param colName A string for a column name is the data frame that will be
+#'   removed.
+#' @return The data frame with the specified column removed, if possible.
 #' @examples
-#' removeColumn(mtcars, 'mpg')
-#' removeColumn(rock, 'perm')
-removeColumn = function( frame , colName ){
+#' removeColumn(mtcars, "mpg")
+#' removeColumn(rock, "perm")
+removeColumn <- function( frame , colName ) {
 
-
-  logicVector = unlist(lapply(colnames(frame),
+  logicVector <- unlist(lapply(colnames(frame),
     function(x) (!grepl(colName, x))))
 
-  return (frame[logicVector])
+  return(frame[logicVector])
 }
 
-#' Sorts a data.frame by the column specified or the first column if not.
+#' Sorts a data frame by the column specified or the first column if not.
 #'
-#' @param frame the input data frame we will sort on
-#' @param col the column we will sort by or the first column is not passed
-#' @return the sorted data frame
+#' This function will half if the column passed does not exist.
+#'
+#' @param frame The input data frame that will be sorted.
+#' @param col (optional, default NULL) The column name that will be sorted on.
+#'   Should be this NULL, the first column is sorted on.
+#' @return The sorted data frame.
 #' @examples
-#' sort.data.frame(mtcars, 'wt')
-#' sort.data.frame(rock, 'shape')
-sort.data.frame = function ( frame, col = NULL ){
+#' sort.data.frame(mtcars, "wt")
+#' sort.data.frame(rock, "shape")
+sort.data.frame <- function ( frame, col = NULL ) {
 
   if (class(frame) == "data.frame"){
     if (is.null(col)){
-      return (frame[order(frame[1]),])
+      return(frame[order(frame[1]), ])
     }
     else if (col %in% colnames(frame)){
-      return (frame[order(frame[col]),])
+      return(frame[order(frame[col]), ])
     }
     else{
       stop("sort: Col %s passed does not exist in data frame %s",
         str(col), str(frame)
       )
-      return (-1)
+      return(-1)
     }
   }
-  else if(class(frame) == "list"){
-    return (frame[order(unlist(frame))])
+  else if (class(frame) == "list"){
+    return(frame[order(unlist(frame))])
   }
-  else if(class(frame) == "numeric" || class(frame) == "character" ||
+  else if (class(frame) == "numeric" || class(frame) == "character" ||
           class(frame) == "integer" )
         {
-    #return (frame[order(frame)])
-    return (sort(frame))
+    return(sort(frame))
   }
   else{
     stop("sort: Unknown data type %s passed.", class(frame))
-    return (-1)
+    return(-1)
   }
 }
 
-#' Squares the given input, be it a numeric or vector
+#' Squares the given input, be it a numeric or vector.
 #'
-#' @param x the numberic input that will be squared
-#' @return the input with all elements squared
+#' In the case of a vector, each element is squared.
+#'
+#' @param x The numberic input that will be squared.
+#' @return The input with all elements squared.
 #' @seealso \code{\link{mag}}
 #' @examples
 #' square(4) -> 16
-#' square(list(3,4)) -> list(16,25)
-square = function (x) {
-
-  # Squares all elements passed
+#' square(list(3, 4)) -> list(16, 25)
+square <- function ( x ) {
 
   if (class(x) == "numeric"){
-    return (x^2)
+    return(x^2)
   }
   else{
-    return (lapply(x, function(x) x^2))
+    return(lapply(x, function(x) x^2))
   }
 }
 
-
-#' A increment counter used to keep track of how many times something worked
-#' DEBUG needs to be enabled for this to print.
+#' Attempts to source the file and its path. Should that fail, it will repeat
+#' by removing directories, on the path from the left, and try again.
 #'
-#' @param n the initial start value of the counter, should be an integer
-#' @param startMsg a string that will be shown before the number is printed
-#' @param endMsg a string that will be shown after the number is printed
-#' @return a function that needs to be invoked to increment the number that
-#'   will return the incremented number
+#' Attempts to add the file and remove directories from the right and tries
+#' those combinations as well. May add multiple files.
+#'
+#' @param filePath The file path of the source file that should be loaded.
+#' @return A boolean value containing if it was successfully added.
+srcFile <- function ( filePath ) {
+
+  if (file.exists(filePath)){
+    source(filePath)
+    return (TRUE)
+  }
+  else{
+    pathSplitArray <- unlist(strsplit(filePath, '/'))
+    splitCountArray <- 1:length(pathSplitArray)
+
+    splitCheckFunction <- function ( splitLocation, pathSplitArray ) {
+      newPath <- paste(pathSplitArray[splitLocation:length(pathSplitArray)],
+        collapse = "/")
+
+      if (file.exists(newPath)){
+        source(newPath)
+        return (splitLocation)
+      }
+      else{
+        return (NA)
+      }
+    }
+
+    retValue <- sapply(splitCountArray, splitCheckFunction, pathSplitArray)
+    filteredRetValue <- which(!is.na(retValue))
+
+    if (!is.na(min(filteredRetValue))) {
+      # The file we wann to add  was successfully added
+      return (TRUE)
+    }
+    else {
+      return (FALSE)
+    }
+
+  }
+}
+
+#' Returns a substring of the input the input string.
+#'
+#' This function may take one argument, which cuts from 0 or two arguments
+#' to cut at certain points. The cut is inclusive, that is to say the points
+#' cut from are included in the file substring. If the range is passed in
+#' the wrong order, that is fixed.
+#'
+#' Should no position values be passed, the input string is returned. The
+#' empty string is also returned, if passed in.
+#'
+#' Should a negative value be passed in, the program is stopped.
+#'
+#' @param str The input string that will be cut.
+#' @param start (optional, default 0) The starting place to cut, or end if
+#'   this is the only other argument passed.
+#' @param end (optional, default NULL) The end point of the cut, if it is
+#'    passed a value.
+#' @return A substring of the input string.
+subStr <- function ( str, start = 0, end = NULL ) {
+
+  if (nchar(str) == 0){
+    return(str)
+  }
+
+  if (is.null(end)){
+    end <- start
+    start <- 0
+  }
+
+  if (end < start){
+    temp <- start
+    start <- end
+    end <- temp
+  }
+
+  if (start < 0){
+    stop("subStr range contains negative values")
+  }
+
+  if (end > nchar(str)){
+    end = nchar(str)
+  }
+
+  return(paste((unlist(strsplit(str, ""))[start:end]), collapse = ""))
+}
+
+#' An increment counter with local counter value.
+#'
+#' An increment counter used to count the number of times an event occurred.
+#' DEBUG needs to be enabled for this function to print. This is a factory
+#' function so the returned value from a call needs to be invoked to increment
+#' stored value. The function will also return the value when invoked.
+#'
+#' @param n (optional, default 0) The initial start value of the counter
+#'   that should be an integer.
+#' @param startMsg A string that will be shown before the number if it is
+#'   printed.
+#' @param endMsg A string that will be shown after the number if it is
+#'   printed.
+#' @return A function that needs to be invoked to increment and return the
+#'   contained value.
 #' @examples
-#' a = successCount(1)
-#' b = successCount(0)
+#' a <- successCount(1)
+#' b <- successCount(0)
 #' a() -> 2
 #' b() -> 0
 #' b() -> 1
 #' b() -> 2
-successCount = function ( n = 0, startMsg = "This is the ",
-    endMsg = "th successful call" ){
+successCount <- function ( n = 0, startMsg = "This is the ",
+    endMsg = "th successful call" ) {
 
-  # This is a factory function that creates an incrementing
-  # counter from n onward. Note this returns a function so
-  # invoke the return type as a function
-
-  increment = function () {
+  increment <- function () {
     n <<- n + 1
     debugprintf("%s%d%s", startMsg, n, endMsg)
-    return (n)
+    return(n)
   }
 
-  return (increment)
+  return(increment)
 }
 
-#' Prints the current data.frame passed into a file and passes it to the next
-#' function. Useful for debugging
+#' Prints the current data frame passed, into a file and passes it to the next
+#' function.
 #'
-#' @param csvData the data.frame that will be written to the file and passed
-#' @param fileName the filename that the csvData will be written to
-#' @return csvData
+#' This function is primarily used for debugging purposes.
+#'
+#' @param csvData The input data frame that will be written to file.
+#' @param fileName (optional, "outputDataFrame") The filename that the frame
+#'   will be written to.
+#' @return The input data frame.
 #' @examples
-#' (...tee(function(... input)))
-tee = function(csvData, fileName='outputDataFrame'){
+#' (...(tee(function(input))))
+tee <- function( csvData, fileName = "outputDataFrame" ) {
 
-  # Writes the current data in the stream to file and passes it
-  # to the next invoked function
+  write.csv(csvData, file = fileName)
 
-  write.csv(csvData, file=fileName)
-
-  return (csvData)
+  return(csvData)
 }
 
-#' Converts a list of lists (matrix) into a data.frame
+#' Converts a list of lists (matrix) into a data frame.
 #'
-#' @param mat the input matrix that will be coverted
-#' @return the data.frame
-to.data.frame = function ( mat ){
+#' May not always work correctly, given how R data structures work.
+#'
+#' @param mat The input matrix that will be converted.
+#' @return The converted matrix.
+to.data.frame <- function ( mat ) {
 
-  # Converts a list of lists to a data.frame
-
-  return (do.call(rbind.data.frame, mat))
+  return(do.call(rbind.data.frame, mat))
 }

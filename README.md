@@ -6,17 +6,46 @@ traces as possible given the mean of the trace.
 
 Created by David Tran (unsignedzero)
 
+# Quick Start #
+
+1. Remove the bad data (filenames start with QQ\_)
+2. Load your own data [MUST end in .csv extension]
+3. Configure labelTrace to group the files correctly.
+4. Type make (or make fft) for 5-fold test. Add l in front for n cross
+   validation.
+5. Grab output and Rplots.pdf file.
+
 # TO DO #
+
+* Check NAMESPACE file.
 
 # Notes #
 
-* : has greater precedence than - so [20:40-20] = [(20:40)-20]
+* : has greater precedence than - so [20:40-20] is [(20:40)-20]
 
 # Questions #
 
 * sapply seems to name your vectors for you?
 
 # Version/Changelog #
+
+## 1.0.0.0 [2014-03-06] #
+* Bugfix: gen-doc now working due to bad source directory.
+* Cleaned up all comments for roxygen2.
+* Uploading to Github.
+* Cleaned up ){ to ){. Added more spacing and each line has at most 80
+  characters.
+* Further testing needed.
+* Cleaned up = to <- in the correct context.
+* Cleaned comments in library.r.
+* Cleaned up code formatting. Strings use double quotes and spaces added
+  after comma, around single and double equals. Extra space after return
+  removed.
+* Make test alias for make test-repo.
+* Added success message for test.
+* Added plot code and more support functions.
+* Added quick start guide for repo.
+* Optimized leave-one-out (LOO) parameters to get the best results.
 
 ## 0.9.0.0 [2014-02-26] #
 * Bugfix: Typos fixed with one of the front files.
