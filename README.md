@@ -29,8 +29,14 @@ Created by David Tran (unsignedzero)
 
 # Version/Changelog #
 
+* Updated header comments.
+* Added tests for subStr.
+* Cleaned up some comments that clash with built-in comments when
+  generation documents.
+
 ## 1.0.0.0 [2014-03-06] #
 * Bugfix: gen-doc now working due to bad source directory.
+* Added subStr and srcFile function.
 * Cleaned up all comments for roxygen2.
 * Uploading to Github.
 * Cleaned up ){ to ){. Added more spacing and each line has at most 80

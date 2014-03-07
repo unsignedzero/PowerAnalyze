@@ -1,25 +1,24 @@
 # PowerAnalyze
-# This r file will read power traces and attempt to classify them
-# via svm.r
+# Reads in power traaces and processes them accordingly.
+# The output is a data frame that is passed into
+# the SVM module with the correct group information.
 #
 # This is the main package managing the data flow.
 #
-# Created by David Tran
-# Version 0.8.0.0
-# Last Modified 03-06-2014
+# Created by David Tran (unsignedzero)
+# Version 0.8.0.1
+# Last Modified 03-07-2014
 
-# Add more files with this
-# Paths check if we are building documentation or not.
+# Load the other src code.
+# Path check if documentation is being built or not.
 if (object.exists(docBuild)){
   source("library.r")
-  #source("svm.r")
+  source("svm.r")
 }
 if (!object.exists(docBuild)){
   source("R/library.r")
-  #source("R/svm.r")
+  source("R/svm.r")
 }
-
-srcFile("R/svm.r")
 
 #' Debugger flag. Set TRUE to enable debugging or false otherwise.
 #'
@@ -183,7 +182,7 @@ loadCsvTrace <- function ( fileName, successfulCallCount = function() NULL,
   # Plot it
   if (PLOTDATA){
     plotPowerTrace(dataFrame = trimmedData, y = "watts",
-      fileName = subStr(fileName, 0, nchar(fileName) - 4))
+      fileName = subStr(fileName, 1, nchar(fileName) - 4))
   }
 
   if (usefulColumns %in% colnames(trimmedData)){

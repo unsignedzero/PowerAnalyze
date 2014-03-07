@@ -1,9 +1,9 @@
 # Make file to run this code repo
-# Last Modified 03-04-2014
+# Last Modified 03-07-2014
 
 default: normal
 
-gen-doc:
+doc:
 	r --no-save --file=R/front/powerAnalyzeGenDoc.r
 	r CMD Rd2pdf --title='Power Analyze' -o output.tex man/*.Rd
 
@@ -22,9 +22,7 @@ fft:
 readin:
 	r --no-save --file=R/front/powerAnalyzeProcessedMain.r '--args outputDataFrame'
 
-test: test-repo
-
-test-repo:
+test:
 	r --no-save --file=tests/testPowerAnalyze.r
 
 clean:

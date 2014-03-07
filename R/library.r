@@ -1,9 +1,9 @@
 # PowerAnalyze Library Module
-# Library support functions for the PowerAnalyze repo
+# A collection of support functions for PowerAnalyze.
 #
-# Created by David Tran
-# Version 0.8.0.0
-# Last Modified 03-06-2014
+# Created by David Tran (unsignedzero)
+# Version 0.8.0.1
+# Last Modified 03-07-2014
 
 #' Grabs all but the first nth and last nth elements of a list.
 #'
@@ -188,7 +188,7 @@ mag <- function( x ) {
 
 #' Checks if a variable (object) exists.
 #'
-#' Returns true if it does and false otherwise.
+#' Returns true if it does and false otherwise. Literals are false.
 #'
 #' @param obj The object, this function will check if it exists.
 #' @return A boolean value stating if it exist.
@@ -263,6 +263,7 @@ removeColumn <- function( frame , colName ) {
 #'
 #' This function will half if the column passed does not exist.
 #'
+#' @usage sort.data.frame(frame, col = NULL)
 #' @param frame The input data frame that will be sorted.
 #' @param col (optional, default NULL) The column name that will be sorted on.
 #'   Should be this NULL, the first column is sorted on.
@@ -367,13 +368,15 @@ srcFile <- function ( filePath ) {
 
 #' Returns a substring of the input the input string.
 #'
-#' This function may take one argument, which cuts from 0 or two arguments
-#' to cut at certain points. The cut is inclusive, that is to say the points
-#' cut from are included in the file substring. If the range is passed in
-#' the wrong order, that is fixed.
+#' This function may take one argument, which cuts from zero or two arguments
+#' to cut at certain points. The cut is inclusive left and exclusive right,
+#' that is to say the cut on the left is part of the string and the
+#' right point is not. (Remember that R lists start at one, not zero. To
+#' have the cut tart at zero, pass in the C_RANGE flag.)
 #'
-#' Should no position values be passed, the input string is returned. The
-#' empty string is also returned, if passed in.
+#' If the range is passed in the wrong order, that is fixed.
+#'
+#' Should the empty string be passed, it is returned back.
 #'
 #' Should a negative value be passed in, the program is stopped.
 #'
@@ -382,8 +385,10 @@ srcFile <- function ( filePath ) {
 #'   this is the only other argument passed.
 #' @param end (optional, default NULL) The end point of the cut, if it is
 #'    passed a value.
+#' @param C_RANGE A boolean flag stating is C-Ranges (starting at zero)
+#'    are passed in. Shifts range by +1 to match R-ranges.
 #' @return A substring of the input string.
-subStr <- function ( str, start = 0, end = NULL ) {
+subStr <- function ( str, start = 0, end = NULL, C_RANGE = FALSE ) {
 
   if (nchar(str) == 0){
     return(str)
@@ -402,6 +407,11 @@ subStr <- function ( str, start = 0, end = NULL ) {
 
   if (start < 0){
     stop("subStr range contains negative values")
+  }
+
+  if (C_RANGE){
+    start = start + 1
+    end = end + 1
   }
 
   if (end > nchar(str)){

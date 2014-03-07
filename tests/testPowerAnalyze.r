@@ -2,8 +2,8 @@
 # We test the main code base here
 #
 # Created by David Tran
-# Version 0.4.5.0
-# Last Modified 03-05-2014
+# Version 0.5.0.0
+# Last Modified 03-07-2014
 
 source("R/powerAnalyze.r")
 
@@ -72,6 +72,18 @@ test_that("Power Analyze code base works", {
       expect_that(square(4), equals(16))
       expect_that(square(c(3, 4, 5)), equals(c(9, 16, 25)))
       expect_that(square(list(3, 4, 5)), equals(list(9, 16, 25)))
+    })
+
+    test_that("subStr function works", {
+
+      temp <- "theStringIsTheSame"
+
+      expect_that(subStr(temp), equals(""))
+      expect_that(subStr(temp, 5), equals("theSt"))
+      expect_that(subStr(temp, 5, nchar(temp)), equals("tringIsTheSame"))
+      expect_that(subStr(temp, 5, 3), equals("eSt"))
+      expect_that(subStr(temp, 5, 5), equals("t"))
+      expect_that(subStr("", 4, 7), equals(""))
     })
 
     test_that("successCount function works", {

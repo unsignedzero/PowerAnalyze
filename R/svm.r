@@ -1,11 +1,9 @@
-# PowerAnalyze SVM Module
-# This r file takes in a data frame and analyzes it using SVM
+# PowerAnalyze SVM module
+# Takes in a given data frame and runs it through an SVM.
 #
-# This is a sub package interfacing with our SVM module.
-#
-# Created by David Tran
+# Created by David Tran (unsignedzero)
 # Version 0.9.0.0
-# Last Modified 03-06-2014
+# Last Modified 03-07-2014
 
 lib("e1071")
 lib("gplots")
