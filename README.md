@@ -29,6 +29,7 @@ Created by David Tran (unsignedzero)
 
 # Version/Changelog #
 
+* Updated DESCRIPTION file to include new Github url.
 * Updated header comments.
 * Added tests for subStr.
 * Cleaned up some comments that clash with built-in comments when
