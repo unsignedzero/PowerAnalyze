@@ -27,8 +27,15 @@ Created by David Tran (unsignedzero)
 
 * sapply seems to name your vectors for you?
 
+# Reference
+
+[Google's R Style Guide](http://google-styleguide.googlecode.com/svn/trunk/Rguide.xml#assignment)
+
 # Version/Changelog #
 
+* Updated source code formatting to be similar to Google's R Style Guide. Not
+  all operators have spaces around due to precedence. Function names are
+  not capitalized.
 * Updated DESCRIPTION file to include new Github url.
 * Updated header comments.
 * Added tests for subStr.

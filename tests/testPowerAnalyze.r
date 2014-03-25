@@ -2,8 +2,8 @@
 # We test the main code base here
 #
 # Created by David Tran
-# Version 0.5.0.0
-# Last Modified 03-07-2014
+# Version 0.5.0.1
+# Last Modified 03-24-2014
 
 source("R/powerAnalyze.r")
 
@@ -21,7 +21,6 @@ test_that("Local Datasets exist", {
   expect_that(object.exists(Orange), equals(TRUE))
   expect_that(object.exists(rock), equals(TRUE))
   expect_that(object.exists(ToothGrowth), equals(TRUE))
-
 })
 
 test_that("Power Analyze code base works", {
@@ -34,9 +33,9 @@ test_that("Power Analyze code base works", {
       expect_that(body(1:20, 4), equals(5:16))
       expect_that(body(1:10, 1), equals(2:9))
       expect_that(body(lapply(1:10, lambda), 1),
-        equals(lapply(2:9, lambda)))
+                  equals(lapply(2:9, lambda)))
       expect_that(body(paste(c("X", "Y"), 1:10, sep = ""), 4),
-        equals(c("X5", "Y6")))
+                  equals(c("X5", "Y6")))
     })
 
     test_that("mag function works", {
@@ -52,19 +51,19 @@ test_that("Power Analyze code base works", {
       # These datasets are built into R
 
       expect_that(removeColumn(mtcars, "mpg"),
-        equals(mtcars[-1]))
+                  equals(mtcars[-1]))
       expect_that(removeColumn(Orange, "age"),
-        equals(Orange[-2]))
+                  equals(Orange[-2]))
       expect_that(removeColumn(ToothGrowth, "dose"),
-        equals(ToothGrowth[-3]))
+                  equals(ToothGrowth[-3]))
     })
 
     test_that("sort.data.frame function works", {
 
       expect_that(sort.data.frame(cars),
-        equals(cars[order(cars[1]), ]))
+                  equals(cars[order(cars[1]), ]))
       expect_that(sort.data.frame(cars, "speed"),
-        equals(cars[order(cars[1]), ]))
+                  equals(cars[order(cars[1]), ]))
     })
 
     test_that("square function works", {
@@ -125,29 +124,25 @@ test_that("Power Analyze code base works", {
       expect_that(processTrace(1:49)[["mean"]], equals(25))
 
       expect_that(processTrace(mtcars[["mpg"]])[["sd"]],
-        equals(sd(mtcars[["mpg"]])))
+                  equals(sd(mtcars[["mpg"]])))
       expect_that(processTrace(ChickWeight[["weight"]])[["mad"]],
-        equals(mad(ChickWeight[["weight"]])))
+                  equals(mad(ChickWeight[["weight"]])))
       expect_that(processTrace(rock[["shape"]])[["IQR"]],
-        equals(IQR(rock[["shape"]])))
-
+                  equals(IQR(rock[["shape"]])))
     })
 
     test_that("loadCsvTrace works", {
 
       testFileName <- "tests/testCsvData/testRock.csv"
-      if (!file.exists(testFileName)){
+      if (!file.exists(testFileName)) {
         printf("File %s does not exist. EXITING!", testFileName)
         stop("Halting...")
       }
 
       expect_that(
-        to.data.frame(
-          loadCsvTrace(testFileName, columnName = "peri")
-        )[["mean"]],
-        equals( mean(rock[["peri"]][21:(nrow(rock) - 20)]))
-      )
-
+        to.data.frame(loadCsvTrace(testFileName, columnName = "peri")
+                     )[["mean"]],
+        equals(mean(rock[["peri"]][21:(nrow(rock) - 20)])))
     })
   })
 
@@ -162,19 +157,18 @@ test_that("Power Analyze code base works", {
       ))
 
       expect_that(svmCountSplit(1, testOutput, guessColumn = "a"),
-        equals(c(FALSE, TRUE, TRUE, TRUE))
+                  equals(c(FALSE, TRUE, TRUE, TRUE))
       )
 
       expect_that(
-        svmCountSplit(1, testOutput, percentage = 0.5, guessColumn = "a"),
-        equals(c(FALSE, FALSE, TRUE, TRUE))
+            svmCountSplit(1, testOutput, percentage = 0.5, guessColumn = "a"),
+            equals(c(FALSE, FALSE, TRUE, TRUE))
       )
 
       ret <- svmCountSplit(0, sort.data.frame(mtcars), guessColumn = "vs")
 
       expect_that(length(ret), equals(18))
-      expect_that(ret[1:3],
-        equals(c(FALSE, FALSE, FALSE)))
+      expect_that(ret[1:3], equals(c(FALSE, FALSE, FALSE)))
       expect_that(ret[4:18], equals(as.logical(4:18)))
 
       ret <- svmCountSplit(4, sort.data.frame(mtcars), guessColumn = "cyl")
@@ -187,7 +181,7 @@ test_that("Power Analyze code base works", {
     test_that("svmFormatData works", {
 
       ret <- svmFormatData(sort.data.frame(beaver1, "activ"),
-        guessColumn = "activ")
+                           guessColumn = "activ")
       trainSet <- ret[["trainSet"]]
       testSet <- ret[["testSet"]]
 
@@ -203,7 +197,6 @@ test_that("Power Analyze code base works", {
 
       expect_that(count(trainSet, 1), equals(5))
       expect_that(count(testSet, 1), equals(1))
-
     })
   })
 })
@@ -212,3 +205,4 @@ test_that("Power Analyze code base works", {
 str(test_file("."))
 
 printf("Tests completed successfully")
+

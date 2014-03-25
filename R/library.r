@@ -2,8 +2,8 @@
 # A collection of support functions for PowerAnalyze.
 #
 # Created by David Tran (unsignedzero)
-# Version 0.8.0.1
-# Last Modified 03-07-2014
+# Version 0.8.0.2
+# Last Modified 03-24-2014
 
 #' Grabs all but the first nth and last nth elements of a list.
 #'
@@ -22,21 +22,22 @@
 #' body(1:10, n = 4) -> 5:6
 body <- function ( data, n = 20 ) {
 
-  if (class(data) == "data.frame"){
+  if (class(data) == "data.frame") {
+
     len <- nrow(data)
-    if ( (n+1) > (len-n) ){
+    if ( (n+1) > (len-n) ) {
       printf("body: Impossible range %d to %d", n, len-n)
       return(data[NULL, ])
     }
 
     return(data[(n+1):(len-n), ])
 
-  } else if (class(data) == "list"   || class(data) == "integer" ||
-            class(data) == "numeric" || class(data) == "character" ||
-            class(data) == "logical" ){
+  } else if (class(data) == "list"    || class(data) == "integer"   ||
+             class(data) == "numeric" || class(data) == "character" ||
+             class(data) == "logical" ) {
     len <- length(data)
 
-    if ( (n+1) > (len-n) ){
+    if ( (n+1) > (len-n) ) {
       printf("body: Impossible range %d to %d", n, len-n)
       return(NULL)
     }
@@ -44,8 +45,7 @@ body <- function ( data, n = 20 ) {
     output <- data[(n+1):(len-n)]
     print(output)
     return(output)
-
-  } else{
+  } else {
     printf("body: Unknown data type %s", class(data))
     return(NA)
   }
@@ -62,7 +62,7 @@ body <- function ( data, n = 20 ) {
 #' @return A value containing the dot product.
 dotProduct <- function ( listA, listB ) {
 
-  if (length(listA) != length(listB)){
+  if (length(listA) != length(listB)) {
     printf("Lists %s and %s are not identical in length",
       str(listA), str(listB))
     stop("Halting...")
@@ -102,9 +102,9 @@ halt <- function ( ... ) {
 install <- function ( pack, ... ) {
 
   install.packages(pack,
-    dependencies = TRUE, repos = "http://cran.us.r-project.org",
-    ...
-  )
+                   dependencies = TRUE,
+                   repos        = "http://cran.us.r-project.org",
+                   ...)
 }
 inst <- install # Function alias
 
@@ -124,11 +124,10 @@ inst <- install # Function alias
 #' @return A boolean value stating if the requested package is loaded.
 lib <- function ( pack, ... ) {
 
-  if (libCheck(pack, ...)){
+  if (libCheck(pack, ...)) {
     # Loaded successfully
     return(TRUE)
-  }
-  else{
+  } else {
     # Try to install and load
     install(pack)
     return(libCheck(pack, ...))
@@ -147,12 +146,10 @@ lib <- function ( pack, ... ) {
 #' @seealso \code{\link{lib}}
 libCheck <- function ( pack, ... ) {
 
-  return(suppressWarnings(
-    library(pack,
-      logical.return = TRUE, character.only = TRUE,
-    ...)
-    )
-  )
+  return(suppressWarnings(library(pack,
+                                  logical.return = TRUE,
+                                  character.only = TRUE,
+                                  ...)))
 }
 
 #' Computes the magnitude of a complex number or a numeric list.
@@ -169,19 +166,14 @@ libCheck <- function ( pack, ... ) {
 #' mag(c(6, 8)) -> 10
 mag <- function( x ) {
 
-  # Computes the magnitude
-
-  if (class(x) == "numeric"){
+  if (class(x) == "numeric") {
     return(x)
-  }
-  else if (class(x) == "complex"){
+  } else if (class(x) == "complex") {
     return(sqrt(Re(x)^2 + Im(x)^2))
-  }
-  else if ((class(x) == "list") || (class(x) == "numeric") ||
-           (class(x) == "integer")){
+  } else if ((class(x) == "list") || (class(x) == "numeric") ||
+             (class(x) == "integer")) {
     return(sqrt(sum(sapply(x, function(x) x^2))))
-  }
-  else{
+  } else {
     stop("Unknown datatype passed")
   }
 }
@@ -198,10 +190,7 @@ mag <- function( x ) {
 #' object.exists(NA) -> FALSE
 object.exists <- function( obj ) {
 
-  # Check if an object(variable) exists
-
   return(exists(as.character(substitute(obj))))
-
 }
 
 #' Plot function used to create plots from Power Traces for posters.
@@ -220,19 +209,17 @@ plotPowerTrace <- function ( dataFrame, y, fileName, ... ) {
   if (is.null(fileName)){
     name <- "output"
     fileName <- "output.pdf"
-  }
-  else{
+  } else {
     name <- fileName
     fileName <- paste(fileName, ".pdf", collapse = "")
   }
 
   pdf(fileName)
-  plot(x = 1:nrow(dataFrame), y = dataFrame[[y]],
-    xlab = "Seconds", ylab = "Watts",
-    col = "blue",
-    main = paste("Power Trace of", name),
-    type = "l", ...
-  )
+  plot(x    = 1:nrow(dataFrame), y = dataFrame[[y]],
+       xlab = "Seconds", ylab      = "Watts",
+       col  = "blue",
+       main = paste("Power Trace of", name),
+       type = "l", ...)
   dev.off()
 
   return(dataFrame)
@@ -254,7 +241,7 @@ plotPowerTrace <- function ( dataFrame, y, fileName, ... ) {
 removeColumn <- function( frame , colName ) {
 
   logicVector <- unlist(lapply(colnames(frame),
-    function(x) (!grepl(colName, x))))
+                        function(x) (!grepl(colName, x))))
 
   return(frame[logicVector])
 }
@@ -273,29 +260,23 @@ removeColumn <- function( frame , colName ) {
 #' sort.data.frame(rock, "shape")
 sort.data.frame <- function ( frame, col = NULL ) {
 
-  if (class(frame) == "data.frame"){
-    if (is.null(col)){
+  if (class(frame) == "data.frame") {
+    if (is.null(col)) {
       return(frame[order(frame[1]), ])
-    }
-    else if (col %in% colnames(frame)){
+    } else if (col %in% colnames(frame)) {
       return(frame[order(frame[col]), ])
-    }
-    else{
+    } else {
       stop("sort: Col %s passed does not exist in data frame %s",
         str(col), str(frame)
       )
       return(-1)
     }
-  }
-  else if (class(frame) == "list"){
+  } else if (class(frame) == "list") {
     return(frame[order(unlist(frame))])
-  }
-  else if (class(frame) == "numeric" || class(frame) == "character" ||
-          class(frame) == "integer" )
-        {
+  } else if (class(frame) == "numeric" || class(frame) == "character" ||
+          class(frame) == "integer" ) {
     return(sort(frame))
-  }
-  else{
+  } else {
     stop("sort: Unknown data type %s passed.", class(frame))
     return(-1)
   }
@@ -313,10 +294,9 @@ sort.data.frame <- function ( frame, col = NULL ) {
 #' square(list(3, 4)) -> list(16, 25)
 square <- function ( x ) {
 
-  if (class(x) == "numeric"){
+  if (class(x) == "numeric") {
     return(x^2)
-  }
-  else{
+  } else {
     return(lapply(x, function(x) x^2))
   }
 }
@@ -331,11 +311,10 @@ square <- function ( x ) {
 #' @return A boolean value containing if it was successfully added.
 srcFile <- function ( filePath ) {
 
-  if (file.exists(filePath)){
+  if (file.exists(filePath)) {
     source(filePath)
     return (TRUE)
-  }
-  else{
+  } else {
     pathSplitArray <- unlist(strsplit(filePath, '/'))
     splitCountArray <- 1:length(pathSplitArray)
 
@@ -343,11 +322,10 @@ srcFile <- function ( filePath ) {
       newPath <- paste(pathSplitArray[splitLocation:length(pathSplitArray)],
         collapse = "/")
 
-      if (file.exists(newPath)){
+      if (file.exists(newPath)) {
         source(newPath)
         return (splitLocation)
-      }
-      else{
+      } else {
         return (NA)
       }
     }
@@ -356,17 +334,15 @@ srcFile <- function ( filePath ) {
     filteredRetValue <- which(!is.na(retValue))
 
     if (!is.na(min(filteredRetValue))) {
-      # The file we wann to add  was successfully added
+      # The file we wanted to add was successfully added
       return (TRUE)
-    }
-    else {
+    } else {
       return (FALSE)
     }
-
   }
 }
 
-#' Returns a substring of the input the input string.
+#' Returns a substring of the input string.
 #'
 #' This function may take one argument, which cuts from zero or two arguments
 #' to cut at certain points. The cut is inclusive left and exclusive right,
@@ -390,31 +366,31 @@ srcFile <- function ( filePath ) {
 #' @return A substring of the input string.
 subStr <- function ( str, start = 0, end = NULL, C_RANGE = FALSE ) {
 
-  if (nchar(str) == 0){
+  if (nchar(str) == 0) {
     return(str)
   }
 
-  if (is.null(end)){
-    end <- start
+  if (is.null(end)) {
+    end   <- start
     start <- 0
   }
 
   if (end < start){
-    temp <- start
+    temp  <- start
     start <- end
-    end <- temp
+    end   <- temp
   }
 
-  if (start < 0){
+  if (start < 0) {
     stop("subStr range contains negative values")
   }
 
-  if (C_RANGE){
+  if (C_RANGE) {
     start = start + 1
-    end = end + 1
+    end   = end   + 1
   }
 
-  if (end > nchar(str)){
+  if (end > nchar(str)) {
     end = nchar(str)
   }
 
