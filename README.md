@@ -33,6 +33,8 @@ Created by David Tran (unsignedzero)
 
 # Version/Changelog #
 
+## 1.1.0.0 [2014-04-24] #
+* Merged into main and finished presentation.
 * Updated source code formatting to be similar to Google's R Style Guide. Not
   all operators have spaces around due to precedence. Function names are
   not capitalized.
