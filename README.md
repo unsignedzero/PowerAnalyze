@@ -29,9 +29,17 @@ Created by David Tran (unsignedzero)
 
 # Reference
 
+SVM cross validation in e1071
+* http://r.789695.n4.nabble.com/SVM-cross-validation-in-e1071-td896822.html
+* https://stat.ethz.ch/pipermail/r-help/2009-July/203785.html
+* https://stackoverflow.com/questions/15693675/svm-cross-validation-always-same
+* http://www.inside-r.org/node/57517
+
 [Google's R Style Guide](http://google-styleguide.googlecode.com/svn/trunk/Rguide.xml#assignment)
 
 # Version/Changelog #
+
+* SVM Reference links added.
 
 ## 1.1.0.0 [2014-04-24] #
 * Merged into main and finished presentation.
