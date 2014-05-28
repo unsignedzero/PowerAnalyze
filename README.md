@@ -39,6 +39,7 @@ SVM cross validation in e1071
 
 # Version/Changelog #
 
+* Updating author email to correct email.
 * SVM Reference links added.
 
 ## 1.1.0.0 [2014-04-24] #
