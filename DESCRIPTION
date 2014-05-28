@@ -1,6 +1,6 @@
 Package: poweranalyze
-Version: 0.7.0.0
-Date: 2014-02-18
+Version: 1.0.0.1
+Date: 2014-03-08
 Title: Analyze power traces with an SVM
 Authors@R: c(person("David", "Tran", role = c("aut", "cre"),
     email = "unsignedzero@gmail.com"))
@@ -12,10 +12,10 @@ Depends:
     gplots (>= 2.12.1)
 Suggests:
     e1071
-Description: This code base reads in data from power traces
+Description: This code base reads in csv data from power traces
     of computer systems, condenses it down to a few points, using
     mean, median and other statistical functions, and runs it
     through an SVM. The goal is to maximize the precision and recall
     of the SVM.
 License: MIT
-URL: http://www.r-project.org,
+URL: http://www.r-project.org, https://github.com/unsignedzero/PowerAnalyze
